@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace main.domain.Common
 {
-    public interface IEntiteDate
+    public interface IEntityDate
     {
         public DateTime DateCreate { get; set; }
         public DateTime DateUpdate { get; set; }
