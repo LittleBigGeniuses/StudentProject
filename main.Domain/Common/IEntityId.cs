@@ -8,6 +8,6 @@ namespace main.domain.Common
 {
     public interface IEntityId
     {
-        public long id { get; set; }
+        public long Id { get; set; }
     }
 }

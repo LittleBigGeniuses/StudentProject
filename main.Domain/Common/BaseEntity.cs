@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace main.domain.Common
 {
-    internal class BaseEntity : IEntityId, IEntiteDate
+    public class BaseEntity : IEntityId, IEntityDate
     {
-        public long id { get; set; }
+        public long Id { get; set; }
         public DateTime DateCreate { get ; set; }
         public DateTime DateUpdate { get ; set; }
     }
