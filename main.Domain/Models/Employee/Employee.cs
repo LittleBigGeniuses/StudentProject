@@ -37,20 +37,25 @@ public class Employee : BaseEntity
     /// <param name="companyId">Идентификатор компании</param>
     /// <param name="roleId">Идентификатор роли</param>
     /// <returns>Сущность сотрудника</returns>
-    public static Employee? Create(string name, long companyId, long roleId)
+    public static Result<Employee> Create(string name, long companyId, long roleId)
     {
         if (String.IsNullOrEmpty(name))
         {
-            return null;
+            return Result<Employee>.Failure("ФИО сотрудника не может быть пустым");
         }
 
-        if (companyId <= 0 || roleId <= 0)
+        if (companyId <= 0 )
         {
-            return null;
+            return Result<Employee>.Failure("Идентификатор компании некорректен");
+        }
+
+        if (roleId <= 0)
+        {
+            return Result<Employee>.Failure("Идентификатор должности некорректен");
         }
 
         var employee = new Employee(name, companyId, roleId);
 
-        return employee;
+        return Result<Employee>.Success(employee);
     }
 }
