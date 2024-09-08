@@ -26,14 +26,19 @@ namespace main.domain.Common
         /// <summary>
         /// Успешность выполнения
         /// </summary>
-        public bool IsSuccess { get; set; } = true;
+        public bool IsSuccess { get; private set; } = true;
+
+        /// <summary>
+        /// Неуспешность выполнения
+        /// </summary>
+        public bool IsFailure => !IsSuccess;
 
         /// <summary>
         /// Метод сообщения о провале создания объекта
         /// </summary>
         /// <param name="failureMessage">Сообщение провала</param>
         /// <returns>Возвращает сущность с сообщение о провале</returns>
-        public static Result<T> IsFailled(string failureMessage)
+        public static Result<T> Failure(string failureMessage)
         {
             var result = new Result<T>();
             result.IsSuccess = false;
@@ -47,7 +52,7 @@ namespace main.domain.Common
         /// </summary>
         /// <param name="data">Объект</param>
         /// <returns>Возвращает сущность содержащую ожидаемый объект</returns>
-        public static Result<T> IsSuccessed(T data)
+        public static Result<T> Success(T data)
         {
             var result = new Result<T>();
 
