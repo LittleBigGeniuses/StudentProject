@@ -62,5 +62,27 @@ namespace main.domain.Models.Employee
             return Result<Role>.Success(role);
         }
 
+        /// <summary>
+        /// Обновление наименования должности
+        /// </summary>
+        /// <param name="name">Новое наименование</param>
+        /// <returns>Успешность выполнения операции</returns>
+        public Result<bool> UpdateName(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                return Result<bool>.Failure("Наименование должности не может быть пустым");
+            }
+
+            if (name.Length < MinLengthName)
+            {
+                return Result<bool>.Failure($"Длина наименование должности не может быть меньше {MinLengthName}");
+            }
+
+            Name = name;
+
+            return Result<bool>.Success(true);
+        }
+
     }
 }

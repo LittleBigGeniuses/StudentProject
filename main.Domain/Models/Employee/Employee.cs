@@ -58,4 +58,55 @@ public class Employee : BaseEntity
 
         return Result<Employee>.Success(employee);
     }
+
+    /// <summary>
+    /// Обновление ФИО сотрудника
+    /// </summary>
+    /// <param name="name">ФИО</param>
+    /// <returns>Успешность выполнения операции</returns>
+    public Result<bool> UpdateName(string name)
+    {
+        if (String.IsNullOrEmpty(name))
+        {
+            return Result<bool>.Failure("ФИО не может быть пустым");
+        }
+
+        Name = name;
+
+        return Result<bool>.Success(true);  
+    }
+
+    /// <summary>
+    /// Обновление должности сотрудника
+    /// </summary>
+    /// <param name="roleId">Идентификатор роли</param>
+    /// <returns>Успешность выполнения операции</returns>
+    public Result<bool> UpdateRole(long roleId)
+    {
+        if (roleId <= 0)
+        {
+            return Result<bool>.Failure("Некорректное значение идентификатора должности");
+        }
+
+        RoleId = roleId;
+
+        return Result<bool>.Success(true);
+    }
+
+    /// <summary>
+    /// Обновление компании сотрудника
+    /// </summary>
+    /// <param name="companyId">Идентификатор компании</param>
+    /// <returns>Успешность выполнения операции</returns>
+    public Result<bool> UpdateCompany(long companyId)
+    {
+        if (companyId <= 0)
+        {
+            return Result<bool>.Failure("Некорректное значение идентификатора компании");
+        }
+
+        CompanyId = companyId;
+
+        return Result<bool>.Success(true);
+    }
 }
