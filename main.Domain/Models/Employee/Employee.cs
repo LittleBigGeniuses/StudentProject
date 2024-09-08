@@ -1,5 +1,6 @@
 ﻿using main.domain.Common;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace main.domain.Models.Employee;
 
@@ -8,6 +9,7 @@ namespace main.domain.Models.Employee;
 /// </summary>
 public class Employee : BaseEntity
 {
+    const int MinLengthName = 5;
     private Employee(string name, long companyId, long roleId)
     {
         Name = name;
@@ -44,6 +46,11 @@ public class Employee : BaseEntity
             return Result<Employee>.Failure("ФИО сотрудника не может быть пустым");
         }
 
+        if (name.Trim().Length < MinLengthName)
+        {
+            return Result<Employee>.Failure($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
+        }
+
         if (companyId <= 0 )
         {
             return Result<Employee>.Failure("Идентификатор компании некорректен");
@@ -69,6 +76,11 @@ public class Employee : BaseEntity
         if (String.IsNullOrEmpty(name))
         {
             return Result<bool>.Failure("ФИО не может быть пустым");
+        }
+
+        if (name.Trim().Length < MinLengthName)
+        {
+            return Result<bool>.Failure($"Длина наименование должности не может быть меньше {MinLengthName}");
         }
 
         Name = name;

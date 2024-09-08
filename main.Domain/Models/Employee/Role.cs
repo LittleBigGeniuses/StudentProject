@@ -16,7 +16,7 @@ namespace main.domain.Models.Employee
         /// <summary>
         /// Минимально допутимая длина наименования роли
         /// </summary>
-        private const int MinLengthName = 3;
+        const int MinLengthName = 3;
 
         private Role(string name, long companyId)
         {
@@ -74,7 +74,7 @@ namespace main.domain.Models.Employee
                 return Result<bool>.Failure("Наименование должности не может быть пустым");
             }
 
-            if (name.Length < MinLengthName)
+            if (name.Trim().Length < MinLengthName)
             {
                 return Result<bool>.Failure($"Длина наименование должности не может быть меньше {MinLengthName}");
             }
