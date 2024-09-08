@@ -84,6 +84,7 @@ public class Employee : BaseEntity
         }
 
         Name = name;
+        DateUpdate = DateTime.Now;
 
         return Result<bool>.Success(true);  
     }
@@ -101,6 +102,7 @@ public class Employee : BaseEntity
         }
 
         RoleId = roleId;
+        DateUpdate = DateTime.Now;
 
         return Result<bool>.Success(true);
     }
@@ -118,6 +120,7 @@ public class Employee : BaseEntity
         }
 
         CompanyId = companyId;
+        DateUpdate = DateTime.Now;
 
         return Result<bool>.Success(true);
     }

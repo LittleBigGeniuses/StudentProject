@@ -80,6 +80,7 @@ namespace main.domain.Models.Employee
             }
 
             Name = name;
+            DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
         }
