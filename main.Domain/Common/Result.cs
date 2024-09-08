@@ -11,7 +11,7 @@ namespace main.domain.Common
     /// Примитивная реализация паттерна Result
     /// </summary>
     /// <typeparam name="T">Ожидаемый тип сущности к возвращению</typeparam>
-    public class Result<T>  where T : class
+    public class Result<T>
     {
         /// <summary>
         /// Возвращаемый объект
