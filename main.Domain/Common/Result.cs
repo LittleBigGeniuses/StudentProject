@@ -21,7 +21,7 @@ namespace main.domain.Common
         /// <summary>
         /// Сообщение о провале
         /// </summary>
-        public string FailureMessage;
+        public string? FailureMessage { get; set; }
 
         /// <summary>
         /// Успешность выполнения
