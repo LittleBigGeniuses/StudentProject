@@ -28,16 +28,16 @@ namespace main.domain.Models.Condidate
         /// </summary>
         /// <param name="name">ФИО</param>
         /// <returns>Результат обновления (bool)</returns>
-        public bool UpdateName(string name)
+        public Result<bool> UpdateName(string name)
         {
             if (String.IsNullOrEmpty(name))
             {
-                return false;
+                return Result<bool>.Failure("ФИО сотрудника не может быть пустым");
             }
 
             Name = name;
 
-            return true;
+            return Result<bool>.Success(true); ;
         }
 
         /// <summary>
@@ -45,16 +45,16 @@ namespace main.domain.Models.Condidate
         /// </summary>
         /// <param name="name">ФИО</param>
         /// <returns>Сущность соискателя</returns>
-        public static Condidate? Create(string name)
+        public static Result<Condidate> Create(string name)
         {
             if (String.IsNullOrEmpty(name))
             {
-                return null;
+                return Result<Condidate>.Failure("ФИО сотрудника не может быть пустым");
             }
 
             var condidaate = new Condidate(name);
 
-            return condidaate;
+            return Result<Condidate>.Success(condidaate);
         }
     }
 }
