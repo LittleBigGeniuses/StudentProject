@@ -30,7 +30,7 @@ namespace main.domain.Models.Employee
         public string Name { get; private set; }
 
         /// <summary>
-        /// Идентификатор компании, в которой принадлежит должность
+        /// Идентификатор компании, к которой относится должность
         /// </summary>
         public long CompanyId { get; private set; }
 
