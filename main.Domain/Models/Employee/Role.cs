@@ -45,21 +45,21 @@ namespace main.domain.Models.Employee
         /// <param name="name"> Наименование должности</param>
         /// <param name="companyId"> Идентификатор компании</param>
         /// <returns>Возвращает сущность должноти</returns>
-        public static Role? Create(string name, long companyId)
+        public static Result<Role> Create(string name, long companyId)
         {
             if (String.IsNullOrEmpty(name))
             {
-                return null;
+                return Result<Role>.Failure("Наименование должности не может быть пустым");
             }
 
             if (name.Length < MinLengthName)
             {
-                return null;
+                return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
             }
 
             var role = new Role(name, companyId);
 
-            return role;
+            return Result<Role>.Success(role);
         }
 
     }
