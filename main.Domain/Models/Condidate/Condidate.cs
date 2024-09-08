@@ -16,6 +16,8 @@ namespace main.domain.Models.Condidate
         private Condidate(string name)
         {
             Name = name;
+            DateCreate = DateTime.Now;
+            DateUpdate = DateTime.Now;
         }
 
         /// <summary>
