@@ -15,6 +15,8 @@ public class Employee : BaseEntity
         Name = name;
         CompanyId = companyId;
         RoleId = roleId;
+        DateCreate = DateTime.Now;
+        DateUpdate = DateTime.Now;
     }
 
     /// <summary>
