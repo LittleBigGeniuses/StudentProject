@@ -12,7 +12,7 @@ namespace main.domain.Models.Condidate
     /// </summary>
     public class Condidate : BaseEntity
     {
-
+        const int MinLengthName = 5;
         private Condidate(string name)
         {
             Name = name;
@@ -36,6 +36,7 @@ namespace main.domain.Models.Condidate
             }
 
             Name = name;
+            DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true); ;
         }
@@ -49,7 +50,12 @@ namespace main.domain.Models.Condidate
         {
             if (String.IsNullOrEmpty(name))
             {
-                return Result<Condidate>.Failure("ФИО сотрудника не может быть пустым");
+                return Result<Condidate>.Failure("ФИО соискателя не может быть пустым");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                return Result<Condidate>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
             }
 
             var condidaate = new Condidate(name);
