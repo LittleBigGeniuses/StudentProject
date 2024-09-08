@@ -16,7 +16,7 @@ namespace main.domain.Common
         /// <summary>
         /// Возвращаемый объект
         /// </summary>
-        public T Data { get; set; }
+        public T? Data { get; set; }
 
         /// <summary>
         /// Сообщение о провале
