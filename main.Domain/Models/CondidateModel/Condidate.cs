@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace main.domain.Models.Condidate
+namespace main.domain.Models.CondidateModel
 {
     /// <summary>
     /// Сущность соискателя

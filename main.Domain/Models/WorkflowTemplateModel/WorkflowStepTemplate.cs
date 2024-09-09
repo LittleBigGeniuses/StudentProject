@@ -1,18 +1,12 @@
 ﻿using main.domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace main.domain.Models.WorkflowTemplate
+
+namespace main.domain.Models.WorkflowTemplateModel
 {
     /// <summary>
     /// Шаг в шаблоне Workflow
     /// </summary>
-    public class WorkflowStepTemplate
+    public class WorkflowStepTemplate : BaseEntity
     {
         private WorkflowStepTemplate(int number, string description, long? eployerId, long? roleId, WorkflowTemplate workflowTemplate)
         {
@@ -22,6 +16,8 @@ namespace main.domain.Models.WorkflowTemplate
             RoleId = roleId;
             WorkflowTemplate = workflowTemplate;
             WorkflowTemplateId = workflowTemplate.Id;
+            DateCreate = DateTime.Now;
+            DateUpdate = DateTime.Now;
         }
 
         /// <summary>
@@ -72,7 +68,7 @@ namespace main.domain.Models.WorkflowTemplate
 
             if (eployerId is null && roleId is null)
             {
-                return Result<WorkflowStepTemplate>.Failure($"{eployerId} or {roleId}: У шага должна быть привязка к конкретногому сотруднику или должности");
+                return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
             if (eployerId is not null && eployerId <= 0)
