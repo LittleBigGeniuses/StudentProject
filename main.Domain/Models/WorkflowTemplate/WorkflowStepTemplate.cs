@@ -45,10 +45,13 @@ namespace main.domain.Models.WorkflowTemplate
         public long? RoleId { get; private set; }
 
         /// <summary>
-        /// Сущность шаблона
+        /// Сущность шаблона, которому принадлежит шаг
         /// </summary>
         public WorkflowTemplate WorkflowTemplate { get; private set; }
 
+        /// <summary>
+        /// Идентификатор шаблона Wokflow, которому принадлежит шаг
+        /// </summary>
         public long WorkflowTemplateId { get; private set; }
 
         /// <summary>
@@ -105,6 +108,11 @@ namespace main.domain.Models.WorkflowTemplate
             return Result<bool>.Success(true);
         }
 
+        /// <summary>
+        /// Обновление номера
+        /// </summary>
+        /// <param name="number">Новый номер</param>
+        /// <returns></returns>
         public Result<bool> UpdateNumber(int number)
         {
             if (number <= 0)
