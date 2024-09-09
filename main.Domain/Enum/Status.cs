@@ -29,6 +29,6 @@ namespace main.domain.Enum
         /// <summary>
         /// Отказано
         /// </summary>
-        Rejected = 3,
+        Rejected = 3
     }
 }
