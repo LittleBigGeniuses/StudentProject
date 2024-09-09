@@ -11,8 +11,19 @@ namespace main.domain.Common
     /// </summary>
     public class BaseEntity : IEntityId, IEntityDate
     {
+        /// <summary>
+        /// Идентификатор в система
+        /// </summary>
         public long Id { get; set; }
+
+        /// <summary>
+        /// Дата и время создания
+        /// </summary>
         public DateTime DateCreate { get ; set; }
+
+        /// <summary>
+        /// Дата и время обновления
+        /// </summary>
         public DateTime DateUpdate { get ; set; }
     }
 }

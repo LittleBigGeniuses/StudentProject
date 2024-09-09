@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace main.domain.Models.Employee;
+namespace main.domain.Models.EmployeeModel;
 
 /// <summary>
 /// Класс сотрудника

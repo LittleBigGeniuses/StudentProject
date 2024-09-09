@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace main.domain.Models.WorkflowTemplate
+namespace main.domain.Models.WorkflowTemplateModel
 {
     /// <summary>
     /// Шаблон Workfloy
@@ -29,6 +29,8 @@ namespace main.domain.Models.WorkflowTemplate
             Name = name;
             Description = description;
             CompanyId = companyId;
+            DateCreate = DateTime.Now;
+            DateUpdate = DateTime.Now;
         }
 
         /// <summary>

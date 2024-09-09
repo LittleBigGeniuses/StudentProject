@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace main.domain.Models.Employee
+namespace main.domain.Models.EmployeeModel
 {
     /// <summary>
     /// Класс должности сотрудника в компании
