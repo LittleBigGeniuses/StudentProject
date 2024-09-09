@@ -55,20 +55,20 @@ namespace main.domain.Models.CompanyModel
         /// <param name="name">Имя</param>
         /// <param name="roleId">Идентификатор должности</param>
         /// <returns></returns>
-        public Result<bool> AddEmployee(string name, long roleId)
+        public Result<Employee> AddEmployee(string name, long roleId)
         {
             var createEmployee = Employee.Create(name, Id,  roleId);
 
             if (createEmployee.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createEmployee.FailureMessage}");
+                return Result<Employee>.Failure($"Добавление элемента в список провалиловсь: {createEmployee.FailureMessage}");
             }
 
             var employee = createEmployee.Data;
 
             _employees.Add(employee);
 
-            return Result<bool>.Success(true);
+            return Result<Employee>.Success(employee);
         }
 
         /// <summary>
@@ -77,20 +77,20 @@ namespace main.domain.Models.CompanyModel
         /// <param name="name">Название</param>
         /// <param name="description">Описание</param>
         /// <returns></returns>
-        public Result<bool> AddTemplate(string name, string description)
+        public Result<WorkflowTemplate> AddTemplate(string name, string description)
         {
             var createTemplate = WorkflowTemplate.Create(name, description, Id);
 
             if (createTemplate.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createTemplate.FailureMessage}");
+                return Result<WorkflowTemplate>.Failure($"Добавление элемента в список провалиловсь: {createTemplate.FailureMessage}");
             }
 
             var template = createTemplate.Data;
 
             _workflowTemplates.Add(template);
 
-            return Result<bool>.Success(true);
+            return Result<WorkflowTemplate>.Success(template);
         }
 
         /// <summary>
@@ -98,20 +98,20 @@ namespace main.domain.Models.CompanyModel
         /// </summary>
         /// <param name="name">Название</param>
         /// <returns></returns>
-        public Result<bool> AddRole(string name)
+        public Result<Role> AddRole(string name)
         {
             var createRole = Role.Create(name, Id);
 
             if (createRole.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createRole.FailureMessage}");
+                return Result<Role>.Failure($"Добавление элемента в список провалиловсь: {createRole.FailureMessage}");
             }
 
             var role = createRole.Data;
 
             _roles.Add(role);
 
-            return Result<bool>.Success(true);
+            return Result<Role>.Success(role);
         }
 
         /// <summary>
@@ -121,20 +121,20 @@ namespace main.domain.Models.CompanyModel
         /// <param name="candidateId">Идентификатор кандидата</param>
         /// <param name="template">Сущность шаблона этого рабочего процесса</param>
         /// <returns></returns>
-        public Result<bool> AddWorkflow(long authorId, long candidateId, WorkflowTemplate template)
+        public Result<Workflow> AddWorkflow(long authorId, long candidateId, WorkflowTemplate template)
         {
             var createWorkflow = Workflow.Create(authorId, candidateId, template);
 
             if (createWorkflow.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createWorkflow.FailureMessage}");
+                return Result<Workflow>.Failure($"Добавление элемента в список провалиловсь: {createWorkflow.FailureMessage}");
             }
 
             var workflow = createWorkflow.Data;
 
             _workflows.Add(workflow);
 
-            return Result<bool>.Success(true);
+            return Result<Workflow>.Success(workflow);
         }
         /// <summary>
         /// Удалить сотрудника
