@@ -152,7 +152,7 @@ namespace main.domain.Models.CompanyModel
                 }
             }
 
-            return Result<bool>.Failure("Сотрудника с таким идентификационным номером не существует");
+            return Result<bool>.Failure($"Сотрудника с идентификационным номером {employeeId} не существует"); ;
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace main.domain.Models.CompanyModel
                 }
             }
 
-            return Result<bool>.Failure("Шаблона с таким идентификационным номером не существует");
+            return Result<bool>.Failure($"Шаблона с идентификационным номером {templateId} не существует");
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace main.domain.Models.CompanyModel
                 }
             }
 
-            return Result<bool>.Failure("Должности с таким идентификационным номером не существует");
+            return Result<bool>.Failure($"Должности с идентификационным номером {roleId} не существует");
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace main.domain.Models.CompanyModel
                 }
             }
 
-            return Result<bool>.Failure("Рабочего процесса с таким идентификационным номером не существует");
+            return Result<bool>.Failure($"Рабочего процесса с идентификационным номером {workflowId} не существует");
         }
     }
 }
