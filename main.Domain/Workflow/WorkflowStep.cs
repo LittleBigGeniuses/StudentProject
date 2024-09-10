@@ -1,30 +1,23 @@
 ﻿using main.domain.Common;
 using main.domain.Enum;
-using main.domain.Models.EmployeeModel;
-using main.domain.Models.WorkflowTemplateModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using main.domain.WorkflowTemplateModel;
 
-namespace main.domain.Models.WorkflowModel
+
+namespace main.domain.WorkflowModel
 {
 
     /// <summary>
     /// Шаг рабочего процесса
     /// </summary>
-    public class WorkflowStep :  BaseEntity, IStatus
+    public class WorkflowStep : BaseEntity, IStatus
     {
-        private WorkflowStep(long candidateId, int number, string description, long? employerId, long? roleId, Workflow workflow)
+        private WorkflowStep(Guid candidateId, int number, string description, Guid? employerId, Guid? roleId)
         {
             CandidateId = candidateId;
             Number = number;
             Description = description;
             EmployerId = employerId;
             RoleId = roleId;
-            Workflow = workflow;
-            WorkflowId = workflow.Id;
             DateCreate = DateTime.Now;
             DateUpdate = DateTime.Now;
         }
@@ -47,27 +40,17 @@ namespace main.domain.Models.WorkflowModel
         /// <summary>
         /// Идентификатор сотрудника, который будет исполнять шаг
         /// </summary>
-        public long? EmployerId { get; private set; }
+        public Guid? EmployerId { get; private set; }
 
         /// <summary>
         /// Идентификатор роли, которая может исполнить шаг
         /// </summary>
-        public long? RoleId { get; private set; }
+        public Guid? RoleId { get; private set; }
 
         /// <summary>
         /// Идентификатор кандидата
         /// </summary>
-        public long CandidateId { get; private set; }
-
-        /// <summary>
-        /// Сущность рабочего процесса, которой принаждежит шаг
-        /// </summary>
-        public Workflow Workflow { get; private set; }
-
-        /// <summary>
-        /// Идентификатор рабочего процесса, которой принаждежит шаг
-        /// </summary>
-        public long WorkflowId { get; private set; }
+        public Guid CandidateId { get; }
 
         /// <summary>
         /// Стастус шага
@@ -75,15 +58,19 @@ namespace main.domain.Models.WorkflowModel
         public Status Status { get; private set; } = Status.Expectation;
 
         /// <summary>
+        /// Терминальность шага
+        /// </summary>
+        public bool IsTerminal { get; private set; } = false;
+
+        /// <summary>
         /// Создание шага
         /// </summary>
         /// <param name="candidateId">Идентификатор кандидата</param>
         /// <param name="stepTemplate">Шаблон, по которому создается шаг</param>
-        /// <param name="workflow">Рабочий процесс, которому принадлежит шаг</param>
         /// <returns></returns>
-        internal static Result<WorkflowStep> Create(long candidateId, WorkflowStepTemplate stepTemplate, Workflow workflow)
+        internal static Result<WorkflowStep> Create(Guid candidateId, WorkflowStepTemplate stepTemplate)
         {
-            if (candidateId <= 0)
+            if (candidateId == Guid.Empty)
             {
                 return Result<WorkflowStep>.Failure($"{candidateId} - некорректный идентификатор кандидата");
             }
@@ -93,17 +80,12 @@ namespace main.domain.Models.WorkflowModel
                 return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
             }
 
-            if (workflow is null)
-            {
-                return Result<WorkflowStep>.Failure($"{nameof(workflow)} не может быть пустым");
-            }
-
             if (stepTemplate.EployerId is null && stepTemplate.RoleId is null)
             {
                 return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
-            var step = new WorkflowStep(candidateId, stepTemplate.Number,stepTemplate.Description, stepTemplate.EployerId, stepTemplate.RoleId, workflow);
+            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EployerId, stepTemplate.RoleId);
 
             return Result<WorkflowStep>.Success(step);
         }
@@ -113,11 +95,23 @@ namespace main.domain.Models.WorkflowModel
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public void Approve(long emlpoyerId, string? feedback)
+        public Result<bool> Approve(Guid emlpoyerId, string? feedback)
         {
+            if (emlpoyerId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
+            if (IsTerminal)
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
             Status = Status.Approved;
             Feedback = feedback;
-            Workflow.UpdateStatus();
+            DateUpdate = DateTime.Now;
+
+            return Result<bool>.Success(true);
         }
 
         /// <summary>
@@ -125,21 +119,40 @@ namespace main.domain.Models.WorkflowModel
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public void Reject(long emlpoyerId, string? feedback)
+        public Result<bool> Reject(Guid emlpoyerId, string? feedback)
         {
+            if (emlpoyerId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
+            if (IsTerminal)
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
             Status = Status.Rejected;
             Feedback = feedback;
-            Workflow.UpdateStatus();
+            DateUpdate = DateTime.Now;
+
+            return Result<bool>.Success(true);
         }
 
         /// <summary>
         /// Откат статуса шага
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public void Restart(long emlpoyerId)
+        public Result<bool> Restart(Guid emlpoyerId)
         {
+            if (emlpoyerId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
             Status = Status.Expectation;
-            Workflow.UpdateStatus();
+            DateUpdate = DateTime.Now;
+
+            return Result<bool>.Success(true);
         }
     }
 }

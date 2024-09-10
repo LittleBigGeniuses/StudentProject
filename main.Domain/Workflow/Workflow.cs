@@ -1,15 +1,15 @@
 ﻿using main.domain.Common;
 using main.domain.Enum;
-using main.domain.Models.WorkflowTemplateModel;
+using main.domain.WorkflowTemplateModel;
 using System.ComponentModel.Design;
 using System.Xml.Linq;
 
-namespace main.domain.Models.WorkflowModel
+namespace main.domain.WorkflowModel
 {
     /// <summary>
     /// Сущность Workflow для интервью в компанию
     /// </summary>
-    public class Workflow :  BaseEntity, IStatus
+    public class Workflow : BaseEntity, IStatus
     {
         /// <summary>
         /// Минимальное значение длины наименования
@@ -19,8 +19,8 @@ namespace main.domain.Models.WorkflowModel
         /// <summary>
         /// Приватный список шагов, для безопасного взаимодействия
         /// </summary>
-        private readonly List<WorkflowStep> _steps = new();
-        private Workflow(string name, string description, long authorId, long candidateId, long templateId, long companyId)
+        private static readonly List<WorkflowStep> _steps = new();
+        private Workflow(string name, string description, Guid authorId, Guid candidateId, Guid templateId, Guid companyId)
         {
             Name = name;
             Description = description;
@@ -50,28 +50,36 @@ namespace main.domain.Models.WorkflowModel
         /// <summary>
         /// Идентификатор шаблона, на основе которого был создан рабочий процесс
         /// </summary>
-        public long TemplateId { get; private set; }
+        public Guid TemplateId { get; }
 
         /// <summary>
         /// Идентификатор сотрудника, создавшего рабочий процесс
         /// </summary>
-        public long AuthorId { get; private set; }
+        public Guid AuthorId { get; }
 
         /// <summary>
         /// Идентификатор кандидата
         /// </summary>
-        public long CandidateId { get; private set; }
+        public Guid CandidateId { get; }
 
         /// <summary>
         /// Идентификатор компании, которой принадллежит рабочий процесс
         /// </summary>
-        public long CompanyId { get; private set; }
+        public Guid CompanyId { get; }
 
         /// <summary>
         /// Статус информирующий о положениее рабочего процесса
         /// </summary>
-        public Status Status { get; private set; } = Status.Expectation;
+        public Status Status  => _steps.Any(s => s.Status == Status.Rejected) ? Status.Rejected
+                                 : _steps.All(s => s.Status == Status.Approved) ? Status.Approved
+                                 : Status.Expectation;
 
+        /// <summary>
+        /// Терминальность рабочего процесса
+        /// </summary>
+        public bool IsTerminal { get; private set; } = false;
+
+                                                    
         /// <summary>
         /// Безопасный досуп к коллекции шагов
         /// </summary>
@@ -84,19 +92,19 @@ namespace main.domain.Models.WorkflowModel
         /// <param name="candidateId">Идентификатор кандидата</param>
         /// <param name="template">Сущность шаблона</param>
         /// <returns>Результат создания</returns>
-        public static Result<Workflow> Create(long authorId, long candidateId, WorkflowTemplate template)
+        public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate template)
         {
             if (template.Name.Trim().Length < MinLengthName)
             {
                 return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
             }
 
-            if (authorId <= 0)
+            if (authorId == Guid.Empty)
             {
                 return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
             }
 
-            if (candidateId <= 0)
+            if (candidateId == Guid.Empty)
             {
                 return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
             }
@@ -112,7 +120,7 @@ namespace main.domain.Models.WorkflowModel
 
             foreach (var stepTemplate in template.Steps)
             {
-                var stepResult = WorkflowStep.Create(candidateId, stepTemplate, workflow);
+                var stepResult = WorkflowStep.Create(candidateId, stepTemplate);
 
                 if (stepResult.IsFailure)
                 {
@@ -126,7 +134,7 @@ namespace main.domain.Models.WorkflowModel
 
             workflow.AddSteps(steps);
 
-            return Result<Workflow>.Success(workflow);    
+            return Result<Workflow>.Success(workflow);
         }
 
         /// <summary>
@@ -139,7 +147,7 @@ namespace main.domain.Models.WorkflowModel
         {
             if (name is not null)
             {
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     return Result<bool>.Failure("Наименование шаблона не может быть пустым");
                 }
@@ -157,6 +165,7 @@ namespace main.domain.Models.WorkflowModel
                 Description = description.Trim();
             }
 
+            DateUpdate = DateTime.Now;
             return Result<bool>.Success(true);
         }
 
@@ -165,10 +174,23 @@ namespace main.domain.Models.WorkflowModel
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public void Approve(long emlpoyerId, string feedback)
+        public Result<bool> Approve(Guid emlpoyerId, string feedback)
         {
-            Status = Status.Approved;
+            if (emlpoyerId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
+            if (IsTerminal)
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
+            IsTerminal = true;
             Feedback = feedback;
+
+            DateUpdate = DateTime.Now;
+            return Result<bool>.Success(true);
         }
 
         /// <summary>
@@ -176,47 +198,46 @@ namespace main.domain.Models.WorkflowModel
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public void Reject(long emlpoyerId, string feedback)
+        public Result<bool> Reject(Guid emlpoyerId, string feedback)
         {
-            Status = Status.Rejected;
+            if (emlpoyerId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
+            if (IsTerminal)
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
+            IsTerminal = true;
             Feedback = feedback;
+
+            DateUpdate = DateTime.Now;
+            return Result<bool>.Success(true);
         }
 
         /// <summary>
         /// Возвращение актуальности рабочему процессу
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public void Restart(long emlpoyerId)
+        public Result<bool> Restart(Guid emlpoyerId)
         {
-            Status = Status.Expectation;
+            if (emlpoyerId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
+            IsTerminal = false;
 
             foreach (var step in _steps)
             {
                 step.Restart(emlpoyerId);
             }
-        }
 
-        /// <summary>
-        /// Добавление отзыва (в случае, если workflow был отклонен или одобрен после проверки статусов шагов)
-        /// </summary>
-        /// <param name="emlpoyerId"></param>
-        /// <param name="feedback"></param>
-        /// <returns></returns>
-        public Result<bool> AddFeedback(long emlpoyerId, string feedback)
-        {
-            if (String.IsNullOrEmpty(feedback))
-            {
-                return Result<bool>.Failure("Отзыв не может быть пустым");
-            }
+            DateUpdate = DateTime.Now;
 
-            if (emlpoyerId <= 0)
-            {
-                return Result<bool>.Failure($"{emlpoyerId} - некорректное значение идентификатора сотрудника");
-            }
-
-            Feedback = feedback;
-
-            return Result<bool>.Success(true);
+            return Result<bool>.Success(false);
         }
 
         /// <summary>
@@ -231,24 +252,6 @@ namespace main.domain.Models.WorkflowModel
 
             return Result<bool>.Success(true);
         }
-
-        /// <summary>
-        /// Обновление стасуса, относительно статуса шагов
-        /// </summary>
-        internal void UpdateStatus()
-        {
-            if (_steps.Any(item => item.Status == Status.Rejected))
-            {
-                Status = Status.Rejected;
-            }
-            else if (_steps.All(item => item.Status == Status.Approved))
-            {
-                Status = Status.Approved;
-            }
-            else
-            {
-                Status = Status.Active;
-            }
-        }
+     
     }
 }

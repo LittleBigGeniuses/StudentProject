@@ -14,8 +14,8 @@ namespace main.domain.Common
         /// <summary>
         /// Идентификатор в система
         /// </summary>
-        public long Id { get; set; }
-
+        public Guid Id { get; } = Guid.NewGuid();
+       
         /// <summary>
         /// Дата и время создания
         /// </summary>
@@ -25,5 +25,6 @@ namespace main.domain.Common
         /// Дата и время обновления
         /// </summary>
         public DateTime DateUpdate { get ; set; }
+
     }
 }
