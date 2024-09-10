@@ -186,6 +186,11 @@ namespace main.domain.WorkflowModel
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
+            if (Status != Status.Approved)
+            {
+                return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
+            }
+
             IsTerminal = true;
             Feedback = feedback;
 
@@ -203,7 +208,7 @@ namespace main.domain.WorkflowModel
             if (emlpoyerId == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
-            }
+            }          
 
             if (IsTerminal)
             {
