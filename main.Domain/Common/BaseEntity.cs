@@ -19,12 +19,12 @@ namespace main.domain.Common
         /// <summary>
         /// Дата и время создания
         /// </summary>
-        public DateTime DateCreate { get; set; }
+        public DateTime DateCreate { get; } = DateTime.Now;
 
         /// <summary>
         /// Дата и время обновления
         /// </summary>
-        public DateTime DateUpdate { get; set; }
+        public DateTime DateUpdate { get; set; } = DateTime.Now;
 
     }
 }
