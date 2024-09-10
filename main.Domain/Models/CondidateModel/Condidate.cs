@@ -37,10 +37,15 @@ namespace main.domain.Models.CondidateModel
                 return Result<bool>.Failure("ФИО сотрудника не может быть пустым");
             }
 
+            if (name.Trim().Length < MinLengthName)
+            {
+                return Result<bool>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
+            }
+
             Name = name;
             DateUpdate = DateTime.Now;
 
-            return Result<bool>.Success(true); ;
+            return Result<bool>.Success(true); 
         }
 
         /// <summary>
