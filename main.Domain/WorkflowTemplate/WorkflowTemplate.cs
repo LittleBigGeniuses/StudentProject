@@ -22,8 +22,6 @@ namespace main.domain.WorkflowTemplate
             Name = name;
             Description = description;
             CompanyId = companyId;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
 
         /// <summary>

@@ -13,8 +13,6 @@ namespace main.domain.WorkflowTemplate
             Description = description;
             EployerId = eployerId;
             RoleId = roleId;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
 
         /// <summary>

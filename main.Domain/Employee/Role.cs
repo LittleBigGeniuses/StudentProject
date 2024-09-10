@@ -16,8 +16,6 @@ namespace main.domain.Employee
         {
             Name = name;
             CompanyId = companyId;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
 
         /// <summary>

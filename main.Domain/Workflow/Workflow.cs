@@ -26,8 +26,6 @@ namespace main.domain.Workflow
             CandidateId = candidateId;
             TemplateId = templateId;
             CompanyId = companyId;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
 
         /// <summary>

@@ -18,8 +18,6 @@ namespace main.domain.Workflow
             Description = description;
             EmployerId = employerId;
             RoleId = roleId;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
 
         /// <summary>

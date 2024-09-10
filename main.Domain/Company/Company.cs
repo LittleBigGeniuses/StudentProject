@@ -12,8 +12,6 @@ namespace main.domain.Company
         {
             Name = name;
             Description = description;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
         /// <summary>
         /// Название компании
