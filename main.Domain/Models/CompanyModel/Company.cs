@@ -50,6 +50,26 @@ namespace main.domain.Models.CompanyModel
         public string Name { get; private set; }
 
         /// <summary>
+        /// Безопасный от влияния из вне, список шаблонов
+        /// </summary>
+        public IReadOnlyCollection<WorkflowTemplate> WorkflowTemplates => _workflowTemplates;
+
+        /// <summary>
+        /// Безопасный от влияния из вне, список сотрудников
+        /// </summary>
+        public IReadOnlyCollection<Employee> Employees => _employees;
+
+        /// <summary>
+        /// Безопасный от влияния из вне, список должностей
+        /// </summary>
+        public IReadOnlyCollection<Role> Roles => _roles;
+
+        /// <summary>
+        /// Безопасный от влияния из вне, список рабочих процессов
+        /// </summary>
+        public IReadOnlyCollection<Workflow> Workflows => _workflows;
+
+        /// <summary>
         /// Добавить сотрудника
         /// </summary>
         /// <param name="name">Имя</param>
