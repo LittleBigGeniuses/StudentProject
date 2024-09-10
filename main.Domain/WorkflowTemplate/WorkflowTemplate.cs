@@ -1,13 +1,6 @@
 ﻿using main.domain.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace main.domain.Models.WorkflowTemplateModel
+namespace main.domain.WorkflowTemplate
 {
     /// <summary>
     /// Шаблон Workfloy
@@ -22,9 +15,9 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <summary>
         /// Защищенный список шагов
         /// </summary>
-        private readonly List<WorkflowStepTemplate> _steps = new();
+        private static readonly List<WorkflowStepTemplate> _steps = new();
 
-        private WorkflowTemplate(string name, string description, long companyId)
+        private WorkflowTemplate(string name, string description, Guid companyId)
         {
             Name = name;
             Description = description;
@@ -46,7 +39,7 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <summary>
         /// Идентификатор компании, которой принадлежит шаблон
         /// </summary>
-        public long CompanyId { get; }
+        public Guid CompanyId { get; }
 
         /// <summary>
         /// Безопасный список, для чтения из вне
@@ -60,9 +53,9 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <param name="description">Описание</param>
         /// <param name="companyId">Идентификатор компании</param>
         /// <returns>Сущность с результатом создания</returns>
-        public static Result<WorkflowTemplate> Create(string name, string description, long companyId)
+        public static Result<WorkflowTemplate> Create(string name, string description, Guid companyId)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 return Result<WorkflowTemplate>.Failure("Наименование шаблона не может быть пустым");
             }
@@ -72,7 +65,7 @@ namespace main.domain.Models.WorkflowTemplateModel
                 return Result<WorkflowTemplate>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
             }
 
-            if (companyId <= 0)
+            if (companyId == Guid.Empty)
             {
                 return Result<WorkflowTemplate>.Failure($"{companyId} - некорректный идентификатор компании");
             }
@@ -92,7 +85,7 @@ namespace main.domain.Models.WorkflowTemplateModel
         {
             if (name is not null)
             {
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     return Result<bool>.Failure("Наименование шаблона не может быть пустым");
                 }
@@ -110,6 +103,8 @@ namespace main.domain.Models.WorkflowTemplateModel
                 Description = description.Trim();
             }
 
+            DateUpdate = DateTime.Now;
+
             return Result<bool>.Success(true);
         }
 
@@ -120,9 +115,9 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <param name="employerId">Идентификатор сотрудника, исполняемого шаг</param>
         /// <param name="roleId">Идентификатор должности, исполняемой шаг</param>
         /// <returns>Результат добавления шага</returns>
-        public Result<bool> AddStep(string description, long? employerId, long? roleId)
+        public Result<bool> AddStep(string description, Guid? employerId, Guid? roleId)
         {
-            var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employerId, roleId, this);
+            var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employerId, roleId);
 
             if (createStep.IsFailure)
             {
@@ -132,6 +127,8 @@ namespace main.domain.Models.WorkflowTemplateModel
             var step = createStep.Data;
 
             _steps.Add(step);
+
+            DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
         }
@@ -148,8 +145,10 @@ namespace main.domain.Models.WorkflowTemplateModel
                 return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
             }
 
-            _steps.RemoveAt(number-1);
+            _steps.RemoveAt(number - 1);
             UpdateStepNumbers(number);
+
+            DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
         }
@@ -162,13 +161,15 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <returns>Успешность обмена</returns>
         public Result<bool> SwapSteps(int numberFirst, int numberSecond)
         {
-            if (_steps.Count < numberFirst || _steps.Count < numberSecond) 
+            if (_steps.Count < numberFirst || _steps.Count < numberSecond)
             {
                 return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
             }
 
             _steps[numberFirst - 1].UpdateNumber(numberSecond);
             _steps[numberSecond - 1].UpdateNumber(numberFirst);
+
+            DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
         }

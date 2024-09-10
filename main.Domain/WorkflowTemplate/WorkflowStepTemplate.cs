@@ -1,21 +1,18 @@
 ﻿using main.domain.Common;
 
-
-namespace main.domain.Models.WorkflowTemplateModel
+namespace main.domain.WorkflowTemplate
 {
     /// <summary>
     /// Шаг в шаблоне Workflow
     /// </summary>
     public class WorkflowStepTemplate : BaseEntity
     {
-        private WorkflowStepTemplate(int number, string description, long? eployerId, long? roleId, WorkflowTemplate workflowTemplate)
+        private WorkflowStepTemplate(int number, string description, Guid? eployerId, Guid? roleId)
         {
             Number = number;
             Description = description;
             EployerId = eployerId;
             RoleId = roleId;
-            WorkflowTemplate = workflowTemplate;
-            WorkflowTemplateId = workflowTemplate.Id;
             DateCreate = DateTime.Now;
             DateUpdate = DateTime.Now;
         }
@@ -33,22 +30,13 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <summary>
         /// Идентификатор сотрудника, который должен будет исполнять шаг
         /// </summary>
-        public long? EployerId { get; private set; }
+        public Guid? EployerId { get; private set; }
 
         /// <summary>
         /// Идентификатор должности, которая должна будет исполнять шаг
         /// </summary>
-        public long? RoleId { get; private set; }
+        public Guid? RoleId { get; private set; }
 
-        /// <summary>
-        /// Сущность шаблона, которому принадлежит шаг
-        /// </summary>
-        public WorkflowTemplate WorkflowTemplate { get; private set; }
-
-        /// <summary>
-        /// Идентификатор шаблона Wokflow, которому принадлежит шаг
-        /// </summary>
-        public long WorkflowTemplateId { get; private set; }
 
         /// <summary>
         /// Создание нового шага
@@ -57,9 +45,8 @@ namespace main.domain.Models.WorkflowTemplateModel
         /// <param name="description">Описание</param>
         /// <param name="eployerId">Идентификатор сотрудника</param>
         /// <param name="roleId">Идентификатор роли</param>
-        /// <param name="workflowTemplate">Сущность шаблона</param>
         /// <returns></returns>
-        internal static Result<WorkflowStepTemplate> Create(int number, string description, long? eployerId, long? roleId, WorkflowTemplate workflowTemplate)
+        internal static Result<WorkflowStepTemplate> Create(int number, string description, Guid? eployerId, Guid? roleId)
         {
             if (number <= 0)
             {
@@ -71,24 +58,20 @@ namespace main.domain.Models.WorkflowTemplateModel
                 return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
-            if (eployerId is not null && eployerId <= 0)
+            if (eployerId is not null && eployerId == Guid.Empty)
             {
                 return Result<WorkflowStepTemplate>.Failure($"{eployerId} - некорректное значение для идентификатора сотрудника в шаге");
             }
 
-            if (roleId is not null && eployerId <= 0)
+            if (roleId is not null && roleId == Guid.Empty)
             {
                 return Result<WorkflowStepTemplate>.Failure($"{roleId} - некорректное значение для идентификатора должности в шаге");
             }
 
-            if (workflowTemplate is null)
-            {
-                return Result<WorkflowStepTemplate>.Failure($"{nameof(workflowTemplate)} не может быть null");
-            }
 
-            var stepTemplate = new WorkflowStepTemplate(number, description, eployerId, roleId, workflowTemplate);
+            var stepTemplate = new WorkflowStepTemplate(number, description, eployerId, roleId);
 
-            return Result<WorkflowStepTemplate>.Success(stepTemplate);  
+            return Result<WorkflowStepTemplate>.Success(stepTemplate);
         }
 
         /// <summary>
@@ -100,7 +83,8 @@ namespace main.domain.Models.WorkflowTemplateModel
         {
 
             Description = description.Trim();
-            
+            DateUpdate = DateTime.Now;
+
             return Result<bool>.Success(true);
         }
 
@@ -118,10 +102,10 @@ namespace main.domain.Models.WorkflowTemplateModel
 
             Number = number;
 
+            DateUpdate = DateTime.Now;
+
             return Result<bool>.Success(true);
         }
-
-
 
     }
 }

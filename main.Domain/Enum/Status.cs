@@ -18,17 +18,13 @@ namespace main.domain.Enum
         Expectation = 0,
 
         /// <summary>
-        /// Активный
-        /// </summary>
-        Active = 1,
-        /// <summary>
         /// Одобренно
         /// </summary>
-        Approved = 2,
+        Approved = 1,
 
         /// <summary>
         /// Отказано
         /// </summary>
-        Rejected = 3
+        Rejected = 2
     }
 }

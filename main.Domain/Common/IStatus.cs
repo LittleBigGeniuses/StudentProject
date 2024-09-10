@@ -16,19 +16,19 @@ namespace main.domain.Common
         /// </summary>
         /// <param name="emlpoyerId">Индетификатор сотрудника</param>
         /// <param name="feedback">Сообщение, отзыв о соискателе</param>
-        void Approve(long emlpoyerId, string feedback);
+        Result<bool> Approve(Guid emlpoyerId, string feedback);
 
         /// <summary>
         /// Отказ
         /// </summary>
         /// <param name="emlpoyerId">Индетификатор сотрудника</param>
         /// <param name="feedback">Сообщение, отзыв о соискателе</param>
-        void Reject(long emlpoyerId, string feedback);
+        Result<bool> Reject(Guid emlpoyerId, string feedback);
 
         /// <summary>
         /// Отменить решение
         /// </summary>
         /// <param name="emlpoyerId">Индетификатор сотрудника</param>
-        void Restart(long emlpoyerId);
+        Result<bool> Restart(Guid emlpoyerId);
     }
 }

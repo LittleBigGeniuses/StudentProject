@@ -1,12 +1,6 @@
 ﻿using main.domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace main.domain.Models.EmployeeModel
+namespace main.domain.Employee
 {
     /// <summary>
     /// Класс должности сотрудника в компании
@@ -18,7 +12,7 @@ namespace main.domain.Models.EmployeeModel
         /// </summary>
         const int MinLengthName = 3;
 
-        private Role(string name, long companyId)
+        private Role(string name, Guid companyId)
         {
             Name = name;
             CompanyId = companyId;
@@ -34,12 +28,7 @@ namespace main.domain.Models.EmployeeModel
         /// <summary>
         /// Идентификатор компании, к которой относится должность
         /// </summary>
-        public long CompanyId { get; private set; }
-
-        /// <summary>
-        /// Список сотрудников, которым принадлежит должность
-        /// </summary>
-        List<Employee> Employees { get; set; } = new();
+        public Guid CompanyId { get; }
 
         /// <summary>
         /// Создание новой должностит
@@ -47,9 +36,9 @@ namespace main.domain.Models.EmployeeModel
         /// <param name="name"> Наименование должности</param>
         /// <param name="companyId"> Идентификатор компании</param>
         /// <returns>Возвращает сущность должноти</returns>
-        public static Result<Role> Create(string name, long companyId)
+        public static Result<Role> Create(string name, Guid companyId)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 return Result<Role>.Failure("Наименование должности не может быть пустым");
             }
@@ -71,7 +60,7 @@ namespace main.domain.Models.EmployeeModel
         /// <returns>Успешность выполнения операции</returns>
         public Result<bool> UpdateName(string name)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 return Result<bool>.Failure("Наименование должности не может быть пустым");
             }

@@ -14,16 +14,17 @@ namespace main.domain.Common
         /// <summary>
         /// Идентификатор в система
         /// </summary>
-        public long Id { get; set; }
+        public Guid Id { get; } = Guid.NewGuid();
 
         /// <summary>
         /// Дата и время создания
         /// </summary>
-        public DateTime DateCreate { get ; set; }
+        public DateTime DateCreate { get; set; }
 
         /// <summary>
         /// Дата и время обновления
         /// </summary>
-        public DateTime DateUpdate { get ; set; }
+        public DateTime DateUpdate { get; set; }
+
     }
 }

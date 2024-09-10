@@ -1,8 +1,6 @@
 ﻿using main.domain.Common;
-using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace main.domain.Models.EmployeeModel;
+namespace main.domain.Employee;
 
 /// <summary>
 /// Класс сотрудника
@@ -10,7 +8,7 @@ namespace main.domain.Models.EmployeeModel;
 public class Employee : BaseEntity
 {
     const int MinLengthName = 5;
-    private Employee(string name, long companyId, long roleId)
+    private Employee(string name, Guid companyId, Guid roleId)
     {
         Name = name;
         CompanyId = companyId;
@@ -27,12 +25,12 @@ public class Employee : BaseEntity
     /// <summary>
     /// Индетификатор компании, в которой работает сотрудник
     /// </summary>
-    public long CompanyId { get; private set; }
+    public Guid CompanyId { get; private set; }
 
     /// <summary>
     /// Идентификатор долности сотрудника
     /// </summary>
-    public long RoleId { get; private set; }
+    public Guid RoleId { get; private set; }
 
     /// <summary>
     /// Метод создания сотрудника
@@ -41,9 +39,9 @@ public class Employee : BaseEntity
     /// <param name="companyId">Идентификатор компании</param>
     /// <param name="roleId">Идентификатор роли</param>
     /// <returns>Сущность сотрудника</returns>
-    public static Result<Employee> Create(string name, long companyId, long roleId)
+    public static Result<Employee> Create(string name, Guid companyId, Guid roleId)
     {
-        if (String.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             return Result<Employee>.Failure("ФИО сотрудника не может быть пустым");
         }
@@ -53,12 +51,12 @@ public class Employee : BaseEntity
             return Result<Employee>.Failure($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
         }
 
-        if (companyId <= 0 )
+        if (companyId == Guid.Empty)
         {
             return Result<Employee>.Failure("Идентификатор компании некорректен");
         }
 
-        if (roleId <= 0)
+        if (roleId == Guid.Empty)
         {
             return Result<Employee>.Failure("Идентификатор должности некорректен");
         }
@@ -75,7 +73,7 @@ public class Employee : BaseEntity
     /// <returns>Успешность выполнения операции</returns>
     public Result<bool> UpdateName(string name)
     {
-        if (String.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             return Result<bool>.Failure("ФИО не может быть пустым");
         }
@@ -88,7 +86,7 @@ public class Employee : BaseEntity
         Name = name;
         DateUpdate = DateTime.Now;
 
-        return Result<bool>.Success(true);  
+        return Result<bool>.Success(true);
     }
 
     /// <summary>
@@ -96,9 +94,9 @@ public class Employee : BaseEntity
     /// </summary>
     /// <param name="roleId">Идентификатор роли</param>
     /// <returns>Успешность выполнения операции</returns>
-    public Result<bool> UpdateRole(long roleId)
+    public Result<bool> UpdateRole(Guid roleId)
     {
-        if (roleId <= 0)
+        if (roleId == Guid.Empty)
         {
             return Result<bool>.Failure("Некорректное значение идентификатора должности");
         }
@@ -114,9 +112,9 @@ public class Employee : BaseEntity
     /// </summary>
     /// <param name="companyId">Идентификатор компании</param>
     /// <returns>Успешность выполнения операции</returns>
-    public Result<bool> UpdateCompany(long companyId)
+    public Result<bool> UpdateCompany(Guid companyId)
     {
-        if (companyId <= 0)
+        if (companyId == Guid.Empty)
         {
             return Result<bool>.Failure("Некорректное значение идентификатора компании");
         }
