@@ -246,7 +246,7 @@ namespace main.domain.Workflow
         /// </summary>
         /// <param name="workflowSteps">Список шагов</param>
         /// <returns></returns>
-        internal Result<bool> AddSteps(List<WorkflowStep>? workflowSteps)
+        private Result<bool> AddSteps(List<WorkflowStep>? workflowSteps)
         {
             _steps.Clear();
             _steps.AddRange(workflowSteps);
