@@ -11,8 +11,6 @@ namespace main.domain.Condidate
         private Candidate(string name)
         {
             Name = name;
-            DateCreate = DateTime.Now;
-            DateUpdate = DateTime.Now;
         }
 
         /// <summary>
