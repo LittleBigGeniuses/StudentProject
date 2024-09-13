@@ -1,4 +1,5 @@
 ﻿using main.domain.Common;
+using main.domain.Employee;
 
 namespace main.domain.WorkflowTemplate
 {
@@ -7,11 +8,11 @@ namespace main.domain.WorkflowTemplate
     /// </summary>
     public class WorkflowStepTemplate : BaseEntity
     {
-        private WorkflowStepTemplate(int number, string description, Guid? eployerId, Guid? roleId)
+        private WorkflowStepTemplate(int number, string description, Guid? eployeeId, Guid? roleId)
         {
             Number = number;
             Description = description;
-            EployerId = eployerId;
+            EmployeeId = eployeeId;
             RoleId = roleId;
         }
 
@@ -28,7 +29,7 @@ namespace main.domain.WorkflowTemplate
         /// <summary>
         /// Идентификатор сотрудника, который должен будет исполнять шаг
         /// </summary>
-        public Guid? EployerId { get; private set; }
+        public Guid? EmployeeId { get; private set; }
 
         /// <summary>
         /// Идентификатор должности, которая должна будет исполнять шаг
@@ -105,5 +106,41 @@ namespace main.domain.WorkflowTemplate
             return Result<bool>.Success(true);
         }
 
+        /// <summary>
+        /// Обновление идентификатора должности
+        /// </summary>
+        /// <param name="roleId">новый идентификатор должности</param>
+        /// <returns></returns>
+        public Result<bool> UpdateRoleId(Guid roleId)
+        {
+            if (roleId == Guid.Empty)
+            {
+                return Result<bool>.Failure($"{roleId} - некорректный идентификатор должности");
+            }
+
+            RoleId = roleId;
+
+            DateUpdate = DateTime.Now;
+
+            return Result<bool>.Success(true);
+        }
+        /// <summary>
+        /// Обновление идентификатора работника
+        /// </summary>
+        /// <param name="employeeId">Новый идентификатор работника</param>
+        /// <returns></returns>
+        public Result<bool> UpdateEmployeeId(Guid employeeId)
+        {
+            if (employeeId == Guid.Empty)
+            {
+                return Result<bool>.Failure($"{employeeId} - некорректный идентификатор сотрудника");
+            }
+
+            EmployeeId = employeeId;
+
+            DateUpdate = DateTime.Now;
+
+            return Result<bool>.Success(true);
+        }
     }
 }
