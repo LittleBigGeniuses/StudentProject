@@ -111,9 +111,9 @@ namespace main.domain.WorkflowTemplate
         /// </summary>
         /// <param name="roleId">новый идентификатор должности</param>
         /// <returns></returns>
-        public Result<bool> UpdateRoleId(Guid? roleId)
+        public Result<bool> UpdateRoleId(Guid roleId)
         {
-            if (roleId == null)
+            if (roleId == Guid.Empty)
             {
                 return Result<bool>.Failure($"{roleId} - некорректный идентификатор должности");
             }
@@ -129,9 +129,9 @@ namespace main.domain.WorkflowTemplate
         /// </summary>
         /// <param name="employeeId">Новый идентификатор работника</param>
         /// <returns></returns>
-        public Result<bool> UpdateEmployeeId(Guid? employeeId)
+        public Result<bool> UpdateEmployeeId(Guid employeeId)
         {
-            if (employeeId == null)
+            if (employeeId == Guid.Empty)
             {
                 return Result<bool>.Failure($"{employeeId} - некорректный идентификатор сотрудника");
             }
