@@ -11,12 +11,12 @@ namespace main.domain.Workflow
     /// </summary>
     public class WorkflowStep : BaseEntity, IStatus
     {
-        private WorkflowStep(Guid candidateId, int number, string description, Guid? employerId, Guid? roleId)
+        private WorkflowStep(Guid candidateId, int number, string description, Guid? employeeId, Guid? roleId)
         {
             CandidateId = candidateId;
             Number = number;
             Description = description;
-            EmployerId = employerId;
+            EmployeeId = employeeId;
             RoleId = roleId;
         }
 
@@ -38,7 +38,7 @@ namespace main.domain.Workflow
         /// <summary>
         /// Идентификатор сотрудника, который будет исполнять шаг
         /// </summary>
-        public Guid? EmployerId { get; private set; }
+        public Guid? EmployeeId { get; private set; }
 
         /// <summary>
         /// Идентификатор роли, которая может исполнить шаг
@@ -78,12 +78,12 @@ namespace main.domain.Workflow
                 return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
             }
 
-            if (stepTemplate.EployerId is null && stepTemplate.RoleId is null)
+            if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)
             {
                 return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
-            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EployerId, stepTemplate.RoleId);
+            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId);
 
             return Result<WorkflowStep>.Success(step);
         }
