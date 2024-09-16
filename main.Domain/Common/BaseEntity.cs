@@ -24,7 +24,7 @@ namespace main.domain.Common
         /// <summary>
         /// Дата и время обновления
         /// </summary>
-        public DateTime DateUpdate { get; set; } = DateTime.Now;
+        public DateTime DateUpdate { get; protected set; } = DateTime.Now;
 
     }
 }

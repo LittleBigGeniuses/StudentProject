@@ -9,6 +9,6 @@ namespace main.domain.Common
     public interface IEntityDate
     {
         public DateTime DateCreate { get; }
-        public DateTime DateUpdate { get; set; }
+        public DateTime DateUpdate { get; }
     }
 }
