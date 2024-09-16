@@ -107,6 +107,7 @@ namespace main.domain.Workflow
 
             Status = Status.Approved;
             Feedback = feedback;
+            IsTerminal = true;
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
@@ -129,8 +130,10 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
+
             Status = Status.Rejected;
             Feedback = feedback;
+            IsTerminal = true;
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
@@ -148,6 +151,7 @@ namespace main.domain.Workflow
             }
 
             Status = Status.Expectation;
+            IsTerminal = false;
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
