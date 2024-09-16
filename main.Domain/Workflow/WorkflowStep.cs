@@ -102,7 +102,7 @@ namespace main.domain.Workflow
 
             if (IsTerminal)
             {
-                return Result<bool>.Failure("Рабочий процесс завершен");
+                return Result<bool>.Failure("Шаг завершен");
             }
 
             Status = Status.Approved;
@@ -127,7 +127,7 @@ namespace main.domain.Workflow
 
             if (IsTerminal)
             {
-                return Result<bool>.Failure("Рабочий процесс завершен");
+                return Result<bool>.Failure("Шаг завершен");
             }
 
 
