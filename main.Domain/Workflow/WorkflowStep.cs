@@ -58,7 +58,7 @@ namespace main.domain.Workflow
         /// <summary>
         /// Терминальность шага
         /// </summary>
-        public bool IsTerminal { get; private set; } = false;
+        private bool IsTerminal { get; set; } = false;
 
         /// <summary>
         /// Создание шага
