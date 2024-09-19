@@ -71,10 +71,6 @@ namespace main.domain.Workflow
                                  : _steps.All(s => s.Status == Status.Approved) ? Status.Approved
                                  : Status.Expectation;
 
-        /// <summary>
-        /// Терминальность рабочего процесса
-        /// </summary>
-        public bool IsTerminal { get; private set; } = false;
 
 
         /// <summary>
@@ -170,15 +166,13 @@ namespace main.domain.Workflow
         /// <summary>
         /// Возвращение актуальности рабочему процессу
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Сущность сотрудника</param>
         public Result<bool> Restart(Employee.Employee employee)
         {
             if (employee is null)
             {
                 return Result<bool>.Failure("Сущность сотрдуника не может быть Null");
             }
-
-            IsTerminal = false;
 
             foreach (var step in _steps)
             {
@@ -221,11 +215,6 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Сущность сотрдуника не может быть Null");
             }
 
-            if (employee.Id != AuthorId)
-            {
-                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует автору процесса");
-            }
-
             var step = Steps.OrderBy(x => x.Number)
                 .First(x => x.Status == Status.Expectation);
             step.Approve(employee, feedback);
@@ -248,11 +237,6 @@ namespace main.domain.Workflow
             if (employee is null)
             {
                 return Result<bool>.Failure("Сущность сотрдуника не может быть Null");
-            }
-
-            if (employee.Id != AuthorId)
-            {
-                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует автору процесса");
             }
 
 

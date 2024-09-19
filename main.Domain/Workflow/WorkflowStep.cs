@@ -89,6 +89,16 @@ namespace main.domain.Workflow
         /// <param name="feedback">Отзыв по кандидату</param>
         public Result<bool> Approve(Employee.Employee employee, string? feedback)
         {
+            if (employee.Id != EmployeeId)
+            {
+                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует назначенному сотруднику");
+            }
+
+            if (employee.RoleId != RoleId)
+            {
+                return Result<bool>.Failure("Заданная должность сотрудника не соответсвует назначенному сотруднику");
+            }
+
             if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Шаг завершен");
@@ -108,6 +118,16 @@ namespace main.domain.Workflow
         /// <param name="feedback">Отзыв по кандидату</param>
         public Result<bool> Reject(Employee.Employee employee, string? feedback)
         {
+            if (employee.Id != EmployeeId)
+            {
+                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует назначенному сотруднику");
+            }
+
+            if (employee.RoleId != RoleId)
+            {
+                return Result<bool>.Failure("Заданная должность сотрудника не соответсвует назначенному сотруднику");
+            }
+
             if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Шаг завершен");
@@ -126,6 +146,16 @@ namespace main.domain.Workflow
         /// <param name="employee">Идентификатор сотрудника</param>
         public Result<bool> Restart(Employee.Employee employee)
         {
+            if (employee.Id != EmployeeId)
+            {
+                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует назначенному сотруднику");
+            }
+
+            if (employee.RoleId != RoleId)
+            {
+                return Result<bool>.Failure("Заданная должность сотрудника не соответсвует назначенному сотруднику");
+            }
+
             Status = Status.Expectation;
             DateUpdate = DateTime.Now;
 
