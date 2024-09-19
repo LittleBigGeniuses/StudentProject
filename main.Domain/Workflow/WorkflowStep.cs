@@ -56,11 +56,6 @@ namespace main.domain.Workflow
         public Status Status { get; private set; } = Status.Expectation;
 
         /// <summary>
-        /// Терминальность шага
-        /// </summary>
-        private bool IsTerminal { get; set; } = false;
-
-        /// <summary>
         /// Создание шага
         /// </summary>
         /// <param name="candidateId">Идентификатор кандидата</param>
@@ -100,14 +95,13 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
-            if (IsTerminal)
+            if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Шаг завершен");
             }
 
             Status = Status.Approved;
             Feedback = feedback;
-            IsTerminal = true;
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
@@ -125,15 +119,13 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
-            if (IsTerminal)
+            if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Шаг завершен");
             }
 
-
             Status = Status.Rejected;
             Feedback = feedback;
-            IsTerminal = true;
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
@@ -151,7 +143,6 @@ namespace main.domain.Workflow
             }
 
             Status = Status.Expectation;
-            IsTerminal = false;
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(true);
