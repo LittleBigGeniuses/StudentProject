@@ -1,4 +1,5 @@
 ﻿using main.domain.Common;
+using main.domain.Employee;
 using main.domain.Workflow.Enum;
 using main.domain.WorkflowTemplate;
 
@@ -165,75 +166,23 @@ namespace main.domain.Workflow
             return Result<bool>.Success(true);
         }
 
-        /// <summary>
-        /// Одобрение кандидата
-        /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public Result<bool> Approve(Guid emlpoyerId, string feedback)
-        {
-            if (emlpoyerId == Guid.Empty)
-            {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
-            }
-
-            if (IsTerminal)
-            {
-                return Result<bool>.Failure("Рабочий процесс завершен");
-            }
-
-            if (Status != Status.Approved)
-            {
-                return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
-            }
-
-            IsTerminal = true;
-            Feedback = feedback;
-
-            DateUpdate = DateTime.Now;
-            return Result<bool>.Success(true);
-        }
-
-        /// <summary>
-        /// Отказ кандидату
-        /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public Result<bool> Reject(Guid emlpoyerId, string feedback)
-        {
-            if (emlpoyerId == Guid.Empty)
-            {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
-            }
-
-            if (IsTerminal)
-            {
-                return Result<bool>.Failure("Рабочий процесс завершен");
-            }
-
-            IsTerminal = true;
-            Feedback = feedback;
-
-            DateUpdate = DateTime.Now;
-            return Result<bool>.Success(true);
-        }
 
         /// <summary>
         /// Возвращение актуальности рабочему процессу
         /// </summary>
         /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public Result<bool> Restart(Guid emlpoyerId)
+        public Result<bool> Restart(Employee.Employee employee)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure("Сущность сотрдуника не может быть Null");
             }
 
             IsTerminal = false;
 
             foreach (var step in _steps)
             {
-                step.Restart(emlpoyerId);
+                step.Restart(employee);
             }
 
             DateUpdate = DateTime.Now;
@@ -254,5 +203,63 @@ namespace main.domain.Workflow
             return Result<bool>.Success(true);
         }
 
+        /// <summary>
+        /// Одобрение текущего шага
+        /// </summary>
+        /// <param name="employee">Сущность одобрившего сотрудника</param>
+        /// <param name="feedback">Отзыв</param>
+        /// <exception cref="Exception"></exception>
+        public Result<bool> Approve(Employee.Employee employee, string? feedback)
+        {
+            if (Status != Status.Expectation)
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
+            if (employee is null)
+            {
+                return Result<bool>.Failure("Сущность сотрдуника не может быть Null");
+            }
+
+            if (employee.Id != AuthorId)
+            {
+                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует автору процесса");
+            }
+
+            var step = Steps.OrderBy(x => x.Number)
+                .First(x => x.Status == Status.Expectation);
+            step.Approve(employee, feedback);
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Отклонение текущего шага
+        /// </summary>
+        /// <param name="employee">Сущность отклонившего сотрудника</param>
+        /// <param name="feedback">Отзыв</param>
+        /// <exception cref="Exception"></exception>
+        public Result<bool> Reject(Employee.Employee employee, string? feedback)
+        {
+            if (Status != Status.Expectation)
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
+            if (employee is null)
+            {
+                return Result<bool>.Failure("Сущность сотрдуника не может быть Null");
+            }
+
+            if (employee.Id != AuthorId)
+            {
+                return Result<bool>.Failure("Заданная сущность сотрудника не соответсвует автору процесса");
+            }
+
+
+            var step = Steps.OrderBy(x => x.Number)
+                .First(x => x.Status == Status.Expectation);
+            step.Reject(employee, feedback);
+            return Result<bool>.Success(true);
+        }
     }
 }

@@ -85,15 +85,10 @@ namespace main.domain.Workflow
         /// <summary>
         /// Одобрение
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public Result<bool> Approve(Guid emlpoyerId, string? feedback)
+        public Result<bool> Approve(Employee.Employee employee, string? feedback)
         {
-            if (emlpoyerId == Guid.Empty)
-            {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
-            }
-
             if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Шаг завершен");
@@ -109,15 +104,10 @@ namespace main.domain.Workflow
         /// <summary>
         /// Отказ
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public Result<bool> Reject(Guid emlpoyerId, string? feedback)
+        public Result<bool> Reject(Employee.Employee employee, string? feedback)
         {
-            if (emlpoyerId == Guid.Empty)
-            {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
-            }
-
             if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Шаг завершен");
@@ -133,14 +123,9 @@ namespace main.domain.Workflow
         /// <summary>
         /// Откат статуса шага
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public Result<bool> Restart(Guid emlpoyerId)
+        /// <param name="employee">Идентификатор сотрудника</param>
+        public Result<bool> Restart(Employee.Employee employee)
         {
-            if (emlpoyerId == Guid.Empty)
-            {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
-            }
-
             Status = Status.Expectation;
             DateUpdate = DateTime.Now;
 
