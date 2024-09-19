@@ -86,11 +86,11 @@ namespace main.domain.Workflow
         /// <summary>
         /// Одобрение
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="emlpoyeeId">Идентификатор сотрудника</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public Result<bool> Approve(Guid emlpoyerId, string? feedback)
+        public Result<bool> Approve(Guid emlpoyeeId, string? feedback)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (emlpoyeeId == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }

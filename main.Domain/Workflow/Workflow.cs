@@ -1,6 +1,5 @@
 ﻿using main.domain.Common;
 using main.domain.Enum;
-using main.domain.WorkflowTemplate;
 
 namespace main.domain.Workflow
 {
@@ -177,17 +176,17 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
-            if (IsTerminal)
+            if (Steps.All(x => x.Status == Status.Approved)
+            || Steps.Any(x => x.Status == Status.Rejected))
             {
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-            if (Status != Status.Approved)
+            if (Status == Status.Rejected)
             {
                 return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
             }
 
-            IsTerminal = true;
             Feedback = feedback;
 
             DateUpdate = DateTime.Now;
@@ -206,12 +205,12 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
-            if (IsTerminal)
+            if (Steps.All(x => x.Status == Status.Approved)
+            || Steps.Any(x => x.Status == Status.Rejected))
             {
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-            IsTerminal = true;
             Feedback = feedback;
 
             DateUpdate = DateTime.Now;
@@ -228,8 +227,6 @@ namespace main.domain.Workflow
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
-
-            IsTerminal = false;
 
             foreach (var step in _steps)
             {
@@ -254,5 +251,45 @@ namespace main.domain.Workflow
             return Result<bool>.Success(true);
         }
 
+        /// <summary>
+        /// Одобрение текущего шага
+        /// </summary>
+        /// <param name="employeeId">Идентификатор одобрившего сотрудника</param>
+        /// <param name="feedback">Отзыв</param>
+        /// <exception cref="Exception"></exception>
+        public Result<bool> ApproveStep(Guid employeeId, string? feedback)
+        {
+            if (Steps.All(x => x.Status == Status.Approved)
+            || Steps.Any(x => x.Status == Status.Rejected))
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
+            var step = Steps.OrderBy(x => x.Number)
+                .First(x => x.Status == Status.Expectation);
+            step.Approve(employeeId, feedback);
+            return Result<bool>.Success(true);
+
+        }
+
+        /// <summary>
+        /// Отклонение текущего шага
+        /// </summary>
+        /// <param name="employeeId">Идентификактор отклонившего сотрудника</param>
+        /// <param name="feedback">Отзыв</param>
+        /// <exception cref="Exception"></exception>
+        public Result<bool> RejectStep(Guid employeeId, string? feedback)
+        {
+            if (Steps.All(x => x.Status == Status.Approved)
+            || Steps.Any(x => x.Status == Status.Rejected))
+            {
+                return Result<bool>.Failure("Рабочий процесс завершен");
+            }
+
+            var step = Steps.OrderBy(x => x.Number)
+                .First(x => x.Status == Status.Expectation);
+            step.Reject(employeeId, feedback);
+            return Result<bool>.Success(true);
+        }
     }
 }
