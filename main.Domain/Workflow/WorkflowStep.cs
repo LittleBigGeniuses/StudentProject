@@ -1,7 +1,6 @@
 ﻿using main.domain.Common;
-using main.domain.Enum;
+using main.domain.Workflow.Enum;
 using main.domain.WorkflowTemplate;
-
 
 namespace main.domain.Workflow
 {
