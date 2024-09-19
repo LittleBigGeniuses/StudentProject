@@ -7,7 +7,7 @@ namespace main.domain.Workflow
     /// <summary>
     /// Сущность Workflow для интервью в компанию
     /// </summary>
-    public class Workflow : BaseEntity, IStatus
+    public class Workflow : BaseEntity
     {
         /// <summary>
         /// Минимальное значение длины наименования

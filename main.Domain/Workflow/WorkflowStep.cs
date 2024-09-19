@@ -9,7 +9,7 @@ namespace main.domain.Workflow
     /// <summary>
     /// Шаг рабочего процесса
     /// </summary>
-    public class WorkflowStep : BaseEntity, IStatus
+    public class WorkflowStep : BaseEntity
     {
         private WorkflowStep(Guid candidateId, int number, string description, Guid? employeeId, Guid? roleId)
         {
