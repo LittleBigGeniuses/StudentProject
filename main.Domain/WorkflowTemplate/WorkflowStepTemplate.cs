@@ -8,7 +8,13 @@ namespace main.domain.WorkflowTemplate
     /// </summary>
     public class WorkflowStepTemplate
     {
-        private WorkflowStepTemplate(int number, string description, Guid? eployeeId, Guid? roleId, DateTime dateCreate, DateTime dateUpdate)
+        private WorkflowStepTemplate(
+            int number, 
+            string description, 
+            Guid? eployeeId, 
+            Guid? roleId, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             Number = number;
             Description = description;
@@ -80,7 +86,13 @@ namespace main.domain.WorkflowTemplate
             }
 
 
-            var stepTemplate = new WorkflowStepTemplate(number, description, eployerId, roleId, DateTime.UtcNow, DateTime.UtcNow);
+            var stepTemplate = new WorkflowStepTemplate(
+                number, 
+                description, 
+                eployerId, 
+                roleId, 
+                DateTime.UtcNow, 
+                DateTime.UtcNow);
 
             return Result<WorkflowStepTemplate>.Success(stepTemplate);
         }

@@ -10,7 +10,14 @@ namespace main.domain.Workflow
     /// </summary>
     public class WorkflowStep
     {
-        private WorkflowStep(Guid candidateId, int number, string description, Guid? employeeId, Guid? roleId, DateTime dateCreate, DateTime dateUpdate)
+        private WorkflowStep(
+            Guid candidateId, 
+            int number, string 
+            description, 
+            Guid? employeeId, 
+            Guid? roleId, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             CandidateId = candidateId;
             Number = number;

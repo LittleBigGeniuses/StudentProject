@@ -13,7 +13,13 @@ namespace main.domain.WorkflowTemplate
         public const int MinLengthName = 5;
 
 
-        private WorkflowTemplate(Guid id,string name, string description, List<WorkflowStepTemplate> stepTemplates, Guid companyId, DateTime dateCreate, DateTime dateUpdate)
+        private WorkflowTemplate(
+            Guid id,
+            string name, 
+            string description, 
+            List<WorkflowStepTemplate> stepTemplates, 
+            Guid companyId, DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             Id = id;
             Name = name;
@@ -49,7 +55,13 @@ namespace main.domain.WorkflowTemplate
                 return Result<WorkflowTemplate>.Failure($"{companyId} - некорректный идентификатор компании");
             }
 
-            var workflowTemplate = new WorkflowTemplate(Guid.NewGuid(), name.Trim(), description, [] ,companyId, DateTime.UtcNow, DateTime.UtcNow);
+            var workflowTemplate = new WorkflowTemplate(
+                Guid.NewGuid(), 
+                name.Trim(), 
+                description, 
+                [] ,companyId, 
+                DateTime.UtcNow, 
+                DateTime.UtcNow);
 
             return Result<WorkflowTemplate>.Success(workflowTemplate);
         }

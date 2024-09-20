@@ -8,7 +8,13 @@ namespace main.domain.Employee;
 public class Employee
 {
     const int MinLengthName = 5;
-    private Employee(Guid id, string name, Guid companyId, Guid roleId, DateTime dateCreate, DateTime dateUpdate)
+    private Employee(
+        Guid id, 
+        string name, 
+        Guid companyId, 
+        Guid roleId, 
+        DateTime dateCreate, 
+        DateTime dateUpdate)
     {
         Id = id;
         Name = name;
@@ -47,7 +53,12 @@ public class Employee
             return Result<Employee>.Failure("Идентификатор должности некорректен");
         }
 
-        var employee = new Employee(Guid.NewGuid(), name, companyId, roleId, DateTime.UtcNow, DateTime.UtcNow);
+        var employee = new Employee(
+            Guid.NewGuid(), 
+            name, companyId, 
+            roleId, 
+            DateTime.UtcNow, 
+            DateTime.UtcNow);
 
         return Result<Employee>.Success(employee);
     }

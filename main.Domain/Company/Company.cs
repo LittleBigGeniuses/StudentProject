@@ -8,7 +8,12 @@ namespace main.domain.Company
     public class Company
     {
         public const int MinLengthName = 5;
-        private Company(Guid id, string name, string description, DateTime dateCreate, DateTime dateUpdate)
+        private Company(
+            Guid id, 
+            string name, 
+            string description, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             Name = name;
             Description = description;
@@ -32,7 +37,12 @@ namespace main.domain.Company
                 return Result<Company>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
             }
 
-            var company = new Company(Guid.NewGuid(), name, description, DateTime.UtcNow, DateTime.UtcNow);
+            var company = new Company(
+                Guid.NewGuid(), 
+                name, 
+                description, 
+                DateTime.UtcNow, 
+                DateTime.UtcNow);
 
             return Result<Company>.Success(company);
         }

@@ -13,7 +13,15 @@ namespace main.domain.Workflow
         /// Минимальное значение длины наименования
         /// </summary>
         public const int MinLengthName = 5;
-        private Workflow(Guid id, string name, string description, IReadOnlyCollection<WorkflowStep> steps, Guid authorId, Guid candidateId, Guid templateId, Guid companyId, DateTime dateCreate, DateTime dateUpdate)
+        private Workflow(
+            Guid id, 
+            string name, 
+            string description, 
+            IReadOnlyCollection<WorkflowStep> steps, 
+            Guid authorId, Guid candidateId, 
+            Guid templateId, Guid companyId, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             Id = id;
             Name = name;
@@ -58,7 +66,17 @@ namespace main.domain.Workflow
 
             var steps = new List<WorkflowStep>();
 
-            var workflow = new Workflow(Guid.NewGuid(), template.Name, template.Description, [], authorId, candidateId, template.Id, template.CompanyId, DateTime.UtcNow, DateTime.UtcNow);
+            var workflow = new Workflow(
+                Guid.NewGuid(), 
+                template.Name, 
+                template.Description, 
+                [], 
+                authorId, 
+                candidateId, 
+                template.Id, 
+                template.CompanyId, 
+                DateTime.UtcNow, 
+                DateTime.UtcNow);
 
             return Result<Workflow>.Success(workflow);
         }

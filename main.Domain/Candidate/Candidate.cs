@@ -9,7 +9,11 @@ namespace main.domain.Condidate
     {
         const int MinLengthName = 5;
 
-        private Candidate(Guid id, string name, DateTime dateCreate, DateTime dateUpdate)
+        private Candidate(
+            Guid id, 
+            string name, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             Id = id;
             Name = name;
@@ -34,7 +38,11 @@ namespace main.domain.Condidate
                 return Result<Candidate>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
             }
 
-            var condidaate = new Candidate(Guid.NewGuid(), name, DateTime.UtcNow, DateTime.UtcNow);
+            var condidaate = new Candidate(
+                Guid.NewGuid(), 
+                name, 
+                DateTime.UtcNow, 
+                DateTime.UtcNow);
 
             return Result<Candidate>.Success(condidaate);
         }

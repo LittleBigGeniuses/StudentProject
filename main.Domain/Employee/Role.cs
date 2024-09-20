@@ -12,7 +12,12 @@ namespace main.domain.Employee
         /// </summary>
         const int MinLengthName = 3;
 
-        private Role(Guid id, string name, Guid companyId, DateTime dateCreate, DateTime dateUpdate)
+        private Role(
+            Guid id, 
+            string name, 
+            Guid companyId, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             Id = id;
             Name = name;
