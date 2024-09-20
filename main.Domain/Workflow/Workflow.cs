@@ -7,26 +7,76 @@ namespace main.domain.Workflow
     /// <summary>
     /// Сущность Workflow для интервью в компанию
     /// </summary>
-    public class Workflow : BaseEntity
+    public class Workflow
     {
         /// <summary>
         /// Минимальное значение длины наименования
         /// </summary>
         public const int MinLengthName = 5;
-
-        /// <summary>
-        /// Приватный список шагов, для безопасного взаимодействия
-        /// </summary>
-        private static readonly List<WorkflowStep> _steps = new();
-        private Workflow(string name, string description, Guid authorId, Guid candidateId, Guid templateId, Guid companyId)
+        private Workflow(Guid id, string name, string description, IReadOnlyCollection<WorkflowStep> steps, Guid authorId, Guid candidateId, Guid templateId, Guid companyId, DateTime dateCreate, DateTime dateUpdate)
         {
+            Id = id;
             Name = name;
             Description = description;
+            Steps = steps;
             AuthorId = authorId;
             CandidateId = candidateId;
             TemplateId = templateId;
             CompanyId = companyId;
+            DateCreate = dateCreate;
+            DateUpdate = dateUpdate;
         }
+
+        /// <summary>
+        /// Создание нового рабочего процесса
+        /// </summary>
+        /// <param name="authorId">Идентификатор сотрудника, создаюшего рабочий процесс</param>
+        /// <param name="candidateId">Идентификатор кандидата</param>
+        /// <param name="template">Сущность шаблона</param>
+        /// <returns>Результат создания</returns>
+        public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate.WorkflowTemplate template)
+        {
+            if (template.Name.Trim().Length < MinLengthName)
+            {
+                return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
+            }
+
+            if (authorId == Guid.Empty)
+            {
+                return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
+            }
+
+            if (candidateId == Guid.Empty)
+            {
+                return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (template is null)
+            {
+                return Result<Workflow>.Failure($"{nameof(template)} - не может быть пустым");
+            }
+
+            var steps = new List<WorkflowStep>();
+
+            var workflow = new Workflow(Guid.NewGuid(), template.Name, template.Description, [], authorId, candidateId, template.Id, template.CompanyId, DateTime.UtcNow, DateTime.UtcNow);
+
+            return Result<Workflow>.Success(workflow);
+        }
+
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public Guid Id { get; }
+
+        /// <summary>
+        /// Дата создания
+        /// </summary>
+        public DateTime DateCreate { get; }
+
+        /// <summary>
+        /// Дата изменения
+        /// </summary>
+        public DateTime DateUpdate { get; private set; }
 
         /// <summary>
         /// Наименование
@@ -66,8 +116,8 @@ namespace main.domain.Workflow
         /// <summary>
         /// Статус информирующий о положениее рабочего процесса
         /// </summary>
-        public Status Status => _steps.Any(s => s.Status == Status.Rejected) ? Status.Rejected
-                                 : _steps.All(s => s.Status == Status.Approved) ? Status.Approved
+        public Status Status => Steps.Any(s => s.Status == Status.Rejected) ? Status.Rejected
+                                 : Steps.All(s => s.Status == Status.Approved) ? Status.Approved
                                  : Status.Expectation;
 
         /// <summary>
@@ -79,59 +129,8 @@ namespace main.domain.Workflow
         /// <summary>
         /// Безопасный досуп к коллекции шагов
         /// </summary>
-        public IReadOnlyCollection<WorkflowStep> Steps => _steps;
+        public IReadOnlyCollection<WorkflowStep> Steps;
 
-        /// <summary>
-        /// Создание нового рабочего процесса
-        /// </summary>
-        /// <param name="authorId">Идентификатор сотрудника, создаюшего рабочий процесс</param>
-        /// <param name="candidateId">Идентификатор кандидата</param>
-        /// <param name="template">Сущность шаблона</param>
-        /// <returns>Результат создания</returns>
-        public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate.WorkflowTemplate template)
-        {
-            if (template.Name.Trim().Length < MinLengthName)
-            {
-                return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
-            }
-
-            if (authorId == Guid.Empty)
-            {
-                return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
-            }
-
-            if (candidateId == Guid.Empty)
-            {
-                return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
-            }
-
-            if (template is null)
-            {
-                return Result<Workflow>.Failure($"{nameof(template)} - не может быть пустым");
-            }
-
-            var steps = new List<WorkflowStep>();
-
-            var workflow = new Workflow(template.Name, template.Description, authorId, candidateId, template.Id, template.CompanyId);
-
-            foreach (var stepTemplate in template.Steps)
-            {
-                var stepResult = WorkflowStep.Create(candidateId, stepTemplate);
-
-                if (stepResult.IsFailure)
-                {
-                    return Result<Workflow>.Failure($"Не возможен перенос шаблона шага: {stepResult.FailureMessage}");
-                }
-
-                var step = stepResult.Data;
-
-                steps.Add(step);
-            }
-
-            workflow.AddSteps(steps);
-
-            return Result<Workflow>.Success(workflow);
-        }
 
         /// <summary>
         /// Обновление основной информации о рабочем процесса
@@ -231,7 +230,7 @@ namespace main.domain.Workflow
 
             IsTerminal = false;
 
-            foreach (var step in _steps)
+            foreach (var step in Steps)
             {
                 step.Restart(emlpoyerId);
             }
@@ -240,19 +239,5 @@ namespace main.domain.Workflow
 
             return Result<bool>.Success(false);
         }
-
-        /// <summary>
-        /// Обновление списка шагов (вызывается при создание нового экземпляра рабочего процессса)
-        /// </summary>
-        /// <param name="workflowSteps">Список шагов</param>
-        /// <returns></returns>
-        private Result<bool> AddSteps(List<WorkflowStep>? workflowSteps)
-        {
-            _steps.Clear();
-            _steps.AddRange(workflowSteps);
-
-            return Result<bool>.Success(true);
-        }
-
     }
 }

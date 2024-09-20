@@ -5,23 +5,14 @@ namespace main.domain.Company
     /// <summary>
     /// Класс компании
     /// </summary>
-    public class Company : BaseEntity
+    public class Company
     {
         public const int MinLengthName = 5;
-        private Company(string name, string description)
+        private Company(Guid id, string name, string description, DateTime dateCreate, DateTime dateUpdate)
         {
             Name = name;
             Description = description;
         }
-        /// <summary>
-        /// Название компании
-        /// </summary>
-        public string Name { get; private set; }
-
-        /// <summary>
-        /// Описание компании
-        /// </summary>
-        public string Description { get; private set; }
 
         /// <summary>
         /// Создание новой компании
@@ -41,10 +32,35 @@ namespace main.domain.Company
                 return Result<Company>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
             }
 
-            var company = new Company(name, description);
+            var company = new Company(Guid.NewGuid(), name, description, DateTime.UtcNow, DateTime.UtcNow);
 
             return Result<Company>.Success(company);
         }
+
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public Guid Id { get; }
+
+        /// <summary>
+        /// Дата создания
+        /// </summary>
+        public DateTime DateCreate { get; }
+
+        /// <summary>
+        /// Дата изменения
+        /// </summary>
+        public DateTime DateUpdate { get; private set; }
+        /// <summary>
+        /// Название компании
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Описание компании
+        /// </summary>
+        public string Description { get; private set; }
+
 
         /// <summary>
         /// Обновление данных компании

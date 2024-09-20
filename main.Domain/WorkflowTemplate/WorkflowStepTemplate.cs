@@ -6,15 +6,27 @@ namespace main.domain.WorkflowTemplate
     /// <summary>
     /// Шаг в шаблоне Workflow
     /// </summary>
-    public class WorkflowStepTemplate : BaseEntity
+    public class WorkflowStepTemplate
     {
-        private WorkflowStepTemplate(int number, string description, Guid? eployeeId, Guid? roleId)
+        private WorkflowStepTemplate(int number, string description, Guid? eployeeId, Guid? roleId, DateTime dateCreate, DateTime dateUpdate)
         {
             Number = number;
             Description = description;
             EmployeeId = eployeeId;
             RoleId = roleId;
+            DateCreate = dateCreate;
+            DateUpdate = dateUpdate;
         }
+
+        /// <summary>
+        /// Дата создания
+        /// </summary>
+        public DateTime DateCreate { get; }
+
+        /// <summary>
+        /// Дата изменения
+        /// </summary>
+        public DateTime DateUpdate { get; private set; }
 
         /// <summary>
         /// Описание
@@ -68,7 +80,7 @@ namespace main.domain.WorkflowTemplate
             }
 
 
-            var stepTemplate = new WorkflowStepTemplate(number, description, eployerId, roleId);
+            var stepTemplate = new WorkflowStepTemplate(number, description, eployerId, roleId, DateTime.UtcNow, DateTime.UtcNow);
 
             return Result<WorkflowStepTemplate>.Success(stepTemplate);
         }

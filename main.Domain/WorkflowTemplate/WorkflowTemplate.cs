@@ -5,44 +5,25 @@ namespace main.domain.WorkflowTemplate
     /// <summary>
     /// Шаблон Workfloy
     /// </summary>
-    public class WorkflowTemplate : BaseEntity
+    public class WorkflowTemplate
     {
         /// <summary>
         /// Константное значение минимальной длины наименования шаблона
         /// </summary>
         public const int MinLengthName = 5;
 
-        /// <summary>
-        /// Защищенный список шагов
-        /// </summary>
-        private static readonly List<WorkflowStepTemplate> _steps = new();
 
-        private WorkflowTemplate(string name, string description, Guid companyId)
+        private WorkflowTemplate(Guid id,string name, string description, List<WorkflowStepTemplate> stepTemplates, Guid companyId, DateTime dateCreate, DateTime dateUpdate)
         {
+            Id = id;
             Name = name;
             Description = description;
+            _steps = stepTemplates;
             CompanyId = companyId;
+            DateCreate = dateCreate;
+            DateUpdate = dateUpdate;
+
         }
-
-        /// <summary>
-        /// Наименование
-        /// </summary>
-        public string Name { get; private set; }
-
-        /// <summary>
-        /// Описание 
-        /// </summary>
-        public string Description { get; private set; }
-
-        /// <summary>
-        /// Идентификатор компании, которой принадлежит шаблон
-        /// </summary>
-        public Guid CompanyId { get; }
-
-        /// <summary>
-        /// Безопасный список, для чтения из вне
-        /// </summary>
-        public IReadOnlyCollection<WorkflowStepTemplate> Steps => _steps;
 
         /// <summary>
         /// Метод создание нового шаблона
@@ -68,10 +49,51 @@ namespace main.domain.WorkflowTemplate
                 return Result<WorkflowTemplate>.Failure($"{companyId} - некорректный идентификатор компании");
             }
 
-            var workflowTemplate = new WorkflowTemplate(name.Trim(), description, companyId);
+            var workflowTemplate = new WorkflowTemplate(Guid.NewGuid(), name.Trim(), description, [] ,companyId, DateTime.UtcNow, DateTime.UtcNow);
 
             return Result<WorkflowTemplate>.Success(workflowTemplate);
         }
+
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public Guid Id { get; }
+
+        /// <summary>
+        /// Дата создания
+        /// </summary>
+        public DateTime DateCreate { get; }
+
+        /// <summary>
+        /// Дата изменения
+        /// </summary>
+        public DateTime DateUpdate { get; private set; }
+
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Описание 
+        /// </summary>
+        public string Description { get; private set; }
+
+        /// <summary>
+        /// Идентификатор компании, которой принадлежит шаблон
+        /// </summary>
+        public Guid CompanyId { get; }
+
+        /// <summary>
+        /// Безопасный список, для чтения из вне
+        /// </summary>
+        public IReadOnlyCollection<WorkflowStepTemplate> Steps => _steps;
+
+        /// <summary>
+        /// Защищенный список шагов
+        /// </summary>
+        private List<WorkflowStepTemplate> _steps;
+
 
         /// <summary>
         /// Метод обновления информации
