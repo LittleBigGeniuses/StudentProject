@@ -153,10 +153,10 @@ namespace main.domain.Workflow
         /// <summary>
         /// Откат статуса шага
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public Result<bool> Restart(Guid emlpoyerId)
+        /// <param name="employeeId">Идентификатор сотрудника</param>
+        public Result<bool> Restart(Guid employeeId)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employeeId == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
@@ -164,6 +164,21 @@ namespace main.domain.Workflow
             Status = Status.Expectation;
             DateUpdate = DateTime.Now;
 
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Обновление/добавление идентификатора сотрудника, назначенного на процесс
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        public Result<bool> AddEmployeeId(Guid employeeId)
+        {
+            if (employeeId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+            EmployeeId = employeeId;
             return Result<bool>.Success(true);
         }
     }
