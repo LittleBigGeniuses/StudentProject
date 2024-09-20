@@ -8,16 +8,63 @@ namespace main.domain.Workflow
     /// <summary>
     /// Шаг рабочего процесса
     /// </summary>
-    public class WorkflowStep : BaseEntity
+    public class WorkflowStep
     {
-        private WorkflowStep(Guid candidateId, int number, string description, Guid? employeeId, Guid? roleId)
+        private WorkflowStep(
+            Guid candidateId, 
+            int number, string 
+            description, 
+            Guid? employeeId, 
+            Guid? roleId, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
             CandidateId = candidateId;
             Number = number;
             Description = description;
             EmployeeId = employeeId;
             RoleId = roleId;
+            DateCreate = dateCreate;
+            DateUpdate = dateUpdate;          
         }
+
+        /// <summary>
+        /// Создание шага
+        /// </summary>
+        /// <param name="candidateId">Идентификатор кандидата</param>
+        /// <param name="stepTemplate">Шаблон, по которому создается шаг</param>
+        /// <returns></returns>
+        internal static Result<WorkflowStep> Create(Guid candidateId, WorkflowStepTemplate stepTemplate)
+        {
+            if (candidateId == Guid.Empty)
+            {
+                return Result<WorkflowStep>.Failure($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (stepTemplate is null)
+            {
+                return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
+            }
+
+            if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)
+            {
+                return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
+            }
+
+            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId, DateTime.UtcNow, DateTime.UtcNow);
+
+            return Result<WorkflowStep>.Success(step);
+        }
+
+        /// <summary>
+        /// Дата создания
+        /// </summary>
+        public DateTime DateCreate { get; }
+
+        /// <summary>
+        /// Дата изменения
+        /// </summary>
+        public DateTime DateUpdate { get; private set; }
 
         /// <summary>
         /// Порядковый номер шага
@@ -54,33 +101,6 @@ namespace main.domain.Workflow
         /// </summary>
         public Status Status { get; private set; } = Status.Expectation;
 
-        /// <summary>
-        /// Создание шага
-        /// </summary>
-        /// <param name="candidateId">Идентификатор кандидата</param>
-        /// <param name="stepTemplate">Шаблон, по которому создается шаг</param>
-        /// <returns></returns>
-        internal static Result<WorkflowStep> Create(Guid candidateId, WorkflowStepTemplate stepTemplate)
-        {
-            if (candidateId == Guid.Empty)
-            {
-                return Result<WorkflowStep>.Failure($"{candidateId} - некорректный идентификатор кандидата");
-            }
-
-            if (stepTemplate is null)
-            {
-                return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
-            }
-
-            if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)
-            {
-                return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
-            }
-
-            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId);
-
-            return Result<WorkflowStep>.Success(step);
-        }
 
         /// <summary>
         /// Одобрение

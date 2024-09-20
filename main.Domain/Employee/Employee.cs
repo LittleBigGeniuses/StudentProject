@@ -5,30 +5,24 @@ namespace main.domain.Employee;
 /// <summary>
 /// Класс сотрудника
 /// </summary>
-public class Employee : BaseEntity
+public class Employee
 {
     const int MinLengthName = 5;
-    private Employee(string name, Guid companyId, Guid roleId)
+    private Employee(
+        Guid id, 
+        string name, 
+        Guid companyId, 
+        Guid roleId, 
+        DateTime dateCreate, 
+        DateTime dateUpdate)
     {
+        Id = id;
         Name = name;
         CompanyId = companyId;
         RoleId = roleId;
+        DateCreate = dateCreate;
+        DateUpdate = dateUpdate;
     }
-
-    /// <summary>
-    /// ФИО сотрудника
-    /// </summary>
-    public string Name { get; private set; }
-
-    /// <summary>
-    /// Индетификатор компании, в которой работает сотрудник
-    /// </summary>
-    public Guid CompanyId { get; private set; }
-
-    /// <summary>
-    /// Идентификатор долности сотрудника
-    /// </summary>
-    public Guid RoleId { get; private set; }
 
     /// <summary>
     /// Метод создания сотрудника
@@ -59,10 +53,46 @@ public class Employee : BaseEntity
             return Result<Employee>.Failure("Идентификатор должности некорректен");
         }
 
-        var employee = new Employee(name, companyId, roleId);
+        var employee = new Employee(
+            Guid.NewGuid(), 
+            name, companyId, 
+            roleId, 
+            DateTime.UtcNow, 
+            DateTime.UtcNow);
 
         return Result<Employee>.Success(employee);
     }
+
+    /// <summary>
+    /// Идентификатор
+    /// </summary>
+    public Guid Id { get; }
+
+    /// <summary>
+    /// Дата создания
+    /// </summary>
+    public DateTime DateCreate { get; }
+
+    /// <summary>
+    /// Дата изменения
+    /// </summary>
+    public DateTime DateUpdate { get; private set; }
+
+    /// <summary>
+    /// ФИО сотрудника
+    /// </summary>
+    public string Name { get; private set; }
+
+    /// <summary>
+    /// Индетификатор компании, в которой работает сотрудник
+    /// </summary>
+    public Guid CompanyId { get; private set; }
+
+    /// <summary>
+    /// Идентификатор долности сотрудника
+    /// </summary>
+    public Guid RoleId { get; private set; }
+
 
     /// <summary>
     /// Обновление ФИО сотрудника

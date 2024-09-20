@@ -5,28 +5,26 @@ namespace main.domain.Employee
     /// <summary>
     /// Класс должности сотрудника в компании
     /// </summary>
-    public class Role : BaseEntity
+    public class Role
     {
         /// <summary>
         /// Минимально допутимая длина наименования роли
         /// </summary>
         const int MinLengthName = 3;
 
-        private Role(string name, Guid companyId)
+        private Role(
+            Guid id, 
+            string name, 
+            Guid companyId, 
+            DateTime dateCreate, 
+            DateTime dateUpdate)
         {
+            Id = id;
             Name = name;
             CompanyId = companyId;
+            DateCreate = dateCreate;
+            DateUpdate = dateUpdate;
         }
-
-        /// <summary>
-        /// Наименование должность
-        /// </summary>
-        public string Name { get; private set; }
-
-        /// <summary>
-        /// Идентификатор компании, к которой относится должность
-        /// </summary>
-        public Guid CompanyId { get; }
 
         /// <summary>
         /// Создание новой должностит
@@ -46,10 +44,36 @@ namespace main.domain.Employee
                 return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
             }
 
-            var role = new Role(name, companyId);
+            var role = new Role(Guid.NewGuid(), name, companyId, DateTime.UtcNow, DateTime.UtcNow);
 
             return Result<Role>.Success(role);
         }
+
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public Guid Id { get; }
+
+        /// <summary>
+        /// Дата создания
+        /// </summary>
+        public DateTime DateCreate { get; }
+
+        /// <summary>
+        /// Дата изменения
+        /// </summary>
+        public DateTime DateUpdate { get; private set; }
+
+        /// <summary>
+        /// Наименование должность
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Идентификатор компании, к которой относится должность
+        /// </summary>
+        public Guid CompanyId { get; }
+
 
         /// <summary>
         /// Обновление наименования должности
