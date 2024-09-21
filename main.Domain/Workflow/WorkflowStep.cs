@@ -168,9 +168,9 @@ namespace main.domain.Workflow
         }
 
         /// <summary>
-        /// Обновление/добавление идентификатора сотрудника, назначенного на процесс
+        /// Обновление/добавление идентификатора сотрудника, назначенного на шаг процесс
         /// </summary>
-        /// <param name="employeeId"></param>
+        /// <param name="employeeId">Идентификатор назначенного сотрудника</param>
         /// <returns></returns>
         public Result<bool> AddEmployeeId(Guid employeeId)
         {

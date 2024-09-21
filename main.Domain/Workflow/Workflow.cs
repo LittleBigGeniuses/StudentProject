@@ -1,4 +1,5 @@
 ﻿using main.domain.Common;
+using main.domain.Employee;
 using main.domain.Workflow.Enum;
 using main.domain.WorkflowTemplate;
 
@@ -27,7 +28,7 @@ namespace main.domain.Workflow
             Name = name;
             Description = description;
             Steps = steps;
-            AuthorId = authorId;
+            EmployeeId = authorId;
             CandidateId = candidateId;
             TemplateId = templateId;
             CompanyId = companyId;
@@ -119,7 +120,7 @@ namespace main.domain.Workflow
         /// <summary>
         /// Идентификатор сотрудника, создавшего рабочий процесс
         /// </summary>
-        public Guid AuthorId { get; }
+        public Guid EmployeeId { get; private set; }
 
         /// <summary>
         /// Идентификатор кандидата
@@ -256,6 +257,25 @@ namespace main.domain.Workflow
             DateUpdate = DateTime.Now;
 
             return Result<bool>.Success(false);
+        }
+
+        /// <summary>
+        /// Назначает нового сотрудника на управление процессом
+        /// </summary>
+        /// <param name="employeeId">Идентификатор назначенного сотрудника</param>
+        /// <returns></returns>
+        public Result<bool> AddEmployeeId(Guid employeeId)
+        {
+            if (employeeId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+            EmployeeId = employeeId;
+            foreach (var step in Steps)
+            {
+                step.AddEmployeeId(employeeId);
+            }
+            return Result<bool>.Success(true);
         }
     }
 }
