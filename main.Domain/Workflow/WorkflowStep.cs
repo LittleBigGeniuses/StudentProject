@@ -121,7 +121,7 @@ namespace main.domain.Workflow
 
             Status = Status.Approved;
             Feedback = feedback;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -145,7 +145,7 @@ namespace main.domain.Workflow
 
             Status = Status.Rejected;
             Feedback = feedback;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -162,7 +162,7 @@ namespace main.domain.Workflow
             }
 
             Status = Status.Expectation;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }

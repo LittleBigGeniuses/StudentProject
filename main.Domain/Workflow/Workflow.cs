@@ -178,7 +178,7 @@ namespace main.domain.Workflow
                 Description = description.Trim();
             }
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
             return Result<bool>.Success(true);
         }
 
@@ -207,7 +207,7 @@ namespace main.domain.Workflow
             IsTerminal = true;
             Feedback = feedback;
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
             return Result<bool>.Success(true);
         }
 
@@ -231,7 +231,7 @@ namespace main.domain.Workflow
             IsTerminal = true;
             Feedback = feedback;
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
             return Result<bool>.Success(true);
         }
 
@@ -253,7 +253,7 @@ namespace main.domain.Workflow
                 step.Restart(emlpoyerId);
             }
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(false);
         }
