@@ -159,7 +159,7 @@ namespace main.domain.WorkflowTemplate
 
             var step = createStep.Data;
 
-            _steps.Add(step);
+            _steps.Add(step!);
 
             DateUpdate = DateTime.Now;
 
