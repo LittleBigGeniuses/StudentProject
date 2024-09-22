@@ -65,13 +65,24 @@ namespace main.domain.Workflow
                 return Result<Workflow>.Failure($"{nameof(template)} - не может быть пустым");
             }
 
-            var steps = new List<WorkflowStep>();
+            var stepsResults = template.Steps
+                .Select(s => WorkflowStep.Create(candidateId, s))
+                .ToList();
+
+            if (stepsResults.Any(result => result.IsFailure))
+            {
+                return Result<Workflow>.Failure($"Ошибка при создание шагов");
+            }
+
+            var steps = stepsResults.Select(r => r.Data)
+                .ToList()
+                .AsReadOnly();
 
             var workflow = new Workflow(
                 Guid.NewGuid(), 
                 template.Name, 
-                template.Description, 
-                [], 
+                template.Description,
+                steps!,
                 authorId, 
                 candidateId, 
                 template.Id, 
