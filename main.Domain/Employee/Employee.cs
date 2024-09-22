@@ -112,7 +112,7 @@ public class Employee
         }
 
         Name = name;
-        DateUpdate = DateTime.Now;
+        DateUpdate = DateTime.UtcNow;
 
         return Result<bool>.Success(true);
     }
@@ -130,7 +130,7 @@ public class Employee
         }
 
         RoleId = roleId;
-        DateUpdate = DateTime.Now;
+        DateUpdate = DateTime.UtcNow;
 
         return Result<bool>.Success(true);
     }
@@ -148,7 +148,7 @@ public class Employee
         }
 
         CompanyId = companyId;
-        DateUpdate = DateTime.Now;
+        DateUpdate = DateTime.UtcNow;
 
         return Result<bool>.Success(true);
     }
