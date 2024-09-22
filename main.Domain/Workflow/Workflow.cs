@@ -28,7 +28,7 @@ namespace main.domain.Workflow
             Name = name;
             Description = description;
             Steps = steps;
-            EmployeeId = authorId;
+            AuthorId = authorId;
             CandidateId = candidateId;
             TemplateId = templateId;
             CompanyId = companyId;
@@ -71,7 +71,7 @@ namespace main.domain.Workflow
                 Guid.NewGuid(), 
                 template.Name, 
                 template.Description, 
-                [], 
+                steps, 
                 authorId, 
                 candidateId, 
                 template.Id, 
@@ -120,7 +120,7 @@ namespace main.domain.Workflow
         /// <summary>
         /// Идентификатор сотрудника, создавшего рабочий процесс
         /// </summary>
-        public Guid EmployeeId { get; private set; }
+        public Guid AuthorId { get; }
 
         /// <summary>
         /// Идентификатор кандидата
@@ -260,21 +260,42 @@ namespace main.domain.Workflow
         }
 
         /// <summary>
-        /// Назначает нового сотрудника на управление процессом
+        /// Назначает нового сотрудника на текущий шаг процесса
         /// </summary>
-        /// <param name="employeeId">Идентификатор назначенного сотрудника</param>
+        /// <param name="employeeId">Идентификатор сотрудника, назначенного на текущий этап процесса</param>
         /// <returns></returns>
-        public Result<bool> AddEmployeeId(Guid employeeId)
+        public Result<bool> SetEmployee(Guid employeeId)
         {
             if (employeeId == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
-            EmployeeId = employeeId;
+
+            Steps.OrderBy(x => x.Number).First(x => x.Status == Status.Expectation).AddEmployeeId(employeeId);
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Назначает нового сотрудника на указанный номер шага процесса
+        /// </summary>
+        /// <param name="employeeId">Идентификатор сотрудника, назначенного на указанный этап процесса</param>
+        /// <param name="number">Номер процесса на который будет назначен сотрудник</param>
+        /// <returns></returns>
+        public Result<bool> SetEmployee(Guid employeeId, int number)
+        {
+            if (employeeId == Guid.Empty)
+            {
+                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
             foreach (var step in Steps)
             {
-                step.AddEmployeeId(employeeId);
+                if (step.Number == number)
+                {
+                    step.AddEmployeeId(employeeId);
+                }
             }
+
             return Result<bool>.Success(true);
         }
     }
