@@ -1,4 +1,5 @@
 ﻿using main.domain.Common;
+using main.domain.Employee;
 using main.domain.Workflow.Enum;
 using main.domain.WorkflowTemplate;
 
@@ -138,11 +139,6 @@ namespace main.domain.Workflow
                                  : Steps.All(s => s.Status == Status.Approved) ? Status.Approved
                                  : Status.Expectation;
 
-        /// <summary>
-        /// Терминальность рабочего процесса
-        /// </summary>
-        public bool IsTerminal { get; private set; } = false;
-
 
         /// <summary>
         /// Безопасный досуп к коллекции шагов
@@ -185,16 +181,16 @@ namespace main.domain.Workflow
         /// <summary>
         /// Одобрение кандидата
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Cотрудник</param>
         /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public Result<bool> Approve(Guid emlpoyerId, string feedback)
+        public Result<bool> Approve(Employee.Employee employee, string feedback)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            if (IsTerminal)
+            if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
@@ -204,8 +200,16 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
             }
 
-            IsTerminal = true;
-            Feedback = feedback;
+            var step = Steps
+                 .OrderBy(x => x.Number)
+                 .First(s => s.Status == Status.Expectation);
+
+            var resultApprove = step.Approve(employee, feedback);
+
+            if (resultApprove.IsFailure)
+            {
+                return resultApprove;
+            }
 
             DateUpdate = DateTime.UtcNow;
             return Result<bool>.Success(true);
@@ -214,22 +218,30 @@ namespace main.domain.Workflow
         /// <summary>
         /// Отказ кандидату
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Cотрудник</param>
         /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public Result<bool> Reject(Guid emlpoyerId, string feedback)
+        public Result<bool> Reject(Employee.Employee employee, string feedback)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            if (IsTerminal)
+            if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-            IsTerminal = true;
-            Feedback = feedback;
+            var step = Steps
+                .OrderBy(x => x.Number)
+                .First(s => s.Status == Status.Expectation);
+
+            var resultReject = step.Reject(employee, feedback);
+
+            if (resultReject.IsFailure)
+            {
+                return resultReject;
+            }
 
             DateUpdate = DateTime.UtcNow;
             return Result<bool>.Success(true);
@@ -246,8 +258,6 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
-            IsTerminal = false;
-
             foreach (var step in Steps)
             {
                 step.Restart(emlpoyerId);
@@ -256,6 +266,68 @@ namespace main.domain.Workflow
             DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(false);
+        }
+
+        /// <summary>
+        /// Назначение нового сотрудника на шаг
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public Result<bool> SetEmployee(Employee.Employee employee)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            var step = Steps
+                .OrderBy(x => x.Number)
+                .First(s => s.Status == Status.Expectation);
+
+            var result = step.SetEmployee(employee);
+
+            if (result.IsFailure)
+            {
+                return result;
+            }
+
+            DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Назначение сотрудника на указанный шаг
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <param name="numberStep">Номер шага</param>
+        /// <returns></returns>
+        public Result<bool> SetEmployeeInStep(Employee.Employee employee, int numberStep)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+
+            var step = Steps
+                .FirstOrDefault(s => s.Number == numberStep);
+
+            if (step is null)
+            {
+                return Result<bool>.Failure($"Шага с номером {numberStep} не найдено");
+            }
+
+            var result = step.SetEmployee(employee);
+
+            if (result.IsFailure)
+            {
+                return result;
+            }
+
+            DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
         }
     }
 }
