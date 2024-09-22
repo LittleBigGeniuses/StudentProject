@@ -1,4 +1,5 @@
 ﻿using main.domain.Common;
+using main.domain.Employee;
 using main.domain.Workflow.Enum;
 using main.domain.WorkflowTemplate;
 
@@ -105,13 +106,23 @@ namespace main.domain.Workflow
         /// <summary>
         /// Одобрение
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Сотрудник</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public Result<bool> Approve(Guid emlpoyerId, string? feedback)
+        public Result<bool> Approve(Employee.Employee employee, string? feedback)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            if (employee.Id != EmployeeId)
+            {
+                return Result<bool>.Failure($"У этого шага другой исполнитель");
+            }
+
+            if (employee.RoleId != RoleId)
+            {
+                return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
             }
 
             if (Status != Status.Expectation)
@@ -121,7 +132,7 @@ namespace main.domain.Workflow
 
             Status = Status.Approved;
             Feedback = feedback;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -129,13 +140,23 @@ namespace main.domain.Workflow
         /// <summary>
         /// Отказ
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
+        /// <param name="employee">Сотрудник</param>
         /// <param name="feedback">Отзыв по кандидату</param>
-        public Result<bool> Reject(Guid emlpoyerId, string? feedback)
+        public Result<bool> Reject(Employee.Employee employee, string? feedback)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            if (employee.Id != EmployeeId)
+            {
+                return Result<bool>.Failure($"У этого шага другой исполнитель");
+            }
+
+            if (employee.RoleId != RoleId)
+            {
+                return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
             }
 
             if (Status != Status.Expectation)
@@ -145,7 +166,7 @@ namespace main.domain.Workflow
 
             Status = Status.Rejected;
             Feedback = feedback;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -153,16 +174,39 @@ namespace main.domain.Workflow
         /// <summary>
         /// Откат статуса шага
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public Result<bool> Restart(Guid emlpoyerId)
+        /// <param name="employerId">Идентификатор сотрудника</param>
+        public Result<bool> Restart(Guid employerId)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employerId == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
             Status = Status.Expectation;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Назначение нового сотрудника на шаг
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public Result<bool> SetEmployee(Employee.Employee employee)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            if (employee.RoleId != RoleId)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не соответствует по должности для исполнения шага");
+            }
+
+            EmployeeId = employee.Id;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
