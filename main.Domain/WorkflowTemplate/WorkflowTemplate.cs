@@ -136,7 +136,7 @@ namespace main.domain.WorkflowTemplate
                 Description = description.Trim();
             }
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -161,7 +161,7 @@ namespace main.domain.WorkflowTemplate
 
             _steps.Add(step);
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -181,7 +181,7 @@ namespace main.domain.WorkflowTemplate
             _steps.RemoveAt(number - 1);
             UpdateStepNumbers(number);
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -202,7 +202,7 @@ namespace main.domain.WorkflowTemplate
             _steps[numberFirst - 1].UpdateNumber(numberSecond);
             _steps[numberSecond - 1].UpdateNumber(numberFirst);
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }

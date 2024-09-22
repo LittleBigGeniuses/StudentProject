@@ -106,7 +106,7 @@ namespace main.domain.WorkflowTemplate
         {
 
             Description = description.Trim();
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -125,7 +125,7 @@ namespace main.domain.WorkflowTemplate
 
             Number = number;
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -144,7 +144,7 @@ namespace main.domain.WorkflowTemplate
 
             RoleId = roleId;
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -162,7 +162,7 @@ namespace main.domain.WorkflowTemplate
 
             EmployeeId = employeeId;
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
