@@ -7,6 +7,9 @@ namespace main.domain.Company
     /// </summary>
     public class Company
     {
+        /// <summary>
+        /// Минимальная длина наименования компании
+        /// </summary>
         public const int MinLengthName = 5;
         private Company(
             Guid id, 
@@ -95,7 +98,7 @@ namespace main.domain.Company
                 Description = description.Trim();
             }
 
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }

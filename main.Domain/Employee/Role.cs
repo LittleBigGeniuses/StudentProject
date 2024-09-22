@@ -93,7 +93,7 @@ namespace main.domain.Employee
             }
 
             Name = name;
-            DateUpdate = DateTime.Now;
+            DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
