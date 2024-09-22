@@ -200,13 +200,15 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
             }
 
-            var step = Steps.First(s => s.Status == Status.Expectation);
+            var step = Steps
+                 .OrderBy(x => x.Number)
+                 .First(s => s.Status == Status.Expectation);
 
-            var resultReject = step.Approve(employee, feedback);
+            var resultApprove = step.Approve(employee, feedback);
 
-            if (resultReject.IsFailure)
+            if (resultApprove.IsFailure)
             {
-                return resultReject;
+                return resultApprove;
             }
 
             DateUpdate = DateTime.UtcNow;
@@ -230,7 +232,9 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-            var step = Steps.First(s => s.Status == Status.Expectation);
+            var step = Steps
+                .OrderBy(x => x.Number)
+                .First(s => s.Status == Status.Expectation);
 
             var resultReject = step.Reject(employee, feedback);
 
@@ -276,13 +280,49 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            var step = Steps.First(s => s.Status == Status.Expectation);
+            var step = Steps
+                .OrderBy(x => x.Number)
+                .First(s => s.Status == Status.Expectation);
 
-            var resultReject = step.SetEmployee(employee);
+            var result = step.SetEmployee(employee);
 
-            if (resultReject.IsFailure)
+            if (result.IsFailure)
             {
-                return resultReject;
+                return result;
+            }
+
+            DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Назначение сотрудника на указанный шаг
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <param name="numberStep">Номер шага</param>
+        /// <returns></returns>
+        public Result<bool> SetEmployeeInStep(Employee.Employee employee, int numberStep)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+
+            var step = Steps
+                .FirstOrDefault(s => s.Number == numberStep);
+
+            if (step is null)
+            {
+                return Result<bool>.Failure($"Шага с номером {numberStep} не найдено");
+            }
+
+            var result = step.SetEmployee(employee);
+
+            if (result.IsFailure)
+            {
+                return result;
             }
 
             DateUpdate = DateTime.UtcNow;
