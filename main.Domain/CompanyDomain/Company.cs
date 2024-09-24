@@ -86,6 +86,8 @@ namespace Main.Domain.CompanyDomain
         /// <returns></returns>
         public Result<bool> UpdateInfo(string? name, string? description)
         {
+            var isChange = false;
+
             if (name is not null && !string.IsNullOrEmpty(name))
             {
                 if (name.Trim().Length < MinLengthName)
@@ -93,15 +95,27 @@ namespace Main.Domain.CompanyDomain
                     return Result<bool>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
                 }
 
-                Name = name.Trim();
+                if (name.Trim() != Name)
+                {
+                    Name = name.Trim();
+                    isChange = true;
+                }
+               
             }
 
             if (description is not null && !string.IsNullOrEmpty(description))
             {
-                Description = description.Trim();
+                if (description.Trim() != Description)
+                {
+                    Description = description.Trim();
+                    isChange = true;
+                }             
             }
 
-            DateUpdate = DateTime.UtcNow;
+            if (isChange)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }

@@ -122,9 +122,11 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"{number} - некорректное значение для номера шага");
             }
 
-            Number = number;
-
-            DateUpdate = DateTime.UtcNow;
+            if (number != Number)
+            {
+                Number = number;
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -141,9 +143,11 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"{roleId} - некорректный идентификатор должности");
             }
 
-            RoleId = roleId;
-
-            DateUpdate = DateTime.UtcNow;
+            if (roleId != RoleId)
+            {
+                RoleId = roleId;
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -159,9 +163,11 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"{employeeId} - некорректный идентификатор сотрудника");
             }
 
-            EmployeeId = employeeId;
-
-            DateUpdate = DateTime.UtcNow;
+            if (employeeId != EmployeeId)
+            {
+                EmployeeId = employeeId;
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }

@@ -116,6 +116,8 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Результат обновления информации</returns>
         public Result<bool> UpdateInfo(string? name, string? description)
         {
+            var isChange = false;
+
             if (name is not null)
             {
                 if (string.IsNullOrEmpty(name))
@@ -128,15 +130,27 @@ namespace Main.Domain.WorkflowTemplateDomain
                     return Result<bool>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
                 }
 
-                Name = name.Trim();
+                if (name.Trim() != Name)
+                {
+                    Name = name.Trim();
+                    isChange = true;
+                }
+                
             }
 
             if (description is not null)
             {
-                Description = description.Trim();
+                if (description.Trim() != Description)
+                {
+                    Description = description.Trim();
+                    isChange = true;
+                }
             }
 
-            DateUpdate = DateTime.UtcNow;
+            if (isChange)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -173,7 +187,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Успешность удаления</returns>
         public Result<bool> RemoveStep(int number)
         {
-            if (number > _steps.Count)
+            if (number > _steps.Count && number <= 0)
             {
                 return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
             }

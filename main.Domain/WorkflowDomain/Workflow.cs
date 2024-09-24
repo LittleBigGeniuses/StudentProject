@@ -2,6 +2,7 @@
 using Main.Domain.EmployeeDomain;
 using Main.Domain.WorkflowDomain.Enum;
 using Main.Domain.WorkflowTemplateDomain;
+using System.Text;
 
 namespace Main.Domain.WorkflowDomain
 {
@@ -165,6 +166,8 @@ namespace Main.Domain.WorkflowDomain
         /// <returns></returns>
         public Result<bool> UpdateInfo(string? name, string? description)
         {
+            var isChange = false;
+
             if (name is not null)
             {
                 if (string.IsNullOrEmpty(name))
@@ -177,15 +180,27 @@ namespace Main.Domain.WorkflowDomain
                     return Result<bool>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
                 }
 
-                Name = name.Trim();
+                if (name != Name)
+                {
+                    Name = name.Trim();
+                    isChange = true;
+                }
             }
 
             if (description is not null)
             {
-                Description = description.Trim();
+                if (description != Description)
+                {
+                    Description = description.Trim();
+                    isChange = true;
+                }
+            }
+            
+            if (isChange)
+            {
+                DateUpdate = DateTime.UtcNow;
             }
 
-            DateUpdate = DateTime.UtcNow;
             return Result<bool>.Success(true);
         }
 

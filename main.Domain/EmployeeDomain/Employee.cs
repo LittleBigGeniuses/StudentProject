@@ -101,6 +101,7 @@ public class Employee
     /// <returns>Успешность выполнения операции</returns>
     public Result<bool> UpdateName(string name)
     {
+
         if (string.IsNullOrEmpty(name))
         {
             return Result<bool>.Failure("ФИО не может быть пустым");
@@ -111,8 +112,11 @@ public class Employee
             return Result<bool>.Failure($"Длина наименование должности не может быть меньше {MinLengthName}");
         }
 
-        Name = name;
-        DateUpdate = DateTime.UtcNow;
+        if (name.Trim() != Name)
+        {
+            Name = name.Trim();
+            DateUpdate = DateTime.UtcNow;
+        }
 
         return Result<bool>.Success(true);
     }
@@ -124,13 +128,17 @@ public class Employee
     /// <returns>Успешность выполнения операции</returns>
     public Result<bool> UpdateRole(Guid roleId)
     {
+
         if (roleId == Guid.Empty)
         {
             return Result<bool>.Failure("Некорректное значение идентификатора должности");
         }
 
-        RoleId = roleId;
-        DateUpdate = DateTime.UtcNow;
+        if (roleId != RoleId)
+        {
+            RoleId = roleId;
+            DateUpdate = DateTime.UtcNow;
+        }
 
         return Result<bool>.Success(true);
     }
@@ -147,8 +155,11 @@ public class Employee
             return Result<bool>.Failure("Некорректное значение идентификатора компании");
         }
 
-        CompanyId = companyId;
-        DateUpdate = DateTime.UtcNow;
+        if (companyId != CompanyId)
+        {
+            CompanyId = companyId;
+            DateUpdate = DateTime.UtcNow;
+        }
 
         return Result<bool>.Success(true);
     }
