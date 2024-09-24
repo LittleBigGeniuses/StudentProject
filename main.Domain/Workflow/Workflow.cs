@@ -291,6 +291,11 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
+            if (Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Рабочий процесс завершен");
+            }
+
             var step = Steps
                 .OrderBy(x => x.Number)
                 .First(s => s.Status == Status.Expectation);
@@ -320,13 +325,22 @@ namespace main.domain.Workflow
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
+            if (Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Рабочий процесс завершен");
+            }
 
             var step = Steps
                 .FirstOrDefault(s => s.Number == numberStep);
 
             if (step is null)
             {
-                return Result<bool>.Failure($"Шага с номером {numberStep} не найдено");
+                return Result<bool>.Failure($"Шаг с номером {numberStep} не найден");
+            }
+
+            if (step.Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Шаг {numberStep} завершен");
             }
 
             var result = step.SetEmployee(employee);
