@@ -4,7 +4,7 @@ using Main.Domain.Common;
 namespace Main.DomainTest.Tests.CompanyTests
 {
     [TestClass]
-    public class CompanyCreateTest
+    public class CreateTest
     {
         [TestMethod]
         public void TestCreate_ValidInputs_ShouldReturnSuccess()

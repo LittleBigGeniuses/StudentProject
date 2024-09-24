@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Main.DomainTest.Tests.CompanyTests
 {
     [TestClass]
-    public class CompanyUpdateInfoTest
+    public class UpdateInfoTest
     {
         [TestMethod]
         public void TestUpdateInfo_ValidInputs_ShouldUpdateNameAndDescription()
