@@ -205,8 +205,11 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не соответствует по должности для исполнения шага");
             }
 
-            EmployeeId = employee.Id;
-            DateUpdate = DateTime.UtcNow;
+            if (employee.Id != EmployeeId)
+            {
+                EmployeeId = employee.Id;
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
