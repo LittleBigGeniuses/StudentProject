@@ -74,7 +74,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<Workflow>.Failure($"Ошибка при создание шагов");
             }
 
-            var steps = stepsResults.Select(r => r.Data)
+            var steps = stepsResults.Select(r => r.Value)
                 .ToList()
                 .AsReadOnly();
 

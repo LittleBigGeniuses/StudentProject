@@ -154,10 +154,10 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (createStep.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createStep.FailureMessage}");
+                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createStep.Error}");
             }
 
-            var step = createStep.Data;
+            var step = createStep.Value;
 
             _steps.Add(step!);
 

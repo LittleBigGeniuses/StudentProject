@@ -10,12 +10,12 @@
         /// <summary>
         /// Возвращаемый объект
         /// </summary>
-        public T? Data { get; set; }
+        public T? Value { get; set; }
 
         /// <summary>
         /// Сообщение о провале
         /// </summary>
-        public string? FailureMessage { get; set; }
+        public string? Error { get; set; }
 
         /// <summary>
         /// Успешность выполнения
@@ -36,7 +36,7 @@
         {
             var result = new Result<T>();
             result.IsSuccess = false;
-            result.FailureMessage = failureMessage;
+            result.Error = failureMessage;
 
             return result;
         }
@@ -51,7 +51,7 @@
             var result = new Result<T>();
 
             result.IsSuccess = true;
-            result.Data = data;
+            result.Value = data;
 
             return result;
         }
