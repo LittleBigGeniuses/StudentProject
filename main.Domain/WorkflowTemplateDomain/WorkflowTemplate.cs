@@ -157,7 +157,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createStep.FailureMessage}");
             }
 
-            var step = createStep.Data;
+            var step = createStep.Value;
 
             _steps.Add(step!);
 

@@ -18,8 +18,11 @@ namespace Main.Domain.CompanyDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            Id = id;
             Name = name;
             Description = description;
+            DateCreate = dateCreate;
+            DateUpdate = dateUpdate;
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace Main.Domain.CompanyDomain
         /// <returns></returns>
         public Result<bool> UpdateInfo(string? name, string? description)
         {
-            if (name is not null || !string.IsNullOrEmpty(name))
+            if (name is not null && !string.IsNullOrEmpty(name))
             {
                 if (name.Trim().Length < MinLengthName)
                 {
@@ -93,7 +96,7 @@ namespace Main.Domain.CompanyDomain
                 Name = name.Trim();
             }
 
-            if (description is not null || !string.IsNullOrEmpty(description))
+            if (description is not null && !string.IsNullOrEmpty(description))
             {
                 Description = description.Trim();
             }
