@@ -15,7 +15,7 @@
         /// <summary>
         /// Сообщение о провале
         /// </summary>
-        public string? FailureMessage { get; set; }
+        public string? Error { get; set; }
 
         /// <summary>
         /// Успешность выполнения
@@ -36,7 +36,7 @@
         {
             var result = new Result<T>();
             result.IsSuccess = false;
-            result.FailureMessage = failureMessage;
+            result.Error = failureMessage;
 
             return result;
         }
