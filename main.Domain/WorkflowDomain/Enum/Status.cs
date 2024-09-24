@@ -1,4 +1,4 @@
-﻿namespace main.domain.Workflow.Enum;
+﻿namespace Main.Domain.WorkflowDomain.Enum;
 
 /// <summary>
 /// Статус объекта

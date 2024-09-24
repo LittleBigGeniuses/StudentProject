@@ -1,7 +1,6 @@
-﻿using main.domain.Common;
-using main.domain.Employee;
+﻿using Main.Domain.Common;
 
-namespace main.domain.WorkflowTemplate
+namespace Main.Domain.WorkflowTemplateDomain
 {
     /// <summary>
     /// Шаг в шаблоне Workflow

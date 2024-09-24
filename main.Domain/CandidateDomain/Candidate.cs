@@ -1,6 +1,6 @@
-﻿using main.domain.Common;
+﻿using Main.Domain.Common;
 
-namespace main.domain.Condidate
+namespace Main.Domain.CondidateDomain
 {
     /// <summary>
     /// Сущность соискателя

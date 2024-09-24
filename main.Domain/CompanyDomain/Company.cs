@@ -1,6 +1,6 @@
-﻿using main.domain.Common;
+﻿using Main.Domain.Common;
 
-namespace main.domain.Company
+namespace Main.Domain.CompanyDomain
 {
     /// <summary>
     /// Класс компании
