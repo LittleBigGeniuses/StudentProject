@@ -7,7 +7,7 @@ namespace Main.Domain.CondidateDomain
     /// </summary>
     public class Candidate
     {
-        const int MinLengthName = 5;
+        public const int MinLengthName = 5;
 
         private Candidate(
             Guid id, 
