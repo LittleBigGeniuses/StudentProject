@@ -1,9 +1,9 @@
-﻿using main.domain.Common;
-using main.domain.Employee;
-using main.domain.Workflow.Enum;
-using main.domain.WorkflowTemplate;
+﻿using Main.Domain.Common;
+using Main.Domain.EmployeeDomain;
+using Main.Domain.WorkflowDomain.Enum;
+using Main.Domain.WorkflowTemplateDomain;
 
-namespace main.domain.Workflow
+namespace Main.Domain.WorkflowDomain
 {
     /// <summary>
     /// Сущность Workflow для интервью в компанию
@@ -43,7 +43,7 @@ namespace main.domain.Workflow
         /// <param name="candidateId">Идентификатор кандидата</param>
         /// <param name="template">Сущность шаблона</param>
         /// <returns>Результат создания</returns>
-        public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate.WorkflowTemplate template)
+        public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate template)
         {
             if (template.Name.Trim().Length < MinLengthName)
             {
@@ -194,7 +194,7 @@ namespace main.domain.Workflow
         /// </summary>
         /// <param name="employee">Cотрудник</param>
         /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public Result<bool> Approve(Employee.Employee employee, string feedback)
+        public Result<bool> Approve(Employee employee, string feedback)
         {
             if (employee is null)
             {
@@ -231,7 +231,7 @@ namespace main.domain.Workflow
         /// </summary>
         /// <param name="employee">Cотрудник</param>
         /// <param name="feedback">Отзыв сотрудника о кандидате</param>
-        public Result<bool> Reject(Employee.Employee employee, string feedback)
+        public Result<bool> Reject(Employee employee, string feedback)
         {
             if (employee is null)
             {
@@ -284,7 +284,7 @@ namespace main.domain.Workflow
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public Result<bool> SetEmployee(Employee.Employee employee)
+        public Result<bool> SetEmployee(Employee employee)
         {
             if (employee is null)
             {
@@ -318,7 +318,7 @@ namespace main.domain.Workflow
         /// <param name="employee">Сотрудник</param>
         /// <param name="numberStep">Номер шага</param>
         /// <returns></returns>
-        public Result<bool> SetEmployeeInStep(Employee.Employee employee, int numberStep)
+        public Result<bool> SetEmployeeInStep(Employee employee, int numberStep)
         {
             if (employee is null)
             {

@@ -1,6 +1,6 @@
-﻿using main.domain.Common;
+﻿using Main.Domain.Common;
 
-namespace main.domain.Employee
+namespace Main.Domain.EmployeeDomain
 {
     /// <summary>
     /// Класс должности сотрудника в компании

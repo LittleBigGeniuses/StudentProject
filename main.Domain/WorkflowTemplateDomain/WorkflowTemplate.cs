@@ -1,6 +1,6 @@
-﻿using main.domain.Common;
+﻿using Main.Domain.Common;
 
-namespace main.domain.WorkflowTemplate
+namespace Main.Domain.WorkflowTemplateDomain
 {
     /// <summary>
     /// Шаблон Workfloy
