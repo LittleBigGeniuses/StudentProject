@@ -38,7 +38,7 @@ namespace Main.DomainTest.Tests.CompanyTests
 
             // Assert
             Assert.IsFalse(result.IsSuccess);
-            Assert.AreEqual("Наименование компании не может быть пустым", result.FailureMessage);
+            Assert.AreEqual("Наименование компании не может быть пустым", result.Error);
         }
 
         [TestMethod]
@@ -53,7 +53,7 @@ namespace Main.DomainTest.Tests.CompanyTests
 
             // Assert
             Assert.IsFalse(result.IsSuccess);
-            Assert.AreEqual($"Длина наименование шаблона не может быть меньше {Company.MinLengthName}", result.FailureMessage);
+            Assert.AreEqual($"Длина наименование шаблона не может быть меньше {Company.MinLengthName}", result.Error);
         }
     }
 }

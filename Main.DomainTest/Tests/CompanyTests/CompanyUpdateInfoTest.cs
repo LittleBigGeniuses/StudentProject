@@ -37,7 +37,7 @@ namespace Main.DomainTest.Tests.CompanyTests
 
             // Assert
             Assert.IsFalse(result.IsSuccess);
-            Assert.AreEqual($"Длина наименование шаблона не может быть меньше {Company.MinLengthName}", result.FailureMessage);
+            Assert.AreEqual($"Длина наименование шаблона не может быть меньше {Company.MinLengthName}", result.Error);
         }
 
         [TestMethod]
