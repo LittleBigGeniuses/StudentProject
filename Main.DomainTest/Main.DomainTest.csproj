@@ -24,11 +24,4 @@
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tests\CandidateTests\" />
-    <Folder Include="Tests\EmployeeTests\" />
-    <Folder Include="Tests\WorkflowTemplateTests\" />
-    <Folder Include="Tests\WorkflowTests\" />
-  </ItemGroup>
-
 </Project>

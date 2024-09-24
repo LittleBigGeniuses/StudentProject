@@ -54,5 +54,21 @@ namespace Main.DomainTest.Tests.CompanyTests
             Assert.AreEqual("NewName", company.Name);
             Assert.AreEqual("Initial description", company.Description); // Description should not change
         }
+
+        [TestMethod]
+        public void UpdateInfo_WithSameData_DoesNotChangeDateUpdate()
+        {
+            // Arrange
+            var company = Company.Create("InitialName", "Initial description").Value;
+
+            var initialDateUpdate = company.DateUpdate; // Сохраняем текущее значение
+
+            // Act
+            var result = company.UpdateInfo(company.Name, company.Description);
+
+            // Assert
+            Assert.IsTrue(result.IsSuccess); // Проверяем, что метод успешно завершился
+            Assert.AreEqual(initialDateUpdate, company.DateUpdate); // Проверяем, что дата обновления не изменилась
+        }
     }
 }
