@@ -7,7 +7,7 @@ namespace Main.Domain.EmployeeDomain;
 /// </summary>
 public class Employee
 {
-    public const int MinLengthName = 5;
+    const int MinLengthName = 5;
     private Employee(
         Guid id, 
         string name, 
