@@ -30,13 +30,13 @@
         /// <summary>
         /// Метод сообщения о провале создания объекта
         /// </summary>
-        /// <param name="failureMessage">Сообщение провала</param>
+        /// <param name="error">Сообщение провала</param>
         /// <returns>Возвращает сущность с сообщение о провале</returns>
-        public static Result<T> Failure(string failureMessage)
+        public static Result<T> Failure(string error)
         {
             var result = new Result<T>();
             result.IsSuccess = false;
-            result.Error = failureMessage;
+            result.Error = error;
 
             return result;
         }
