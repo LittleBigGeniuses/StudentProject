@@ -1,4 +1,5 @@
 ﻿using Main.Domain.Common;
+using Main.Domain.WorkflowDomain;
 
 namespace Main.Domain.CondidateDomain
 {
@@ -15,6 +16,16 @@ namespace Main.Domain.CondidateDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{id} - некорректный идентификатор Кандидата");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("ФИО соискателя не может быть пустым");
+            }
+
             Id = id;
             Name = name;
             DateCreate = dateCreate;
@@ -28,11 +39,6 @@ namespace Main.Domain.CondidateDomain
         /// <returns>Сущность соискателя</returns>
         public static Result<Candidate> Create(string name)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                return Result<Candidate>.Failure("ФИО соискателя не может быть пустым");
-            }
-
             if (name.Trim().Length < MinLengthName)
             {
                 return Result<Candidate>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");

@@ -16,6 +16,26 @@ public class Employee
         DateTime dateCreate, 
         DateTime dateUpdate)
     {
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentNullException($"{id} - некорректный идентификатор процесса");
+        }
+
+        if (String.IsNullOrEmpty(name))
+        {
+            throw new ArgumentNullException("ФИО сотрудника не может быть пустым");
+        }
+
+        if (companyId == Guid.Empty)
+        {
+            throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+        }
+
+        if (roleId == Guid.Empty)
+        {
+            throw new ArgumentNullException($"{roleId} - некорректный идентификатор должности");
+        }
+
         Id = id;
         Name = name;
         CompanyId = companyId;
@@ -33,24 +53,9 @@ public class Employee
     /// <returns>Сущность сотрудника</returns>
     public static Result<Employee> Create(string name, Guid companyId, Guid roleId)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return Result<Employee>.Failure("ФИО сотрудника не может быть пустым");
-        }
-
         if (name.Trim().Length < MinLengthName)
         {
             return Result<Employee>.Failure($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
-        }
-
-        if (companyId == Guid.Empty)
-        {
-            return Result<Employee>.Failure("Идентификатор компании некорректен");
-        }
-
-        if (roleId == Guid.Empty)
-        {
-            return Result<Employee>.Failure("Идентификатор должности некорректен");
         }
 
         var employee = new Employee(

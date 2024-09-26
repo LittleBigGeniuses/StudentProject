@@ -25,6 +25,46 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (authorId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{authorId} - некорректный идентификатор сотрудника");
+            }
+
+            if (candidateId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{id} - некорректный идентификатор Процесса");
+            }
+
+            if (String.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Название процесса не может быть пустым");
+            }
+
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание процесса не может быть пустым");
+            }
+
+            if (authorId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{authorId} - некорректный идентификатор создателя процесса");
+            }
+
+            if (templateId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{templateId} - некорректный идентификатор шаблона процесса");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
             Id = id;
             Name = name;
             Description = description;
@@ -49,16 +89,6 @@ namespace Main.Domain.WorkflowDomain
             if (template.Name.Trim().Length < MinLengthName)
             {
                 return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
-            }
-
-            if (authorId == Guid.Empty)
-            {
-                return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
-            }
-
-            if (candidateId == Guid.Empty)
-            {
-                return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
             }
 
             if (template is null)

@@ -21,6 +21,21 @@ namespace Main.Domain.WorkflowTemplateDomain
             Guid companyId, DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Наименование шаблона не может быть пустым");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{id} - некорректный идентификатор шаблона процесса");
+            }
+
             Id = id;
             Name = name;
             Description = description;
@@ -40,19 +55,9 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Сущность с результатом создания</returns>
         public static Result<WorkflowTemplate> Create(string name, string description, Guid companyId)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                return Result<WorkflowTemplate>.Failure("Наименование шаблона не может быть пустым");
-            }
-
             if (name.Trim().Length < MinLengthName)
             {
                 return Result<WorkflowTemplate>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
-            }
-
-            if (companyId == Guid.Empty)
-            {
-                return Result<WorkflowTemplate>.Failure($"{companyId} - некорректный идентификатор компании");
             }
 
             var workflowTemplate = new WorkflowTemplate(

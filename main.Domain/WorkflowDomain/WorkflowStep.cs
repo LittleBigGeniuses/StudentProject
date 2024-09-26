@@ -20,6 +20,36 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (candidateId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (employeeId is null && roleId is null)
+            {
+                throw new ArgumentNullException("У шага должна быть привязка к конкретногому сотруднику или должности");
+            }
+
+            if (employeeId is not null && employeeId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{employeeId} - некорректное значение для идентификатора сотрудника в шаге");
+            }
+
+            if (roleId is not null && roleId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{roleId} - некорректное значение для идентификатора должности в шаге");
+            }
+
+            if (number < 1)
+            {
+                throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
+            }
+
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание шага процесса не может быть пустым");
+            }
+
             CandidateId = candidateId;
             Number = number;
             Description = description;
@@ -37,19 +67,9 @@ namespace Main.Domain.WorkflowDomain
         /// <returns></returns>
         internal static Result<WorkflowStep> Create(Guid candidateId, WorkflowStepTemplate stepTemplate)
         {
-            if (candidateId == Guid.Empty)
-            {
-                return Result<WorkflowStep>.Failure($"{candidateId} - некорректный идентификатор кандидата");
-            }
-
             if (stepTemplate is null)
             {
                 return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
-            }
-
-            if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)
-            {
-                return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
             var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId, DateTime.UtcNow, DateTime.UtcNow);
