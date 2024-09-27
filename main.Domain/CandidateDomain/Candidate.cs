@@ -39,6 +39,11 @@ namespace Main.Domain.CondidateDomain
         /// <returns>Сущность соискателя</returns>
         public static Result<Candidate> Create(string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return Result<Candidate>.Failure("ФИО соискателя не может быть пустым");
+            }
+
             if (name.Trim().Length < MinLengthName)
             {
                 return Result<Candidate>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");

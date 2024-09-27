@@ -89,6 +89,26 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns></returns>
         internal static Result<WorkflowStepTemplate> Create(int number, string description, Guid? eployerId, Guid? roleId)
         {
+            if (number <= 0)
+            {
+                return Result<WorkflowStepTemplate>.Failure($"{number} - некорректное значение для номера шага");
+            }
+
+            if (eployerId is null && roleId is null)
+            {
+                return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
+            }
+
+            if (eployerId is not null && eployerId == Guid.Empty)
+            {
+                return Result<WorkflowStepTemplate>.Failure($"{eployerId} - некорректное значение для идентификатора сотрудника в шаге");
+            }
+
+            if (roleId is not null && roleId == Guid.Empty)
+            {
+                return Result<WorkflowStepTemplate>.Failure($"{roleId} - некорректное значение для идентификатора должности в шаге");
+            }
+
             var stepTemplate = new WorkflowStepTemplate(
                 number, 
                 description, 

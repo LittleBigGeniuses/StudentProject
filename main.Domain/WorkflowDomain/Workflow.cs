@@ -96,6 +96,16 @@ namespace Main.Domain.WorkflowDomain
                 return Result<Workflow>.Failure($"{nameof(template)} - не может быть пустым");
             }
 
+            if (authorId == Guid.Empty)
+            {
+                return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
+            }
+
+            if (candidateId == Guid.Empty)
+            {
+                return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
             var stepsResults = template.Steps
                 .Select(s => WorkflowStep.Create(candidateId, s))
                 .ToList();

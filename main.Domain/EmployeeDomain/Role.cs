@@ -53,6 +53,11 @@ namespace Main.Domain.EmployeeDomain
                 return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
             }
 
+            if (string.IsNullOrEmpty(name))
+            {
+                return Result<Role>.Failure("Наименование должности не может быть пустым");
+            }
+
             var role = new Role(Guid.NewGuid(), name, companyId, DateTime.UtcNow, DateTime.UtcNow);
 
             return Result<Role>.Success(role);

@@ -48,6 +48,11 @@ namespace Main.Domain.CompanyDomain
         /// <returns></returns>
         public static Result<Company> Create(string name, string description)
         {
+            if (String.IsNullOrEmpty(name))
+            {
+                return Result<Company>.Failure("Наименование компании не может быть пустым");
+            }
+
             if (name.Trim().Length < MinLengthName)
             {
                 return Result<Company>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");

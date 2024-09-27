@@ -72,6 +72,16 @@ namespace Main.Domain.WorkflowDomain
                 return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
             }
 
+            if (candidateId == Guid.Empty)
+            {
+                return Result<WorkflowStep>.Failure($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)
+            {
+                return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
+            }
+
             var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId, DateTime.UtcNow, DateTime.UtcNow);
 
             return Result<WorkflowStep>.Success(step);

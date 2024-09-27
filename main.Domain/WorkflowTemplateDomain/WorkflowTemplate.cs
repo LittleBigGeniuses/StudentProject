@@ -60,6 +60,16 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<WorkflowTemplate>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
             }
 
+            if (string.IsNullOrEmpty(name))
+            {
+                return Result<WorkflowTemplate>.Failure("Наименование шаблона не может быть пустым");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                return Result<WorkflowTemplate>.Failure($"{companyId} - некорректный идентификатор компании");
+            }
+
             var workflowTemplate = new WorkflowTemplate(
                 Guid.NewGuid(), 
                 name.Trim(), 

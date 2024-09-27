@@ -53,9 +53,24 @@ public class Employee
     /// <returns>Сущность сотрудника</returns>
     public static Result<Employee> Create(string name, Guid companyId, Guid roleId)
     {
+        if (string.IsNullOrEmpty(name))
+        {
+            return Result<Employee>.Failure("ФИО сотрудника не может быть пустым");
+        }
+
         if (name.Trim().Length < MinLengthName)
         {
             return Result<Employee>.Failure($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
+        }
+
+        if (companyId == Guid.Empty)
+        {
+            return Result<Employee>.Failure("Идентификатор компании некорректен");
+        }
+
+        if (roleId == Guid.Empty)
+        {
+            return Result<Employee>.Failure("Идентификатор должности некорректен");
         }
 
         var employee = new Employee(
