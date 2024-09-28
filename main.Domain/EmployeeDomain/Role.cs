@@ -19,6 +19,36 @@ namespace Main.Domain.EmployeeDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{id} - некорректный идентификатор должности");
+            }
+
+            if (String.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Наименование должности не может быть пустым");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                throw new ArgumentException($"Длина наименования должности не может быть меньше {MinLengthName}");
+            }
+
             Id = id;
             Name = name;
             CompanyId = companyId;
@@ -34,12 +64,18 @@ namespace Main.Domain.EmployeeDomain
         /// <returns>Возвращает сущность должноти</returns>
         public static Result<Role> Create(string name, Guid companyId)
         {
+
             if (string.IsNullOrEmpty(name))
             {
                 return Result<Role>.Failure("Наименование должности не может быть пустым");
             }
 
-            if (name.Length < MinLengthName)
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (name.Trim().Length < MinLengthName)
             {
                 return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
             }
