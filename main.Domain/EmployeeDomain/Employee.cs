@@ -36,6 +36,21 @@ public class Employee
             throw new ArgumentNullException($"{roleId} - некорректный идентификатор должности");
         }
 
+        if (dateCreate == DateTime.MinValue)
+        {
+            throw new ArgumentException("Дата создания не может быть дефолтной.");
+        }
+
+        if (dateUpdate == DateTime.MinValue)
+        {
+            throw new ArgumentException("Дата обновления не может быть дефолтной.");
+        }
+
+        if (name.Trim().Length < MinLengthName)
+        {
+            throw new ArgumentException($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
+        }
+
         Id = id;
         Name = name;
         CompanyId = companyId;
@@ -58,11 +73,6 @@ public class Employee
             return Result<Employee>.Failure("ФИО сотрудника не может быть пустым");
         }
 
-        if (name.Trim().Length < MinLengthName)
-        {
-            return Result<Employee>.Failure($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
-        }
-
         if (companyId == Guid.Empty)
         {
             return Result<Employee>.Failure("Идентификатор компании некорректен");
@@ -71,6 +81,11 @@ public class Employee
         if (roleId == Guid.Empty)
         {
             return Result<Employee>.Failure("Идентификатор должности некорректен");
+        }
+
+        if (name.Trim().Length < MinLengthName)
+        {
+            return Result<Employee>.Failure($"Длина ФИО сотрудника не может быть меньше {MinLengthName}");
         }
 
         var employee = new Employee(

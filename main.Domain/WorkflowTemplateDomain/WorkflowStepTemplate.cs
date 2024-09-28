@@ -40,6 +40,16 @@ namespace Main.Domain.WorkflowTemplateDomain
                 throw new ArgumentNullException($"{roleId} - некорректное значение для идентификатора должности в шаге");
             }
 
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
             Number = number;
             Description = description;
             EmployeeId = employeeId;
@@ -84,24 +94,29 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// </summary>
         /// <param name="number">Порядковый номер</param>
         /// <param name="description">Описание</param>
-        /// <param name="eployerId">Идентификатор сотрудника</param>
+        /// <param name="employeeId">Идентификатор сотрудника</param>
         /// <param name="roleId">Идентификатор роли</param>
         /// <returns></returns>
-        internal static Result<WorkflowStepTemplate> Create(int number, string description, Guid? eployerId, Guid? roleId)
+        internal static Result<WorkflowStepTemplate> Create(int number, string description, Guid? employeeId, Guid? roleId)
         {
             if (number <= 0)
             {
                 return Result<WorkflowStepTemplate>.Failure($"{number} - некорректное значение для номера шага");
             }
 
-            if (eployerId is null && roleId is null)
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание процесса не может быть пустым");
+            }
+
+            if (employeeId is null && roleId is null)
             {
                 return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
-            if (eployerId is not null && eployerId == Guid.Empty)
+            if (employeeId is not null && employeeId == Guid.Empty)
             {
-                return Result<WorkflowStepTemplate>.Failure($"{eployerId} - некорректное значение для идентификатора сотрудника в шаге");
+                return Result<WorkflowStepTemplate>.Failure($"{employeeId} - некорректное значение для идентификатора сотрудника в шаге");
             }
 
             if (roleId is not null && roleId == Guid.Empty)
@@ -112,7 +127,7 @@ namespace Main.Domain.WorkflowTemplateDomain
             var stepTemplate = new WorkflowStepTemplate(
                 number, 
                 description, 
-                eployerId, 
+                employeeId, 
                 roleId, 
                 DateTime.UtcNow, 
                 DateTime.UtcNow);

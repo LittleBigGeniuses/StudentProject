@@ -26,6 +26,21 @@ namespace Main.Domain.CondidateDomain
                 throw new ArgumentNullException("ФИО соискателя не может быть пустым");
             }
 
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                throw new ArgumentException($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
+            }
+
             Id = id;
             Name = name;
             DateCreate = dateCreate;

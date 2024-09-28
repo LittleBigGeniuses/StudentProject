@@ -33,6 +33,22 @@ namespace Main.Domain.EmployeeDomain
             {
                 throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
             }
+
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                throw new ArgumentException($"Длина наименования должности не может быть меньше {MinLengthName}");
+            }
+
             Id = id;
             Name = name;
             CompanyId = companyId;
@@ -48,14 +64,20 @@ namespace Main.Domain.EmployeeDomain
         /// <returns>Возвращает сущность должноти</returns>
         public static Result<Role> Create(string name, Guid companyId)
         {
-            if (name.Length < MinLengthName)
-            {
-                return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
-            }
 
             if (string.IsNullOrEmpty(name))
             {
                 return Result<Role>.Failure("Наименование должности не может быть пустым");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
             }
 
             var role = new Role(Guid.NewGuid(), name, companyId, DateTime.UtcNow, DateTime.UtcNow);

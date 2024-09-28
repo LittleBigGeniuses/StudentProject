@@ -25,6 +25,16 @@ namespace Main.Domain.WorkflowDomain
                 throw new ArgumentNullException($"{candidateId} - некорректный идентификатор кандидата");
             }
 
+            if (number < 1)
+            {
+                throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
+            }
+
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание шага процесса не может быть пустым");
+            }
+
             if (employeeId is null && roleId is null)
             {
                 throw new ArgumentNullException("У шага должна быть привязка к конкретногому сотруднику или должности");
@@ -40,14 +50,14 @@ namespace Main.Domain.WorkflowDomain
                 throw new ArgumentNullException($"{roleId} - некорректное значение для идентификатора должности в шаге");
             }
 
-            if (number < 1)
+            if (dateCreate == DateTime.MinValue)
             {
-                throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (dateUpdate == DateTime.MinValue)
             {
-                throw new ArgumentNullException("Описание шага процесса не может быть пустым");
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
             }
 
             CandidateId = candidateId;
@@ -67,14 +77,14 @@ namespace Main.Domain.WorkflowDomain
         /// <returns></returns>
         internal static Result<WorkflowStep> Create(Guid candidateId, WorkflowStepTemplate stepTemplate)
         {
-            if (stepTemplate is null)
-            {
-                return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
-            }
-
             if (candidateId == Guid.Empty)
             {
                 return Result<WorkflowStep>.Failure($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (stepTemplate is null)
+            {
+                return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
             }
 
             if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)

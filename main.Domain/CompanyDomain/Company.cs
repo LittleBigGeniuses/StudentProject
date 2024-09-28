@@ -33,6 +33,21 @@ namespace Main.Domain.CompanyDomain
                 throw new ArgumentNullException("Описание компании не может быть пустым");
             }
 
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                throw new ArgumentException($"Длина наименования компании не может быть меньше {MinLengthName}");
+            }
+
             Id = id;
             Name = name;
             Description = description;
@@ -53,9 +68,14 @@ namespace Main.Domain.CompanyDomain
                 return Result<Company>.Failure("Наименование компании не может быть пустым");
             }
 
+            if (String.IsNullOrEmpty(description))
+            {
+                return Result<Company>.Failure("Описание компании не может быть пустым");
+            }
+
             if (name.Trim().Length < MinLengthName)
             {
-                return Result<Company>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
+                return Result<Company>.Failure($"Длина наименования компании не может быть меньше {MinLengthName}");
             }
 
             var company = new Company(
