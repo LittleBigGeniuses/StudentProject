@@ -25,6 +25,71 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{id} - некорректный идентификатор Процесса");
+            }
+
+            if (String.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Название процесса не может быть пустым");
+            }
+
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание процесса не может быть пустым");
+            }
+
+            if (steps is null)
+            {
+                throw new ArgumentNullException("Список шагов должен быть определен");
+            }
+
+            if (steps.Count <= 0)
+            {
+                throw new ArgumentException("Список шагов не может быть пустым");
+            }
+
+            if (steps.Any(s => s is null))
+            {
+                throw new ArgumentException("Все шаги в списке должны быть определены");
+            }
+
+            if (authorId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{authorId} - некорректный идентификатор создателя процесса");
+            }
+
+            if (candidateId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (templateId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{templateId} - некорректный идентификатор шаблона процесса");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                throw new ArgumentException($"Длина наименование процесса не может быть меньше {MinLengthName}");
+            }
+
             Id = id;
             Name = name;
             Description = description;
@@ -46,11 +111,6 @@ namespace Main.Domain.WorkflowDomain
         /// <returns>Результат создания</returns>
         public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate template)
         {
-            if (template.Name.Trim().Length < MinLengthName)
-            {
-                return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
-            }
-
             if (authorId == Guid.Empty)
             {
                 return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
@@ -66,6 +126,11 @@ namespace Main.Domain.WorkflowDomain
                 return Result<Workflow>.Failure($"{nameof(template)} - не может быть пустым");
             }
 
+            if (template.Name.Trim().Length < MinLengthName)
+            {
+                return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
+            }
+
             var stepsResults = template.Steps
                 .Select(s => WorkflowStep.Create(candidateId, s))
                 .ToList();
@@ -78,6 +143,11 @@ namespace Main.Domain.WorkflowDomain
             var steps = stepsResults.Select(r => r.Value)
                 .ToList()
                 .AsReadOnly();
+
+            if (steps.Any(s => s is null))
+            {
+                return Result<Workflow>.Failure("Все шаги в списке должны быть определены");
+            }
 
             var workflow = new Workflow(
                 Guid.NewGuid(), 

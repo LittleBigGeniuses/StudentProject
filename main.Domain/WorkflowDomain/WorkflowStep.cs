@@ -20,6 +20,46 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (candidateId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (number < 1)
+            {
+                throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
+            }
+
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание шага процесса не может быть пустым");
+            }
+
+            if (employeeId is null && roleId is null)
+            {
+                throw new ArgumentNullException("У шага должна быть привязка к конкретногому сотруднику или должности");
+            }
+
+            if (employeeId is not null && employeeId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{employeeId} - некорректное значение для идентификатора сотрудника в шаге");
+            }
+
+            if (roleId is not null && roleId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{roleId} - некорректное значение для идентификатора должности в шаге");
+            }
+
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
             CandidateId = candidateId;
             Number = number;
             Description = description;

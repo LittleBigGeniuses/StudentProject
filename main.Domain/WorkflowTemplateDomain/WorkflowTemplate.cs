@@ -21,6 +21,46 @@ namespace Main.Domain.WorkflowTemplateDomain
             Guid companyId, DateTime dateCreate, 
             DateTime dateUpdate)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{id} - некорректный идентификатор шаблона процесса");
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Наименование шаблона не может быть пустым");
+            }
+
+            if (String.IsNullOrEmpty(description))
+            {
+                throw new ArgumentNullException("Описание процесса не может быть пустым");
+            }
+
+            if (stepTemplates is null)
+            {
+                throw new ArgumentNullException("Список шаблонных шагов должен быть определен");
+            }
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (dateCreate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата создания не может быть дефолтной.");
+            }
+
+            if (dateUpdate == DateTime.MinValue)
+            {
+                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                throw new ArgumentException($"Длина наименование шаблона не может быть меньше {MinLengthName}");
+            }
+
             Id = id;
             Name = name;
             Description = description;
@@ -40,19 +80,25 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Сущность с результатом создания</returns>
         public static Result<WorkflowTemplate> Create(string name, string description, Guid companyId)
         {
+
             if (string.IsNullOrEmpty(name))
             {
                 return Result<WorkflowTemplate>.Failure("Наименование шаблона не может быть пустым");
             }
 
-            if (name.Trim().Length < MinLengthName)
+            if (String.IsNullOrEmpty(description))
             {
-                return Result<WorkflowTemplate>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
+                throw new ArgumentNullException("Описание процесса не может быть пустым");
             }
 
             if (companyId == Guid.Empty)
             {
                 return Result<WorkflowTemplate>.Failure($"{companyId} - некорректный идентификатор компании");
+            }
+
+            if (name.Trim().Length < MinLengthName)
+            {
+                return Result<WorkflowTemplate>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
             }
 
             var workflowTemplate = new WorkflowTemplate(
