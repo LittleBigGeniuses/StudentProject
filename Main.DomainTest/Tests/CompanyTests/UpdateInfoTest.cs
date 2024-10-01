@@ -10,30 +10,33 @@ namespace Main.DomainTest.Tests.CompanyTests
     [TestClass]
     public class UpdateInfoTest
     {
+        private Company _company;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            // Инициализация объекта перед каждым тестом
+            _company = Company.Create("InitialName", "Initial description").Value;
+        }
+
         [TestMethod]
         public void TestUpdateInfo_ValidInputs_ShouldUpdateNameAndDescription()
         {
-            // Arrange
-            var company = Company.Create("InitialName", "Initial description").Value;
-
             // Act
-            var result = company.UpdateInfo("NewName", "Updated description");
+            var result = _company.UpdateInfo("NewName", "Updated description");
 
             // Assert
             Assert.IsTrue(result.IsSuccess);
-            Assert.AreEqual("NewName", company.Name);
-            Assert.AreEqual("Updated description", company.Description);
-            Assert.IsTrue(company.DateUpdate <= DateTime.UtcNow);
+            Assert.AreEqual("NewName", _company.Name);
+            Assert.AreEqual("Updated description", _company.Description);
+            Assert.IsTrue(_company.DateUpdate <= DateTime.UtcNow);
         }
 
         [TestMethod]
         public void TestUpdateInfo_ShortName_ShouldReturnFailure()
         {
-            // Arrange
-            var company = Company.Create("InitialName", "Initial description").Value;
-
             // Act
-            var result = company.UpdateInfo("abc", "Updated description");
+            var result = _company.UpdateInfo("abc", "Updated description");
 
             // Assert
             Assert.IsFalse(result.IsSuccess);
@@ -43,32 +46,26 @@ namespace Main.DomainTest.Tests.CompanyTests
         [TestMethod]
         public void TestUpdateInfo_EmptyDescription_ShouldNotUpdateDescription()
         {
-            // Arrange
-            var company = Company.Create("ValidName", "Initial description").Value;
-
             // Act
-            var result = company.UpdateInfo("NewName", "");
+            var result = _company.UpdateInfo("NewName", "");
 
             // Assert
             Assert.IsTrue(result.IsSuccess);
-            Assert.AreEqual("NewName", company.Name);
-            Assert.AreEqual("Initial description", company.Description); // Description should not change
+            Assert.AreEqual("NewName", _company.Name);
+            Assert.AreEqual("Initial description", _company.Description); 
         }
 
         [TestMethod]
         public void UpdateInfo_WithSameData_DoesNotChangeDateUpdate()
         {
-            // Arrange
-            var company = Company.Create("InitialName", "Initial description").Value;
-
-            var initialDateUpdate = company.DateUpdate; // Сохраняем текущее значение
+            var initialDateUpdate = _company.DateUpdate; 
 
             // Act
-            var result = company.UpdateInfo(company.Name, company.Description);
+            var result = _company.UpdateInfo(_company.Name, _company.Description);
 
             // Assert
-            Assert.IsTrue(result.IsSuccess); // Проверяем, что метод успешно завершился
-            Assert.AreEqual(initialDateUpdate, company.DateUpdate); // Проверяем, что дата обновления не изменилась
+            Assert.IsTrue(result.IsSuccess); 
+            Assert.AreEqual(initialDateUpdate, _company.DateUpdate); 
         }
     }
 }
