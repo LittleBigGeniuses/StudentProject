@@ -1,7 +1,7 @@
 ﻿using Main.Domain.Common;
 using Main.Domain.WorkflowDomain;
 
-namespace Main.Domain.CondidateDomain
+namespace Main.Domain.CandidateDomain
 {
     /// <summary>
     /// Сущность соискателя
