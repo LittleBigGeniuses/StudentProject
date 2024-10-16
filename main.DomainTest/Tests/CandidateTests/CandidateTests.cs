@@ -1,6 +1,6 @@
 ﻿using Main.Domain.CandidateDomain;
 
-namespace main.DomainTest.Tests.Candidate
+namespace main.DomainTest.Tests.CandidateTests
 {
     public class CandidateTests
     {

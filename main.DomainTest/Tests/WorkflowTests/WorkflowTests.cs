@@ -2,7 +2,7 @@
 
 namespace main.DomainTest.Tests.Workflow
 {
-    public class WorkflowTests
+    public class WorkflowTestsTests
     {
 
     }

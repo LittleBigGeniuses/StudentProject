@@ -214,7 +214,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (createStep.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалиловсь: {createStep.Error}");
+                return Result<bool>.Failure($"Добавление элемента в список провалилось: {createStep.Error}");
             }
 
             var step = createStep.Value;
@@ -265,6 +265,28 @@ namespace Main.Domain.WorkflowTemplateDomain
             DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Метод получения шага по номеру
+        /// </summary>
+        /// <param name="number">Номер шага</param>
+        /// <returns>Шаг</returns>
+        public Result<WorkflowStepTemplate> GetStep(int number)
+        {
+            if (number <= 0)
+            {
+                return Result<WorkflowStepTemplate>.Failure("Некорректный номер шага");
+            }
+
+            var step = Steps.FirstOrDefault(s => s.Number == number);
+
+            if (step is null)
+            {
+                return Result<WorkflowStepTemplate>.Failure("Шаблон не содержит шаг с таким номером");
+            }
+
+            return Result<WorkflowStepTemplate>.Success(step);
         }
 
         //Вынес в отдельный метод, т.к. может пригодиться в нескольких местах класса, а может и нет =)
