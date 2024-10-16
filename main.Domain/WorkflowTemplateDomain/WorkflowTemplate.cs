@@ -267,28 +267,6 @@ namespace Main.Domain.WorkflowTemplateDomain
             return Result<bool>.Success(true);
         }
 
-        /// <summary>
-        /// Метод получения шага по номеру
-        /// </summary>
-        /// <param name="number">Номер шага</param>
-        /// <returns>Шаг</returns>
-        public Result<WorkflowStepTemplate> GetStep(int number)
-        {
-            if (number <= 0)
-            {
-                return Result<WorkflowStepTemplate>.Failure("Некорректный номер шага");
-            }
-
-            var step = Steps.FirstOrDefault(s => s.Number == number);
-
-            if (step is null)
-            {
-                return Result<WorkflowStepTemplate>.Failure("Шаблон не содержит шаг с таким номером");
-            }
-
-            return Result<WorkflowStepTemplate>.Success(step);
-        }
-
         //Вынес в отдельный метод, т.к. может пригодиться в нескольких местах класса, а может и нет =)
         /// <summary>
         /// Проходит по писку от {number} и обновляет значение номера шага
