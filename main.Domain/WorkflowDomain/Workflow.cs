@@ -131,13 +131,18 @@ namespace Main.Domain.WorkflowDomain
                 return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
             }
 
+            if (template.Steps.Count == 0)
+            {
+                return Result<Workflow>.Failure("Предложенный шаблон не содержит шаги");
+            }
+
             var stepsResults = template.Steps
                 .Select(s => WorkflowStep.Create(candidateId, s))
                 .ToList();
 
             if (stepsResults.Any(result => result.IsFailure))
             {
-                return Result<Workflow>.Failure($"Ошибка при создание шагов");
+                return Result<Workflow>.Failure("Ошибка при создание шагов");
             }
 
             var steps = stepsResults.Select(r => r.Value)
