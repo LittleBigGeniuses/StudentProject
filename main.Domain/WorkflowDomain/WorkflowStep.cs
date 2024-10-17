@@ -163,7 +163,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"У этого шага другой исполнитель");
             }
 
-            if (employee.RoleId != RoleId)
+            if (employee.RoleId != RoleId && employee.Id != EmployeeId)
             {
                 return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
             }
@@ -197,7 +197,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"У этого шага другой исполнитель");
             }
 
-            if (employee.RoleId != RoleId)
+            if (employee.RoleId != RoleId && employee.Id != EmployeeId)
             {
                 return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
             }
@@ -243,10 +243,11 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            if (employee.RoleId != RoleId)
-            {
-                return Result<bool>.Failure($"{nameof(employee)} не соответствует по должности для исполнения шага");
-            }
+            //todo: В теории сотрудник с ролью выше может быть назначен, момент на обсуждение
+            //if (employee.RoleId != RoleId)
+            //{
+            //    return Result<bool>.Failure($"{nameof(employee)} не соответствует по должности для исполнения шага");
+            //}
 
             if (employee.Id != EmployeeId)
             {

@@ -291,15 +291,16 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
+            if (Status != Status.Expectation && Status != Status.Approved)
+            {
+                return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
+            }
+
             if (Status != Status.Expectation)
             {
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-            if (Status != Status.Approved)
-            {
-                return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
-            }
 
             var step = Steps
                  .OrderBy(x => x.Number)
