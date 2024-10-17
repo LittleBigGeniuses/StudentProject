@@ -205,12 +205,20 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// Добавление нового шага
         /// </summary>
         /// <param name="description">Описание</param>
-        /// <param name="employerId">Идентификатор сотрудника, исполняемого шаг</param>
+        /// <param name="employeeId">Идентификатор сотрудника, исполняемого шаг</param>
         /// <param name="roleId">Идентификатор должности, исполняемой шаг</param>
         /// <returns>Результат добавления шага</returns>
-        public Result<bool> AddStep(string description, Guid? employerId, Guid? roleId)
+        public Result<bool> AddStep(string description, Guid? employeeId, Guid? roleId)
         {
-            var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employerId, roleId);
+            if (employeeId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{employeeId} - некорректный идентификатор сотрудника");
+            }
+            if (roleId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{roleId} - некорректный идентификатор должности");
+            }
+            var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employeeId, roleId);
 
             if (createStep.IsFailure)
             {
