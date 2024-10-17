@@ -79,6 +79,9 @@ namespace main.DomainTest.Tests.WorkflowTests
             };
         }
 
+        /// <summary>
+        /// Тестирование создания Workflow при валидных данных
+        /// </summary>
         [Fact]
         public void Create_Workflow_With_Valid_Data()
         {
@@ -96,6 +99,14 @@ namespace main.DomainTest.Tests.WorkflowTests
             Assert.True(workflowCreateResult.IsSuccess);
         }
 
+
+        /// <summary>
+        /// Кейс-тест с набором невалидных данных
+        /// </summary>
+        /// <param name="authorId"></param>
+        /// <param name="candidateId"></param>
+        /// <param name="template"></param>
+        /// <param name="expectedErrorMessage"></param>
         [Theory]
         [MemberData(nameof(GetInvalidInputs))]
         public void Create_ShouldReturnFailure_WhenInvalidInput(

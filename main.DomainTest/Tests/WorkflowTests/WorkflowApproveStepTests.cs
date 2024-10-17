@@ -1,15 +1,12 @@
 ﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.EmployeeDomain;
 using Main.Domain.WorkflowDomain;
-using Main.Domain.WorkflowDomain.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace main.DomainTest.Tests.WorkflowTests
 {
+    /// <summary>
+    /// Класс тестирования одобрения шага workflow
+    /// </summary>
     public class WorkflowApproveStepTests
     {
         private readonly IFixture _fixture;
@@ -30,6 +27,9 @@ namespace main.DomainTest.Tests.WorkflowTests
             }
         }
 
+        /// <summary>
+        /// Проверка успешного одобрения шага
+        /// </summary>
         [Fact]
         public void Approve_ShouldSucceed_WhenValidEmployeeAndStep()
         { 
@@ -39,6 +39,9 @@ namespace main.DomainTest.Tests.WorkflowTests
             Assert.Equal(DateTime.UtcNow, _workflow.DateUpdate, precision: TimeSpan.FromSeconds(1));
         }
 
+        /// <summary>
+        /// Проверка ошибки при пустом сотруднике
+        /// </summary>
         [Fact]
         public void Approve_ShouldFail_WhenEmployeeIsNull()
         {
@@ -49,6 +52,9 @@ namespace main.DomainTest.Tests.WorkflowTests
         }
 
 
+        /// <summary>
+        /// Проверка ошибки при статусе отказа
+        /// </summary>
         [Fact]
         public void Approve_ShouldFail_WhenWorkflowStatusIsRejected()
         {
@@ -62,6 +68,9 @@ namespace main.DomainTest.Tests.WorkflowTests
             Assert.Equal("Отклоненный рабочий процесс, не может быть одобрен", result.Error);
         }
 
+        /// <summary>
+        /// Проверка одобрения при завершенности workflow
+        /// </summary>
         [Fact]
         public void Approve_ShouldFail_WhenNoStepInExpectationStatus()
         {

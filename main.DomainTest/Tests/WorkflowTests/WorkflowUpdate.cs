@@ -1,12 +1,5 @@
-﻿using AutoFixture;
-using main.DomainTest.TestTools.Autofixture;
+﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowDomain;
-using Main.Domain.WorkflowTemplateDomain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace main.DomainTest.Tests.WorkflowTests
 {
@@ -23,6 +16,10 @@ namespace main.DomainTest.Tests.WorkflowTests
             _workflow = _fixture.Create<Workflow>();
         }
 
+
+        /// <summary>
+        /// Обновление данных с валидными значениями
+        /// </summary>
         [Fact]
         public void UpdateInfo_ValidInputs_ShouldUpdateInfoSuccessfully()
         {
@@ -38,15 +35,21 @@ namespace main.DomainTest.Tests.WorkflowTests
             Assert.NotEqual(default, _workflow.DateUpdate);
         }
 
+        /// <summary>
+        /// Невалидные данные обновления (Имя)
+        /// </summary>
         [Fact]
         public void UpdateInfo_EmptyName_ShouldReturnFailure()
         {
             var result = _workflow.UpdateInfo(string.Empty, null);
 
             Assert.False(result.IsSuccess);
-            Assert.Equal("Наименование шаблона не может быть пустым", result.Error);
+            Assert.Equal("Наименование рабочего процесса не может быть пустым", result.Error);
         }
 
+        /// <summary>
+        /// Невалидные данные обновления (Длина имя)
+        /// </summary>
         [Fact]
         public void UpdateInfo_ShortName_ShouldReturnFailure()
         {
@@ -55,9 +58,12 @@ namespace main.DomainTest.Tests.WorkflowTests
             var result = _workflow.UpdateInfo(shortName, null);
 
             Assert.False(result.IsSuccess);
-            Assert.Equal($"Длина наименование шаблона не может быть меньше {Workflow.MinLengthName}", result.Error);
+            Assert.Equal($"Длина наименование рабочего процесса не может быть меньше {Workflow.MinLengthName}", result.Error);
         }
 
+        /// <summary>
+        /// Невалидные данные обновления (Описание)
+        /// </summary>
         [Fact]
         public void UpdateInfo_ValidDescription_ShouldUpdateDescription()
         {
@@ -70,6 +76,9 @@ namespace main.DomainTest.Tests.WorkflowTests
             Assert.NotEqual(default, _workflow.DateUpdate); 
         }
 
+        /// <summary>
+        /// Проверка на неизменяемость даты обновления при вводе тех же данных, что уже содержатся в Workflow
+        /// </summary>
         [Fact]
         public void UpdateInfo_SameData_DoesNotChangeDateUpdate()
         {

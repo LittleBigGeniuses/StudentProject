@@ -247,12 +247,12 @@ namespace Main.Domain.WorkflowDomain
             {
                 if (string.IsNullOrEmpty(name))
                 {
-                    return Result<bool>.Failure("Наименование шаблона не может быть пустым");
+                    return Result<bool>.Failure("Наименование рабочего процесса не может быть пустым");
                 }
 
                 if (name.Trim().Length < MinLengthName)
                 {
-                    return Result<bool>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
+                    return Result<bool>.Failure($"Длина наименование рабочего процесса не может быть меньше {MinLengthName}");
                 }
 
                 if (name != Name)
