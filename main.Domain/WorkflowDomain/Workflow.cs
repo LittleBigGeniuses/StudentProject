@@ -296,7 +296,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-            if (Status != Status.Approved)
+            if (Status != Status.Expectation && Status != Status.Approved)
             {
                 return Result<bool>.Failure("Отклоненный рабочий процесс, не может быть одобрен");
             }
