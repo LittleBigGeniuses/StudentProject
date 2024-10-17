@@ -445,5 +445,56 @@ namespace Main.Domain.WorkflowDomain
 
             return Result<bool>.Success(true);
         }
+
+        /// <summary>
+        /// Метод для делегирования назначенным сотрудником
+        /// </summary>
+        /// <param name="employee">Делегирующий сотрудник</param>
+        /// <param name="delegatedEmployee">Делегированный сотрудник</param>
+        /// <param name="numberStep">номер шага куда будет делегирован сотрудник</param>
+        /// <returns></returns>
+        public Result<bool> SetDelegatedEmployeeInStep(Employee employee, Employee delegatedEmployee, int numberStep)
+        {
+
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+
+            if (delegatedEmployee is null)
+            {
+                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
+            }
+
+            var step = Steps
+                .FirstOrDefault(s => s.Number == numberStep);
+
+            if (step is null)
+            {
+                return Result<bool>.Failure($"Шаг с номером {numberStep} не найден");
+            }
+
+            if (step.Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Шаг {numberStep} завершен");
+            }
+
+            if (step.EmployeeId != employee.Id)
+            {
+                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
+            }
+
+            var result = step.SetDelegatedEmployee(delegatedEmployee);
+
+            if (result.IsFailure)
+            {
+                return result;
+            }
+
+            DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
+        }
     }
 }

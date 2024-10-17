@@ -69,7 +69,8 @@ namespace Main.Domain.WorkflowDomain
             EmployeeId = employeeId;
             RoleId = roleId;
             DateCreate = dateCreate;
-            DateUpdate = dateUpdate;          
+            DateUpdate = dateUpdate;
+            Status = Status.Expectation;
         }
 
         /// <summary>
@@ -143,7 +144,12 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Стастус шага
         /// </summary>
-        public Status Status { get; private set; } = Status.Expectation;
+        public Status Status { get; private set; }
+
+        /// <summary>
+        /// Идентификатор сотрудника длегированного на процесс
+        /// </summary>
+        public Guid? DelegatedEmployeeId { get; private set; }
 
 
         /// <summary>
@@ -243,15 +249,26 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            //todo: В теории сотрудник с ролью выше может быть назначен, момент на обсуждение
-            //if (employee.RoleId != RoleId)
-            //{
-            //    return Result<bool>.Failure($"{nameof(employee)} не соответствует по должности для исполнения шага");
-            //}
-
             if (employee.Id != EmployeeId)
             {
                 EmployeeId = employee.Id;
+                RoleId = null;
+                DateUpdate = DateTime.UtcNow;
+            }
+
+            return Result<bool>.Success(true);
+        }
+
+        public Result<bool> SetDelegatedEmployee(Employee employee)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            if (employee.Id != DelegatedEmployeeId)
+            {
+                DelegatedEmployeeId = employee.Id;
                 DateUpdate = DateTime.UtcNow;
             }
 
