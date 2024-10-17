@@ -7,7 +7,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
     /// </summary>
     public class WorkflowTemplateCreate
     {
-        private  Fixture _fixture;
+        private readonly IFixture _fixture;
 
         public WorkflowTemplateCreate()
         {
