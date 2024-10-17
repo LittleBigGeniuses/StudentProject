@@ -214,10 +214,12 @@ namespace Main.Domain.WorkflowTemplateDomain
             {
                 throw new ArgumentNullException($"{employeeId} - некорректный идентификатор сотрудника");
             }
+
             if (roleId == Guid.Empty)
             {
                 throw new ArgumentNullException($"{roleId} - некорректный идентификатор должности");
             }
+
             var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employeeId, roleId);
 
             if (createStep.IsFailure)

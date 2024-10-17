@@ -16,22 +16,6 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             _workflowTemplate = _fixture.Create<WorkflowTemplate>();
         }
 
-        [Fact]
-        public void AddStep_ValidInputs_ShouldAddStepSuccessfully()
-        {
-            var description = _fixture.Create<string>();
-            var employeeId = Guid.NewGuid();
-            var roleId = Guid.NewGuid();
-
-            var result = _workflowTemplate.AddStep(description, employeeId, roleId);
-
-            Assert.True(result.IsSuccess);
-            Assert.Equal(description, _workflowTemplate.Steps.Last().Description);
-            Assert.Equal(employeeId, _workflowTemplate.Steps.Last().EmployeeId);
-            Assert.Equal(roleId, _workflowTemplate.Steps.Last().RoleId);
-            Assert.NotEqual(default, _workflowTemplate.DateUpdate);
-        }
-
         public static IEnumerable<object[]> GetInvalidInputs()
         {
             yield return new object[]
@@ -50,6 +34,23 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 $"{Guid.Empty} - некорректный идентификатор должности"
             };
         }
+
+        [Fact]
+        public void AddStep_ValidInputs_ShouldAddStepSuccessfully()
+        {
+            var description = _fixture.Create<string>();
+            var employeeId = Guid.NewGuid();
+            var roleId = Guid.NewGuid();
+
+            var result = _workflowTemplate.AddStep(description, employeeId, roleId);
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal(description, _workflowTemplate.Steps.Last().Description);
+            Assert.Equal(employeeId, _workflowTemplate.Steps.Last().EmployeeId);
+            Assert.Equal(roleId, _workflowTemplate.Steps.Last().RoleId);
+            Assert.NotEqual(default, _workflowTemplate.DateUpdate);
+        }
+
 
         [Theory]
         [MemberData(nameof(GetInvalidInputs))]
