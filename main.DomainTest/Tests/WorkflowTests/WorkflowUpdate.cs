@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using main.DomainTest.Customizations;
+using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowDomain;
 using Main.Domain.WorkflowTemplateDomain;
 using System;
@@ -18,12 +18,9 @@ namespace main.DomainTest.Tests.WorkflowTests
         public WorkflowUpdate()
         {
             _fixture = new Fixture();
-            _fixture.Customize(new WorkflowTemplateWithStepsCustomization());
-            var template = _fixture.Create<WorkflowTemplate>();
-            _workflow = Workflow.Create(
-                authorId: _fixture.Create<Guid>(),
-                candidateId: _fixture.Create<Guid>(),
-                template: template).Value!;
+            _fixture.FixtureCustomization();
+
+            _workflow = _fixture.Create<Workflow>();
         }
 
         [Fact]
