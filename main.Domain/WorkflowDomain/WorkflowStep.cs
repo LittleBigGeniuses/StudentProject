@@ -2,6 +2,9 @@
 using Main.Domain.EmployeeDomain;
 using Main.Domain.WorkflowDomain.Enum;
 using Main.Domain.WorkflowTemplateDomain;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("main.DomainTest")]
 
 namespace Main.Domain.WorkflowDomain
 {

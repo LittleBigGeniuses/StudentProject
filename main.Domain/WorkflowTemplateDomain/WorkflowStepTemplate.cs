@@ -1,4 +1,7 @@
 ﻿using Main.Domain.Common;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("main.DomainTest")]
 
 namespace Main.Domain.WorkflowTemplateDomain
 {

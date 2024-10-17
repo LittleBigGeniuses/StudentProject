@@ -1,7 +1,7 @@
 ﻿using Main.Domain.WorkflowTemplateDomain;
 
 
-namespace main.DomainTest.Customizations
+namespace main.DomainTest.TestTools.Autofixture.Customizations
 {
     public class WorkflowTemplateWithStepsCustomization : ICustomization
     {
@@ -10,9 +10,9 @@ namespace main.DomainTest.Customizations
             fixture.Customize<WorkflowTemplate>(composer =>
                 composer.FromFactory(() =>
                 {
-                    string validName = fixture.Create<string>().Substring(0, WorkflowTemplate.MinLengthName + 1);
-                    string validDescription = fixture.Create<string>();
-                    Guid validCompanyId = fixture.Create<Guid>();
+                    var validName = fixture.Create<string>().Substring(0, WorkflowTemplate.MinLengthName + 1);
+                    var validDescription = fixture.Create<string>();
+                    var validCompanyId = fixture.Create<Guid>();
 
                     var resultTemplateCreate = WorkflowTemplate.Create(validName, validDescription, validCompanyId);
                     var validTemplate = resultTemplateCreate.Value;
