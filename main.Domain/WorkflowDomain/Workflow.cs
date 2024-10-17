@@ -485,7 +485,70 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
             }
 
-            var result = step.SetDelegatedEmployee(delegatedEmployee);
+            var result = step.SetDelegatedEmployee(employee, delegatedEmployee);
+
+            if (result.IsFailure)
+            {
+                return result;
+            }
+
+            DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Метод для назначения делегированного сотрудника на промежуток времени
+        /// </summary>
+        /// <param name="employee">Ведущий сотрудник</param>
+        /// <param name="delegatedEmployee">Назначенный сотрудник</param>
+        /// <param name="delegateStartTime">Начало промежутка</param>
+        /// <param name="delegateEndTime">Конец промежутка</param>
+        /// <param name="numberStep">Номер шага</param>
+        /// <returns></returns>
+        public Result<bool> SetDelegatedEmployeeInStep(Employee employee, Employee delegatedEmployee, DateTime delegateStartTime, DateTime delegateEndTime, int numberStep)
+        {
+
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+
+            if (delegatedEmployee is null)
+            {
+                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
+            }
+
+            var step = Steps
+                .FirstOrDefault(s => s.Number == numberStep);
+
+            if (step is null)
+            {
+                return Result<bool>.Failure($"Шаг с номером {numberStep} не найден");
+            }
+
+            if (step.Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Шаг {numberStep} завершен");
+            }
+
+            if (step.EmployeeId != employee.Id)
+            {
+                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
+            }
+
+            if (delegateStartTime > delegateEndTime)
+            {
+                return Result<bool>.Failure("Начало временного промежутка должно быть раньше чем его конец");
+            }
+
+            if (delegateStartTime < DateTime.UtcNow || delegateEndTime < DateTime.UtcNow)
+            {
+                return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
+            }
+
+            var result = step.SetDelegatedEmployee(employee, delegatedEmployee, delegateStartTime, delegateEndTime);
 
             if (result.IsFailure)
             {

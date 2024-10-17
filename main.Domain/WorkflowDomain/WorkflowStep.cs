@@ -71,6 +71,9 @@ namespace Main.Domain.WorkflowDomain
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
             Status = Status.Expectation;
+            DelegatedEmployeeId = Guid.Empty;
+            DelegateStartTime = DateTime.MinValue;
+            DelegateEndTime = DateTime.MinValue;
         }
 
         /// <summary>
@@ -151,6 +154,10 @@ namespace Main.Domain.WorkflowDomain
         /// </summary>
         public Guid? DelegatedEmployeeId { get; private set; }
 
+        public DateTime DelegateStartTime { get; private set; }
+
+        public DateTime DelegateEndTime { get; private set; }
+
 
         /// <summary>
         /// Одобрение
@@ -164,14 +171,24 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            if (employee.Id != EmployeeId)
+            if (RoleId != Guid.Empty && employee.Id != RoleId)
             {
-                return Result<bool>.Failure($"У этого шага другой исполнитель");
+                return Result<bool>.Failure("Должность сотрудника не соответсвет заявленной");
             }
 
-            if (employee.RoleId != RoleId && employee.Id != EmployeeId)
+            if (EmployeeId != Guid.Empty)
             {
-                return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
+                if (employee.Id == DelegatedEmployeeId)
+                {
+                    if (DelegateStartTime > DateTime.UtcNow || DelegateEndTime < DateTime.UtcNow)
+                    {
+                        return Result<bool>.Failure("В текущий момент делегированный сотрудник не имеет полномочий");
+                    }
+                }
+                else if (employee.Id != EmployeeId)
+                {
+                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
+                }
             }
 
             if (Status != Status.Expectation)
@@ -198,14 +215,24 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            if (employee.Id != EmployeeId)
+            if (RoleId != Guid.Empty && employee.Id != RoleId)
             {
-                return Result<bool>.Failure($"У этого шага другой исполнитель");
+                return Result<bool>.Failure("Должность сотрудника не соответсвет заявленной");
             }
 
-            if (employee.RoleId != RoleId && employee.Id != EmployeeId)
+            if (EmployeeId != Guid.Empty)
             {
-                return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
+                if (employee.Id == DelegatedEmployeeId)
+                {
+                    if (DelegateStartTime > DateTime.UtcNow || DelegateEndTime < DateTime.UtcNow)
+                    {
+                        return Result<bool>.Failure("В текущий момент делегированный сотрудник не имеет полномочий");
+                    }
+                }
+                else if (employee.Id != EmployeeId)
+                {
+                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
+                }
             }
 
             if (Status != Status.Expectation)
@@ -223,12 +250,32 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Откат статуса шага
         /// </summary>
-        /// <param name="employerId">Идентификатор сотрудника</param>
-        public Result<bool> Restart(Guid employerId)
+        /// <param name="employeeId">Идентификатор сотрудника</param>
+        public Result<bool> Restart(Employee employee)
         {
-            if (employerId == Guid.Empty)
+            if (employee.Id == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+            }
+
+            if (RoleId != Guid.Empty && employee.Id != RoleId)
+            {
+                return Result<bool>.Failure("Должность сотрудника не соответсвет заявленной");
+            }
+
+            if (EmployeeId != Guid.Empty)
+            {
+                if (employee.Id == DelegatedEmployeeId)
+                {
+                    if (DelegateStartTime > DateTime.UtcNow || DelegateEndTime < DateTime.UtcNow)
+                    {
+                        return Result<bool>.Failure("В текущий момент делегированный сотрудник не имеет полномочий");
+                    }
+                }
+                else if (employee.Id != EmployeeId)
+                {
+                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
+                }
             }
 
             Status = Status.Expectation;
@@ -259,16 +306,78 @@ namespace Main.Domain.WorkflowDomain
             return Result<bool>.Success(true);
         }
 
-        public Result<bool> SetDelegatedEmployee(Employee employee)
+        /// <summary>
+        /// Метод для делегирования назначенным сотрудником
+        /// </summary>
+        /// <param name="employee">Делегирующий сотрудник</param>
+        /// <param name="delegatedEmployee">Делегированный сотрудник</param>
+        /// <returns></returns>
+        public Result<bool> SetDelegatedEmployee(Employee employee, Employee delegatedEmployee)
         {
             if (employee is null)
             {
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
-            if (employee.Id != DelegatedEmployeeId)
+            if (EmployeeId != employee.Id)
             {
-                DelegatedEmployeeId = employee.Id;
+                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
+            }
+
+            if (delegatedEmployee is null)
+            {
+                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
+            }
+
+            if (delegatedEmployee.Id != DelegatedEmployeeId)
+            {
+                DelegatedEmployeeId = delegatedEmployee.Id;
+                DateUpdate = DateTime.UtcNow;
+            }
+
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Метод для делегирования назначенным сотрудником с указанием временных ограничений
+        /// </summary>
+        /// <param name="employee">Делегирующий сотрудник</param>
+        /// <param name="delegatedEmployee">Делегированный сотрудник</param>
+        /// <param name="delegateStartTime">Начало промежутка</param>
+        /// <param name="delegateEndTime">Конец промежутка</param>
+        /// <returns></returns>
+        public Result<bool> SetDelegatedEmployee(Employee employee, Employee delegatedEmployee, DateTime delegateStartTime, DateTime delegateEndTime)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            if (EmployeeId != employee.Id)
+            {
+                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
+            }
+
+            if (delegatedEmployee is null)
+            {
+                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
+            }
+
+            if (delegateStartTime > delegateEndTime)
+            {
+                return Result<bool>.Failure("Начало временного промежутка должно быть раньше чем его конец");
+            }
+
+            if (delegateStartTime < DateTime.UtcNow || delegateEndTime < DateTime.UtcNow)
+            {
+                return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
+            }
+
+            if (delegatedEmployee.Id != DelegatedEmployeeId)
+            {
+                DelegatedEmployeeId = delegatedEmployee.Id;
+                DelegateStartTime = delegateStartTime;
+                DelegateEndTime = delegateEndTime;
                 DateUpdate = DateTime.UtcNow;
             }
 
