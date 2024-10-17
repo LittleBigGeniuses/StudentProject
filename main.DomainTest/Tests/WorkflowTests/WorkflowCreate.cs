@@ -5,9 +5,8 @@ using Main.Domain.WorkflowTemplateDomain;
 
 namespace main.DomainTest.Tests.WorkflowTests
 {
-    public class WorkflowCreateTests
+    public class WorkflowCreate
     {
-
         public static IEnumerable<object[]> GetInvalidInputs()
         {
             var validTemplate = WorkflowTemplate.Create("Valid Name", "Valid Description", Guid.NewGuid()).Value;
