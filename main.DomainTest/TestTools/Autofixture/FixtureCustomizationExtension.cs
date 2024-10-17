@@ -1,13 +1,4 @@
-﻿using AutoFixture;
-using main.DomainTest.Customizations;
-using main.DomainTest.TestTools.Autofixture.Customizations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Security;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using main.DomainTest.TestTools.Autofixture.Customizations;
 
 namespace main.DomainTest.TestTools.Autofixture
 {

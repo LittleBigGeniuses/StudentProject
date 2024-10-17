@@ -1,14 +1,23 @@
-﻿using main.DomainTest.Customizations;
-using Main.Domain.EmployeeDomain;
+﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowDomain;
 using Main.Domain.WorkflowTemplateDomain;
 
 namespace main.DomainTest.Tests.WorkflowTests
 {
+    /// <summary>
+    /// Класс тестов создания Workflow
+    /// </summary>
     public class WorkflowCreate
     {
+        private readonly Fixture _fixture;
+        public WorkflowCreate()
+        {
+            _fixture = new Fixture();
+            _fixture.FixtureCustomization();
+        }
         public static IEnumerable<object[]> GetInvalidInputs()
         {
+            //Не используется фикстура, потому что происходит проверка списка шаблона
             var validTemplate = WorkflowTemplate.Create("Valid Name", "Valid Description", Guid.NewGuid()).Value;
 
             // Неправильный authorId
@@ -73,12 +82,10 @@ namespace main.DomainTest.Tests.WorkflowTests
         [Fact]
         public void Create_Workflow_With_Valid_Data()
         {
-            var fixture = new Fixture();
-            fixture.Customize(new WorkflowTemplateWithStepsCustomization());
 
-            var validAuthorGuid = fixture.Create<Guid>();
-            var validCandidateGuid = fixture.Create<Guid>();
-            var validTemplate = fixture.Create<WorkflowTemplate>();
+            var validAuthorGuid = _fixture.Create<Guid>();
+            var validCandidateGuid = _fixture.Create<Guid>();
+            var validTemplate = _fixture.Create<WorkflowTemplate>();
 
             var workflowCreateResult = Workflow.Create(
                                             validAuthorGuid, 
