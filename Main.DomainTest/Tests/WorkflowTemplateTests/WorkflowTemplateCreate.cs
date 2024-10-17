@@ -29,7 +29,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             // Пустое имя шаблона
             yield return new object[]
             {
-                "",
+                string.Empty,
                 "Valid descriotion",
                 Guid.NewGuid(),
                 "Имя шаблона должно быть отлично от null"
@@ -39,7 +39,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             yield return new object[]
             {
                 "Valid name",
-                "",
+                string.Empty,
                 Guid.NewGuid(),
                 "Описание шаблона должно быть отлично от null"
             };
@@ -47,7 +47,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             // Длина имени шаблона меньше требуемой
             yield return new object[]
             {
-                "a",
+                new string('a', WorkflowTemplate.MinLengthName - 1),
                 "Valid descriotion",
                 Guid.NewGuid(),
                 $"Имя шаблона должно быть длиннее {WorkflowTemplate.MinLengthName}"
