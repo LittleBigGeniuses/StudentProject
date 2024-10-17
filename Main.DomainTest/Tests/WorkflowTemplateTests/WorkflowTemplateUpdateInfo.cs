@@ -62,7 +62,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateUpdateIndo
         }
 
         /// <summary>
-        /// Проверка на неизменяемость даты обновления при вводе тех же данных, что уже содержатся в Workflow
+        /// Проверка на неизменяемость даты обновления при вводе тех же данных, что уже содержатся в WorkflowTemplate
         /// </summary>
         [Fact]
         public void UpdateInfo_SameData_DoesNotChangeDateUpdate()
