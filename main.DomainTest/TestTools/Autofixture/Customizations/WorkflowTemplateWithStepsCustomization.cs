@@ -1,7 +1,7 @@
 ﻿using Main.Domain.WorkflowTemplateDomain;
 
 
-namespace main.DomainTest.Customizations
+namespace main.DomainTest.TestTools.Autofixture.Customizations
 {
     public class WorkflowTemplateWithStepsCustomization : ICustomization
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace main.DomainTest.Customizations
+namespace main.DomainTest.TestTools.Autofixture.Customizations
 {
     public class EmployeeCustomization : ICustomization
     {
