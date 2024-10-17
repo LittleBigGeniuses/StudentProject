@@ -197,7 +197,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"У этого шага другой исполнитель");
             }
 
-            if (employee.RoleId != RoleId)
+            if (employee.RoleId != RoleId && employee.Id != EmployeeId)
             {
                 return Result<bool>.Failure($"Роль не соответвует требованиям, для исполнения шага");
             }

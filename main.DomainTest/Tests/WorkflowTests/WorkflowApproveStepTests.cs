@@ -22,28 +22,27 @@ namespace main.DomainTest.Tests.WorkflowTests
             _fixture.FixtureCustomization();
 
             _workflow = _fixture.Create<Workflow>();
+            _employee = _fixture.Create<Employee>();
+
+            foreach (var step in _workflow.Steps)
+            {
+                step.SetEmployee(_employee);
+            }
         }
 
         [Fact]
         public void Approve_ShouldSucceed_WhenValidEmployeeAndStep()
         { 
-            var workflow = _fixture.Create<Workflow>();
-            var employee = _fixture.Create<Employee>();
-
-            workflow.SetEmployee(employee);
-
-            var result = workflow.Approve(employee, "Valid feedback");
+            var result = _workflow.Approve(_employee, "Valid feedback");
 
             Assert.True(result.IsSuccess);
-            Assert.Equal(DateTime.UtcNow, workflow.DateUpdate, precision: TimeSpan.FromSeconds(1));
+            Assert.Equal(DateTime.UtcNow, _workflow.DateUpdate, precision: TimeSpan.FromSeconds(1));
         }
 
         [Fact]
         public void Approve_ShouldFail_WhenEmployeeIsNull()
         {
-            var workflow = _fixture.Create<Workflow>();
-
-            var result = workflow.Approve(null, "Some feedback");
+            var result = _workflow.Approve(null, "Some feedback");
 
             Assert.True(result.IsFailure);
             Assert.Equal("employee не может быть пустым", result.Error);
@@ -53,14 +52,11 @@ namespace main.DomainTest.Tests.WorkflowTests
         [Fact]
         public void Approve_ShouldFail_WhenWorkflowStatusIsRejected()
         {
+            var rejectedStep = _workflow.Steps.First();
 
-            var workflow = _fixture.Create<Workflow>();
-            var employee = _fixture.Create<Employee>();
+            rejectedStep.Reject(_employee, "test"); 
 
-            var rejectedStep = workflow.Steps.First();
-            rejectedStep.Reject(employee,"test"); 
-
-            var result = workflow.Approve(_fixture.Create<Employee>(), "Some feedback");
+            var result = _workflow.Approve(_employee, "Some feedback");
 
             Assert.True(result.IsFailure);
             Assert.Equal("Отклоненный рабочий процесс, не может быть одобрен", result.Error);
@@ -69,16 +65,12 @@ namespace main.DomainTest.Tests.WorkflowTests
         [Fact]
         public void Approve_ShouldFail_WhenNoStepInExpectationStatus()
         {
-            var workflow = _fixture.Create<Workflow>();
-            var employee = _fixture.Create<Employee>();
-
-            foreach (var step in workflow.Steps)
+            foreach (var step in _workflow.Steps)
             {
-                step.SetEmployee(employee);
-                step.Approve(employee, "test");
+                step.Approve(_employee, "test");
             }
 
-            var result = workflow.Approve(employee, "Some feedback");
+            var result = _workflow.Approve(_employee, "Some feedback");
 
             Assert.True(result.IsFailure);
             Assert.Equal("Рабочий процесс завершен", result.Error);
