@@ -1,10 +1,21 @@
-﻿using main.DomainTest.Models;
-using Main.Domain.CompanyDomain;
+﻿using Main.Domain.CompanyDomain;
 
 namespace main.DomainTest.Tests.CompanyTests
 {
     public class CompanyCtorTest
     {
+        public class CompanyCtor : Company
+        {
+            public CompanyCtor(
+                Guid id,
+                string name,
+                string description,
+                DateTime dateCreate,
+                DateTime dateUpdate)
+                : base(id, name, description, dateCreate, dateUpdate)
+            { }
+        }
+
         private readonly IFixture _fixture;
 
         public CompanyCtorTest()
