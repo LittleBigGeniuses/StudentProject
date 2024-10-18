@@ -11,7 +11,7 @@ namespace Main.Domain.CompanyDomain
         /// Минимальная длина наименования компании
         /// </summary>
         public const int MinLengthName = 5;
-        private Company(
+        protected Company(
             Guid id, 
             string name, 
             string description, 
