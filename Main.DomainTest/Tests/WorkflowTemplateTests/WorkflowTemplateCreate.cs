@@ -32,7 +32,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 string.Empty,
                 "Valid descriotion",
                 Guid.NewGuid(),
-                "Имя шаблона должно быть отлично от null"
+                "Наименование шаблона не может быть пустым"
             };
 
             // Пустое описание шаблона
@@ -41,7 +41,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 "Valid name",
                 string.Empty,
                 Guid.NewGuid(),
-                "Описание шаблона должно быть отлично от null"
+                "Описание процесса не может быть пустым"
             };
 
             // Длина имени шаблона меньше требуемой
@@ -50,7 +50,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 new string('a', WorkflowTemplate.MinLengthName - 1),
                 "Valid descriotion",
                 Guid.NewGuid(),
-                $"Имя шаблона должно быть длиннее {WorkflowTemplate.MinLengthName}"
+                $"Имя шаблона должно быть короче {WorkflowTemplate.MinLengthName}"
             };
         }
 
@@ -85,7 +85,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         public void Create_ShouldReturnFailure_WhenInvalidInput(
         string name,
         string description,
-        Guid companyId,
+        Guid companyId, 
         string expectedErrorMessage)
         {
             var result = WorkflowTemplate.Create(name, description, companyId);

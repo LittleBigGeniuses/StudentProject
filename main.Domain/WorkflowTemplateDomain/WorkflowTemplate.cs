@@ -88,7 +88,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (String.IsNullOrEmpty(description))
             {
-                throw new ArgumentNullException("Описание процесса не может быть пустым");
+                return Result<WorkflowTemplate>.Failure("Описание процесса не может быть пустым");
             }
 
             if (companyId == Guid.Empty)
@@ -98,7 +98,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (name.Trim().Length < MinLengthName)
             {
-                return Result<WorkflowTemplate>.Failure($"Длина наименование шаблона не может быть меньше {MinLengthName}");
+                return Result<WorkflowTemplate>.Failure($"Имя шаблона должно быть короче {WorkflowTemplate.MinLengthName}");
             }
 
             var workflowTemplate = new WorkflowTemplate(
