@@ -21,9 +21,9 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             yield return new object[]
             {
                 "valid description",
-                Guid.Empty,
                 Guid.NewGuid(),
-                $"{Guid.Empty} - некорректный идентификатор сотрудника"            
+                Guid.Empty,
+                $"{Guid.Empty} - некорректный идентификатор должности"            
             };
 
             yield return new object[]
@@ -31,7 +31,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 "valid description",
                 Guid.Empty,
                 Guid.NewGuid(),
-                $"{Guid.Empty} - некорректный идентификатор должности"
+                $"{Guid.Empty} - некорректный идентификатор сотрудника"
             };
         }
 
