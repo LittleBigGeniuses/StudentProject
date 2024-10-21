@@ -6,7 +6,7 @@ namespace main.DomainTest.Tests.WorkflowTests
     public class WorkflowUpdate
     {
 
-        private readonly Fixture _fixture;
+        private readonly IFixture _fixture;
         private readonly Workflow _workflow;
         public WorkflowUpdate()
         {
