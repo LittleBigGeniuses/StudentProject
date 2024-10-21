@@ -10,6 +10,7 @@ namespace main.DomainTest.Tests.WorkflowTests
     public class WorkflowCreate
     {
         private readonly Fixture _fixture;
+
         public WorkflowCreate()
         {
             _fixture = new Fixture();
