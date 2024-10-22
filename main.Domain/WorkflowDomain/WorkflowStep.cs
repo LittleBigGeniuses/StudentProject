@@ -72,11 +72,6 @@ namespace Main.Domain.WorkflowDomain
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
             Status = status;
-            DelegatedEmployeeId = Guid.Empty;
-            DelegateStartTime = DateTime.MinValue;
-            DelegateEndTime = DateTime.MinValue;
-            RestartAuthorEmployeeId = Guid.Empty;
-            RestartDate = DateTime.MinValue;
         }
 
         /// <summary>
@@ -155,27 +150,27 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Идентификатор сотрудника длегированного на процесс
         /// </summary>
-        public Guid? DelegatedEmployeeId { get; private set; }
+        public Guid? DelegatedEmployeeId { get; private set; } = Guid.Empty;
 
         /// <summary>
         /// Время начала промежутка делегирования
         /// </summary>
-        public DateTime DelegateStartTime { get; private set; }
+        public DateTime DelegateStartTime { get; private set; } = DateTime.MinValue;
 
         /// <summary>
         /// Время конца промежутка делегирования
         /// </summary>
-        public DateTime DelegateEndTime { get; private set; }
+        public DateTime DelegateEndTime { get; private set; }  = DateTime.MinValue;
 
         /// <summary>
         /// Идентоификатор сотрудника, перезапустившего шаг
         /// </summary>
-        public Guid RestartAuthorEmployeeId { get; private set; }
+        public Guid RestartAuthorEmployeeId { get; private set; } = Guid.Empty;
 
         /// <summary>
         /// Дата перезапуска шага
         /// </summary>
-        public DateTime RestartDate { get; private set; }
+        public DateTime RestartDate { get; private set; } = DateTime.MinValue;
 
         /// <summary>
         /// Одобрение
@@ -342,11 +337,12 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
             }
 
-            if (delegatedEmployee.Id != DelegatedEmployeeId)
+            if (DelegatedEmployeeId != delegatedEmployee.Id && DelegateStartTime != delegateStartTime && DelegateEndTime != delegateEndTime)
             {
                 DelegatedEmployeeId = delegatedEmployee.Id;
                 DelegateStartTime = delegateStartTime;
                 DelegateEndTime = delegateEndTime;
+
                 DateUpdate = DateTime.UtcNow;
             }
 
