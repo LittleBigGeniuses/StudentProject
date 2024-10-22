@@ -6,7 +6,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateUpdateIndo
     public class WorkflowTemplateUpdate
     {
 
-        private readonly Fixture _fixture;
+        private readonly IFixture _fixture;
         private readonly WorkflowTemplate _workflowTemplate;
         public WorkflowTemplateUpdate()
         {

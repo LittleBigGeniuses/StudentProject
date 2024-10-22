@@ -4,7 +4,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
 {
     public class WorkflowTemplateAddStep
     {
-        private readonly Fixture _fixture;
+        private readonly IFixture _fixture;
         private readonly WorkflowTemplate _workflowTemplate;
 
         public WorkflowTemplateAddStep()
