@@ -12,7 +12,7 @@ namespace Main.Domain.EmployeeDomain
         /// </summary>
         public const int MinLengthName = 3;
 
-        private Role(
+        protected Role(
             Guid id, 
             string name, 
             Guid companyId, 
