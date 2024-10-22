@@ -1,6 +1,5 @@
 ﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowTemplateDomain;
-
 namespace main.DomainTest.Tests.WorkflowTemplateTests
 {
     public class WorkflowTemplateAddStep
@@ -21,9 +20,9 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             yield return new object[]
             {
                 "valid description",
-                Guid.Empty,
                 Guid.NewGuid(),
-                $"{Guid.Empty} - некорректный идентификатор сотрудника"            
+                Guid.Empty,
+                $"{Guid.Empty} - некорректный идентификатор должности"
             };
 
             yield return new object[]
@@ -31,7 +30,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 "valid description",
                 Guid.Empty,
                 Guid.NewGuid(),
-                $"{Guid.Empty} - некорректный идентификатор должности"
+                $"{Guid.Empty} - некорректный идентификатор сотрудника"
             };
         }
 
@@ -56,8 +55,8 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         [MemberData(nameof(GetInvalidInputs))]
         public void WorkflowTemplate_AddStep_ShouldReturnFailure(
             string description,
-            Guid employeeId, 
-            Guid roleId, 
+            Guid employeeId,
+            Guid roleId,
             string expectedErrorMessage)
         {
             var result = _workflowTemplate.AddStep(description, employeeId, roleId);

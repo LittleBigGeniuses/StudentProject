@@ -88,7 +88,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (String.IsNullOrEmpty(description))
             {
-                throw new ArgumentNullException("Описание процесса не может быть пустым");
+                return Result<WorkflowTemplate>.Failure("Описание процесса не может быть пустым");
             }
 
             if (companyId == Guid.Empty)
@@ -212,12 +212,12 @@ namespace Main.Domain.WorkflowTemplateDomain
         {
             if (employeeId == Guid.Empty)
             {
-                throw new ArgumentNullException($"{employeeId} - некорректный идентификатор сотрудника");
+                return Result<bool>.Failure($"{employeeId} - некорректный идентификатор сотрудника");
             }
 
             if (roleId == Guid.Empty)
             {
-                throw new ArgumentNullException($"{roleId} - некорректный идентификатор должности");
+                return Result<bool>.Failure($"{roleId} - некорректный идентификатор должности");
             }
 
             var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employeeId, roleId);
