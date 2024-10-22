@@ -1,7 +1,7 @@
 ﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowTemplateDomain;
 
-namespace main.DomainTest.Tests.WorkflowTemplateTests
+namespace main.DomainTest.Tests.WorkflowTemplateUpdateIndo
 {
     public class WorkflowTemplateUpdate
     {
@@ -15,6 +15,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
 
             _workflowTemplate = _fixture.Create<WorkflowTemplate>();
         }
+
 
         /// <summary>
         /// Обновление данных с валидными значениями
@@ -57,7 +58,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             var result = _workflowTemplate.UpdateInfo(shortName, null);
 
             Assert.False(result.IsSuccess);
-            Assert.Equal($"Длина наименование шаблона не может быть меньше { WorkflowTemplate.MinLengthName}", result.Error);
+            Assert.Equal($"Длина наименование шаблона не может быть меньше {WorkflowTemplate.MinLengthName}", result.Error);
         }
 
         /// <summary>

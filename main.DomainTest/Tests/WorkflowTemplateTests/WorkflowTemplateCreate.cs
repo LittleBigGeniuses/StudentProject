@@ -2,8 +2,7 @@
 using Main.Domain.WorkflowTemplateDomain;
 
 namespace main.DomainTest.Tests.WorkflowTemplateTests
-{   
-    /// <summary>
+{   /// <summary>
     /// Класс тестов для создания WorkflowTemplate
     /// </summary>
     public class WorkflowTemplateCreate
@@ -33,7 +32,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 string.Empty,
                 "Valid descriotion",
                 Guid.NewGuid(),
-                "Имя шаблона должно быть отлично от null"
+                "Наименование шаблона не может быть пустым"
             };
 
             // Пустое описание шаблона
@@ -42,7 +41,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 "Valid name",
                 string.Empty,
                 Guid.NewGuid(),
-                "Описание шаблона должно быть отлично от null"
+                "Описание процесса не может быть пустым"
             };
 
             // Длина имени шаблона меньше требуемой
@@ -51,7 +50,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 new string('a', WorkflowTemplate.MinLengthName - 1),
                 "Valid descriotion",
                 Guid.NewGuid(),
-                $"Имя шаблона должно быть длиннее {WorkflowTemplate.MinLengthName}"
+                $"Длина наименование шаблона не может быть меньше {WorkflowTemplate.MinLengthName}"
             };
         }
 
