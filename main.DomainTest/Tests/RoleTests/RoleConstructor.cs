@@ -17,7 +17,6 @@ namespace main.DomainTest.Tests.RoleTests
         }
 
         private readonly IFixture _fixture;
-
         public RoleConstructor()
         {
             _fixture = new Fixture();
