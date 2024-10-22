@@ -72,7 +72,7 @@ namespace Main.Domain.EmployeeDomain
 
             if (companyId == Guid.Empty)
             {
-                throw new ArgumentNullException($"{companyId} - некорректный идентификатор компании");
+                return Result<Role>.Failure($"{companyId} - некорректный идентификатор компании");
             }
 
             if (name.Trim().Length < MinLengthName)
