@@ -21,7 +21,8 @@ namespace Main.Domain.WorkflowDomain
             Guid? employeeId, 
             Guid? roleId, 
             DateTime dateCreate, 
-            DateTime dateUpdate)
+            DateTime dateUpdate,
+            Status status)
         {
             if (candidateId == Guid.Empty)
             {
@@ -70,10 +71,12 @@ namespace Main.Domain.WorkflowDomain
             RoleId = roleId;
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
-            Status = Status.Expectation;
+            Status = status;
             DelegatedEmployeeId = Guid.Empty;
             DelegateStartTime = DateTime.MinValue;
             DelegateEndTime = DateTime.MinValue;
+            RestartAuthorEmployeeId = Guid.Empty;
+            RestartDate = DateTime.MinValue;
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
-            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId, DateTime.UtcNow, DateTime.UtcNow);
+            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId, DateTime.UtcNow, DateTime.UtcNow, Status.Expectation);
 
             return Result<WorkflowStep>.Success(step);
         }
@@ -154,10 +157,25 @@ namespace Main.Domain.WorkflowDomain
         /// </summary>
         public Guid? DelegatedEmployeeId { get; private set; }
 
+        /// <summary>
+        /// Время начала промежутка делегирования
+        /// </summary>
         public DateTime DelegateStartTime { get; private set; }
 
+        /// <summary>
+        /// Время конца промежутка делегирования
+        /// </summary>
         public DateTime DelegateEndTime { get; private set; }
 
+        /// <summary>
+        /// Идентоификатор сотрудника, перезапустившего шаг
+        /// </summary>
+        public Guid RestartAuthorEmployeeId { get; private set; }
+
+        /// <summary>
+        /// Дата перезапуска шага
+        /// </summary>
+        public DateTime RestartDate { get; private set; }
 
         /// <summary>
         /// Одобрение
@@ -217,7 +235,7 @@ namespace Main.Domain.WorkflowDomain
 
             if (RoleId != Guid.Empty && employee.Id != RoleId)
             {
-                return Result<bool>.Failure("Должность сотрудника не соответсвет заявленной");
+                return Result<bool>.Failure("Должность сотрудника не соответсвует заявленной");
             }
 
             if (EmployeeId != Guid.Empty)
@@ -250,7 +268,7 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Откат статуса шага
         /// </summary>
-        /// <param name="employeeId">Идентификатор сотрудника</param>
+        /// <param name="employee">Сущность сотрудника</param>
         public Result<bool> Restart(Employee employee)
         {
             if (employee.Id == Guid.Empty)
@@ -258,28 +276,10 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
-            if (RoleId != Guid.Empty && employee.Id != RoleId)
-            {
-                return Result<bool>.Failure("Должность сотрудника не соответсвет заявленной");
-            }
-
-            if (EmployeeId != Guid.Empty)
-            {
-                if (employee.Id == DelegatedEmployeeId)
-                {
-                    if (DelegateStartTime > DateTime.UtcNow || DelegateEndTime < DateTime.UtcNow)
-                    {
-                        return Result<bool>.Failure("В текущий момент делегированный сотрудник не имеет полномочий");
-                    }
-                }
-                else if (employee.Id != EmployeeId)
-                {
-                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
-                }
-            }
-
             Status = Status.Expectation;
             DateUpdate = DateTime.UtcNow;
+            RestartAuthorEmployeeId = employee.Id;
+            RestartDate = DateTime.UtcNow;
 
             return Result<bool>.Success(true);
         }
@@ -306,37 +306,6 @@ namespace Main.Domain.WorkflowDomain
             return Result<bool>.Success(true);
         }
 
-        /// <summary>
-        /// Метод для делегирования назначенным сотрудником
-        /// </summary>
-        /// <param name="employee">Делегирующий сотрудник</param>
-        /// <param name="delegatedEmployee">Делегированный сотрудник</param>
-        /// <returns></returns>
-        public Result<bool> SetDelegatedEmployee(Employee employee, Employee delegatedEmployee)
-        {
-            if (employee is null)
-            {
-                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
-            }
-
-            if (EmployeeId != employee.Id)
-            {
-                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
-            }
-
-            if (delegatedEmployee is null)
-            {
-                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
-            }
-
-            if (delegatedEmployee.Id != DelegatedEmployeeId)
-            {
-                DelegatedEmployeeId = delegatedEmployee.Id;
-                DateUpdate = DateTime.UtcNow;
-            }
-
-            return Result<bool>.Success(true);
-        }
 
         /// <summary>
         /// Метод для делегирования назначенным сотрудником с указанием временных ограничений
@@ -363,9 +332,9 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
             }
 
-            if (delegateStartTime > delegateEndTime)
+            if (delegateStartTime >= delegateEndTime)
             {
-                return Result<bool>.Failure("Начало временного промежутка должно быть раньше чем его конец");
+                return Result<bool>.Failure("Полученные даты не соответствуют временному промежутку");
             }
 
             if (delegateStartTime < DateTime.UtcNow || delegateEndTime < DateTime.UtcNow)
