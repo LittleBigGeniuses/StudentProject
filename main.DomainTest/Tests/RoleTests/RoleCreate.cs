@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace main.DomainTest.Tests.RoleTests
 {
-    internal class RoleCreate
+    public class RoleCreate
     {
     }
 }
