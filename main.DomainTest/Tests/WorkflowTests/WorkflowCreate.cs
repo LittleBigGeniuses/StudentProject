@@ -1,6 +1,7 @@
 ﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowDomain;
 using Main.Domain.WorkflowTemplateDomain;
+using System.Reflection.Metadata.Ecma335;
 
 namespace main.DomainTest.Tests.WorkflowTests
 {
@@ -9,12 +10,14 @@ namespace main.DomainTest.Tests.WorkflowTests
     /// </summary>
     public class WorkflowCreate
     {
-        private readonly Fixture _fixture;
+        private readonly IFixture _fixture;
+
         public WorkflowCreate()
         {
             _fixture = new Fixture();
             _fixture.FixtureCustomization();
         }
+
         public static IEnumerable<object[]> GetInvalidInputs()
         {
             //Не используется фикстура, потому что происходит проверка списка шаблона
@@ -116,7 +119,7 @@ namespace main.DomainTest.Tests.WorkflowTests
         string expectedErrorMessage)
         {
             var result = Workflow.Create(authorId, candidateId, template);
-
+           
             Assert.True(result.IsFailure);
             Assert.Equal(expectedErrorMessage, result.Error);
         }

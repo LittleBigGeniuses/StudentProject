@@ -7,13 +7,13 @@ namespace main.DomainTest.Tests.WorkflowTests
     /// <summary>
     /// Класс тестирования одобрения шага workflow
     /// </summary>
-    public class WorkflowApproveStepTests
+    public class WorkflowApproveStep
     {
         private readonly IFixture _fixture;
         private readonly Workflow _workflow;
         private readonly Employee _employee;
 
-        public WorkflowApproveStepTests()
+        public WorkflowApproveStep()
         {
             _fixture = new Fixture();
             _fixture.FixtureCustomization();
