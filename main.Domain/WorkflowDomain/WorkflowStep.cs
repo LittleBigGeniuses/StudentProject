@@ -22,7 +22,12 @@ namespace Main.Domain.WorkflowDomain
             Guid? roleId, 
             DateTime dateCreate, 
             DateTime dateUpdate,
-            Status status)
+            Status status,
+            Guid? delegatedEmployeeId,
+            DateTime? delegateStartTime,
+            DateTime? delegateEndTime,
+            Guid? restartAuthorEmployeeId,
+            DateTime? restartDate)
         {
             if (candidateId == Guid.Empty)
             {
@@ -72,6 +77,11 @@ namespace Main.Domain.WorkflowDomain
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
             Status = status;
+            DelegatedEmployeeId = delegatedEmployeeId;
+            DelegateStartTime = DelegateStartTime;
+            DelegateEndTime = DelegateEndTime;
+            RestartAuthorEmployeeId = restartAuthorEmployeeId;
+            RestartDate = restartDate;
         }
 
         /// <summary>
@@ -97,7 +107,15 @@ namespace Main.Domain.WorkflowDomain
                 return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
             }
 
-            var step = new WorkflowStep(candidateId, stepTemplate.Number, stepTemplate.Description, stepTemplate.EmployeeId, stepTemplate.RoleId, DateTime.UtcNow, DateTime.UtcNow, Status.Expectation);
+            var step = new WorkflowStep(candidateId, 
+                                        stepTemplate.Number, 
+                                        stepTemplate.Description, 
+                                        stepTemplate.EmployeeId, 
+                                        stepTemplate.RoleId, 
+                                        DateTime.UtcNow, 
+                                        DateTime.UtcNow, 
+                                        Status.Expectation, 
+                                        null, null, null, null, null);
 
             return Result<WorkflowStep>.Success(step);
         }
@@ -150,27 +168,27 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Идентификатор сотрудника длегированного на процесс
         /// </summary>
-        public Guid? DelegatedEmployeeId { get; private set; } = Guid.Empty;
+        public Guid? DelegatedEmployeeId { get; private set; }
 
         /// <summary>
         /// Время начала промежутка делегирования
         /// </summary>
-        public DateTime DelegateStartTime { get; private set; } = DateTime.MinValue;
+        public DateTime? DelegateStartTime { get; private set; }
 
         /// <summary>
         /// Время конца промежутка делегирования
         /// </summary>
-        public DateTime DelegateEndTime { get; private set; }  = DateTime.MinValue;
+        public DateTime? DelegateEndTime { get; private set; }
 
         /// <summary>
         /// Идентоификатор сотрудника, перезапустившего шаг
         /// </summary>
-        public Guid RestartAuthorEmployeeId { get; private set; } = Guid.Empty;
+        public Guid? RestartAuthorEmployeeId { get; private set; }
 
         /// <summary>
         /// Дата перезапуска шага
         /// </summary>
-        public DateTime RestartDate { get; private set; } = DateTime.MinValue;
+        public DateTime? RestartDate { get; private set; }
 
         /// <summary>
         /// Одобрение

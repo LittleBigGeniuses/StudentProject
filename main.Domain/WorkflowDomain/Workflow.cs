@@ -23,7 +23,12 @@ namespace Main.Domain.WorkflowDomain
             Guid authorId, Guid candidateId, 
             Guid templateId, Guid companyId, 
             DateTime dateCreate, 
-            DateTime dateUpdate)
+            DateTime dateUpdate,
+            Guid? delegatedEmployeeId,
+            DateTime? delegateStartTime,
+            DateTime? delegateEndTime,
+            Guid? restartAuthorEmployeeId,
+            DateTime? restartDate)
         {
             if (id == Guid.Empty)
             {
@@ -100,6 +105,11 @@ namespace Main.Domain.WorkflowDomain
             CompanyId = companyId;
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
+            DelegatedEmployeeId = delegatedEmployeeId;
+            DelegateStartTime = DelegateStartTime;
+            DelegateEndTime = DelegateEndTime;
+            RestartAuthorEmployeeId = restartAuthorEmployeeId;
+            RestartDate = restartDate;
         }
 
         /// <summary>
@@ -164,7 +174,8 @@ namespace Main.Domain.WorkflowDomain
                 template.Id, 
                 template.CompanyId, 
                 DateTime.UtcNow, 
-                DateTime.UtcNow);
+                DateTime.UtcNow,
+                null, null, null, null, null);
 
             return Result<Workflow>.Success(workflow);
         }
@@ -222,27 +233,27 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Идентификатор сотрудника длегированного на процесс
         /// </summary>
-        public Guid? DelegatedEmployeeId { get; private set; } = Guid.Empty;
+        public Guid? DelegatedEmployeeId { get; private set; }
 
         /// <summary>
         /// Время начала промежутка делегирования
         /// </summary>
-        public DateTime DelegateStartTime { get; private set; } = DateTime.MinValue;
+        public DateTime? DelegateStartTime { get; private set; }
 
         /// <summary>
         /// Время конца промежутка делегирования
         /// </summary>
-        public DateTime DelegateEndTime { get; private set; } = DateTime.MinValue;
+        public DateTime? DelegateEndTime { get; private set; }
 
         /// <summary>
         /// Идентоификатор сотрудника, перезапустившего процесс
         /// </summary>
-        public Guid RestartAuthorEmployeeId { get; private set; } = Guid.Empty;
+        public Guid? RestartAuthorEmployeeId { get; private set; }
 
         /// <summary>
         /// Дата перезапуска процесса
         /// </summary>
-        public DateTime RestartDate { get; private set; } = DateTime.MinValue;
+        public DateTime? RestartDate { get; private set; } 
 
         /// <summary>
         /// Статус информирующий о положениее рабочего процесса
