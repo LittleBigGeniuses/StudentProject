@@ -239,17 +239,17 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <summary>
         /// Удаление шага
         /// </summary>
-        /// <param name="number">Номер шага</param>
+        /// <param name="stepNumber">Номер шага</param>
         /// <returns>Успешность удаления</returns>
-        public Result<bool> RemoveStep(int number)
+        public Result<bool> RemoveStep(int stepNumber)
         {
-            if (number > _steps.Count && number <= 0)
+            if (stepNumber > _steps.Count || stepNumber <= 0)
             {
-                return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
+                return Result<bool>.Failure($"Шаблон не содержит с таким номером {stepNumber}");
             }
 
-            _steps.RemoveAt(number - 1);
-            UpdateStepNumbers(number);
+            _steps.RemoveAt(stepNumber - 1);
+            UpdateStepNumbers(stepNumber);
 
             DateUpdate = DateTime.UtcNow;
 
