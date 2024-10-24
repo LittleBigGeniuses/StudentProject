@@ -23,7 +23,12 @@ namespace Main.Domain.WorkflowDomain
             Guid authorId, Guid candidateId, 
             Guid templateId, Guid companyId, 
             DateTime dateCreate, 
-            DateTime dateUpdate)
+            DateTime dateUpdate,
+            Guid? delegatedEmployeeId,
+            DateTime? delegateStartTime,
+            DateTime? delegateEndTime,
+            Guid? restartAuthorEmployeeId,
+            DateTime? restartDate)
         {
             if (id == Guid.Empty)
             {
@@ -100,6 +105,11 @@ namespace Main.Domain.WorkflowDomain
             CompanyId = companyId;
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
+            DelegatedEmployeeId = delegatedEmployeeId;
+            DelegateStartTime = DelegateStartTime;
+            DelegateEndTime = DelegateEndTime;
+            RestartAuthorEmployeeId = restartAuthorEmployeeId;
+            RestartDate = restartDate;
         }
 
         /// <summary>
@@ -164,7 +174,8 @@ namespace Main.Domain.WorkflowDomain
                 template.Id, 
                 template.CompanyId, 
                 DateTime.UtcNow, 
-                DateTime.UtcNow);
+                DateTime.UtcNow,
+                null, null, null, null, null);
 
             return Result<Workflow>.Success(workflow);
         }
@@ -218,6 +229,31 @@ namespace Main.Domain.WorkflowDomain
         /// Идентификатор компании, которой принадллежит рабочий процесс
         /// </summary>
         public Guid CompanyId { get; }
+
+        /// <summary>
+        /// Идентификатор сотрудника длегированного на процесс
+        /// </summary>
+        public Guid? DelegatedEmployeeId { get; private set; }
+
+        /// <summary>
+        /// Время начала промежутка делегирования
+        /// </summary>
+        public DateTime? DelegateStartTime { get; private set; }
+
+        /// <summary>
+        /// Время конца промежутка делегирования
+        /// </summary>
+        public DateTime? DelegateEndTime { get; private set; }
+
+        /// <summary>
+        /// Идентоификатор сотрудника, перезапустившего процесс
+        /// </summary>
+        public Guid? RestartAuthorEmployeeId { get; private set; }
+
+        /// <summary>
+        /// Дата перезапуска процесса
+        /// </summary>
+        public DateTime? RestartDate { get; private set; } 
 
         /// <summary>
         /// Статус информирующий о положениее рабочего процесса
@@ -352,19 +388,21 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Возвращение актуальности рабочему процессу
         /// </summary>
-        /// <param name="emlpoyerId">Идентификатор сотрудника</param>
-        public Result<bool> Restart(Guid emlpoyerId)
+        /// <param name="employee">Сущность сотрудника</param>
+        public Result<bool> Restart(Employee employee)
         {
-            if (emlpoyerId == Guid.Empty)
+            if (employee.Id == Guid.Empty)
             {
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
             foreach (var step in Steps)
             {
-                step.Restart(emlpoyerId);
+                step.Restart(employee);
             }
 
+            RestartAuthorEmployeeId = employee.Id;
+            RestartDate = DateTime.UtcNow;
             DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(false);
@@ -442,6 +480,76 @@ namespace Main.Domain.WorkflowDomain
             }
 
             DateUpdate = DateTime.UtcNow;
+
+            return Result<bool>.Success(true);
+        }
+
+        /// <summary>
+        /// Метод для назначения делегированного сотрудника на промежуток времени
+        /// </summary>
+        /// <param name="employee">Ведущий сотрудник</param>
+        /// <param name="delegatedEmployee">Назначенный сотрудник</param>
+        /// <param name="delegateStartTime">Начало промежутка</param>
+        /// <param name="delegateEndTime">Конец промежутка</param>
+        /// <param name="numberStep">Номер шага</param>
+        /// <returns></returns>
+        public Result<bool> SetDelegatedEmployeeInStep(Employee employee, Employee delegatedEmployee, DateTime delegateStartTime, DateTime delegateEndTime, int numberStep)
+        {
+
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+
+            if (delegatedEmployee is null)
+            {
+                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
+            }
+
+            var step = Steps
+                .FirstOrDefault(s => s.Number == numberStep);
+
+            if (step is null)
+            {
+                return Result<bool>.Failure($"Шаг с номером {numberStep} не найден");
+            }
+
+            if (step.Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Шаг {numberStep} завершен");
+            }
+
+            if (step.EmployeeId != employee.Id)
+            {
+                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
+            }
+
+            if (delegateStartTime >= delegateEndTime)
+            {
+                return Result<bool>.Failure("Полученные даты не соответствуют временному промежутку");
+            }
+
+            if (delegateStartTime < DateTime.UtcNow || delegateEndTime < DateTime.UtcNow)
+            {
+                return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
+            }
+
+            var result = step.SetDelegatedEmployee(employee, delegatedEmployee, delegateStartTime, delegateEndTime);
+
+            if (DelegatedEmployeeId != delegatedEmployee.Id && DelegateStartTime != delegateStartTime && DelegateEndTime != delegateEndTime)
+            {
+                DateUpdate = DateTime.UtcNow;
+
+                DelegatedEmployeeId = delegatedEmployee.Id;
+                DelegateStartTime = delegateStartTime;
+                DelegateEndTime = delegateEndTime;
+            }
+
+            if (result.IsFailure)
+            {
+                return result;
+            }
 
             return Result<bool>.Success(true);
         }
