@@ -19,7 +19,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         [Fact]
         public void RemoveStep_ValidInputs_ShouldRemoveStepSuccessfully()
         {
-            int i = 1;
+            int currentStep = 1;
             var stepsCount = _workflowTemplate.Steps.Count;
             var stepNumber = _fixture.Create<int>() % stepsCount + 1;
             var step = _workflowTemplate.Steps.First(x => x.Number == stepNumber);
@@ -31,8 +31,8 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             Assert.DoesNotContain(step, _workflowTemplate.Steps);
             foreach (var testStep in _workflowTemplate.Steps)
             {
-                Assert.Equal(i, testStep.Number);
-                i++;
+                Assert.Equal(currentStep, testStep.Number);
+                currentStep++;
             }
         }
 
