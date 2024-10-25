@@ -325,6 +325,7 @@ namespace Main.Domain.WorkflowDomain
             }
 
             DateUpdate = DateTime.UtcNow;
+
             return Result<bool>.Success(true);
         }
 
@@ -357,6 +358,7 @@ namespace Main.Domain.WorkflowDomain
             }
 
             DateUpdate = DateTime.UtcNow;
+
             return Result<bool>.Success(true);
         }
 
@@ -400,9 +402,17 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"Рабочий процесс завершен");
             }
 
+
             var step = Steps
                 .OrderBy(x => x.Number)
                 .First(s => s.Status == Status.Expectation);
+
+            //1-й вариант отслеживания изменяемости, не совсем корректный, т.к. у нас может не произойти изменяемость по валидации
+            //в методе SetEmployee шага
+            //if (step.EmployeeId != employee.Id)
+            //{
+            //    isChange = true;
+            //}
 
             var result = step.SetEmployee(employee);
 
@@ -411,7 +421,21 @@ namespace Main.Domain.WorkflowDomain
                 return result;
             }
 
-            DateUpdate = DateTime.UtcNow;
+            //Отслеживаем изменяемость после обновления шага
+            //Если шаг обновился - обновилось его время обновление и оно больше, чем текущее время обновления всего workflow
+            //При использование этого метода переменную isChache стоить перенести после проверки успешности обновления шага
+
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -454,7 +478,17 @@ namespace Main.Domain.WorkflowDomain
                 return result;
             }
 
-            DateUpdate = DateTime.UtcNow;
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -515,6 +549,18 @@ namespace Main.Domain.WorkflowDomain
             if (result.IsFailure)
             {
                 return result;
+            }
+
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
             }
 
             return Result<bool>.Success(true);

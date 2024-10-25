@@ -128,9 +128,16 @@ namespace Main.Domain.EmployeeDomain
                 return Result<bool>.Failure($"Длина наименование должности не может быть меньше {MinLengthName}");
             }
 
+            var isChanged = false;
+
             if (name.Trim() != Name)
             {
                 Name = name.Trim();
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
                 DateUpdate = DateTime.UtcNow;
             }
 

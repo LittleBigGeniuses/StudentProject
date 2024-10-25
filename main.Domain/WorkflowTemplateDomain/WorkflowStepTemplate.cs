@@ -1,4 +1,5 @@
 ﻿using Main.Domain.Common;
+using Main.Domain.EmployeeDomain;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("main.DomainTest")]
@@ -143,11 +144,21 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// </summary>
         /// <param name="description">Описание</param>
         /// <returns></returns>
+        /// 
         public Result<bool> UpdateInfo(string description)
         {
+            var isChanged = false;
 
-            Description = description.Trim();
-            DateUpdate = DateTime.UtcNow;
+            if (Description != description.Trim())
+            {
+                Description = description.Trim();
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -164,9 +175,16 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"{number} - некорректное значение для номера шага");
             }
 
+            var isChanged = false;
+
             if (number != Number)
             {
                 Number = number;
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
                 DateUpdate = DateTime.UtcNow;
             }
 
@@ -185,9 +203,16 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"{roleId} - некорректный идентификатор должности");
             }
 
+            var isChanged = false;
+
             if (roleId != RoleId)
             {
                 RoleId = roleId;
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
                 DateUpdate = DateTime.UtcNow;
             }
 
@@ -205,9 +230,16 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"{employeeId} - некорректный идентификатор сотрудника");
             }
 
-            if (employeeId != EmployeeId)
+            var isChanged = false;
+
+            if (employeeId != EmployeeId) 
             {
                 EmployeeId = employeeId;
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
                 DateUpdate = DateTime.UtcNow;
             }
 
