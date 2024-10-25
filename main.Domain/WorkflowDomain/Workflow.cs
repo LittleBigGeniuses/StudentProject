@@ -350,6 +350,7 @@ namespace Main.Domain.WorkflowDomain
             }
 
             DateUpdate = DateTime.UtcNow;
+
             return Result<bool>.Success(true);
         }
 
@@ -382,6 +383,7 @@ namespace Main.Domain.WorkflowDomain
             }
 
             DateUpdate = DateTime.UtcNow;
+
             return Result<bool>.Success(true);
         }
 
@@ -425,10 +427,16 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"Рабочий процесс завершен");
             }
 
+            var isChange = false;
+
             var step = Steps
                 .OrderBy(x => x.Number)
-                .First(s => s.Status == Status.Expectation);
+                .FirstO(s => s.Status == Status.Expectation);
 
+            if (step.EmployeeId)
+            {
+                1;
+            }
             var result = step.SetEmployee(employee);
 
             if (result.IsFailure)

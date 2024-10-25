@@ -100,7 +100,7 @@ namespace Main.Domain.CandidateDomain
         /// <returns>Результат обновления (bool)</returns>
         public Result<bool> UpdateName(string name)
         {
-
+            
             if (string.IsNullOrEmpty(name))
             {
                 return Result<bool>.Failure("ФИО сотрудника не может быть пустым");
@@ -109,12 +109,19 @@ namespace Main.Domain.CandidateDomain
             if (name.Trim().Length < MinLengthName)
             {
                 return Result<bool>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
-            }        
+            }
+
+            var isChange = false;
 
             if (name.Trim() != Name)
             {
                 Name = name.Trim();
-                DateUpdate = DateTime.UtcNow;
+                isChange = true;
+            }
+
+            if (isChange) 
+            {
+                DateUpdate = DateTime.UtcNow();
             }
 
             return Result<bool>.Success(true);

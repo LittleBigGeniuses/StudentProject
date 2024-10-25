@@ -147,10 +147,17 @@ public class Employee
             return Result<bool>.Failure($"Длина наименование должности не может быть меньше {MinLengthName}");
         }
 
+        var isChange = false;
+
         if (name.Trim() != Name)
         {
             Name = name.Trim();
-            DateUpdate = DateTime.UtcNow;
+            isChange = true;
+        }
+
+        if (isChange)
+        {
+            DateUpdate = DateTime.UtcNow();
         }
 
         return Result<bool>.Success(true);
@@ -169,10 +176,17 @@ public class Employee
             return Result<bool>.Failure("Некорректное значение идентификатора должности");
         }
 
+        var isChange = false;
+
         if (roleId != RoleId)
         {
             RoleId = roleId;
-            DateUpdate = DateTime.UtcNow;
+            isChange = true;
+        }
+
+        if (isChange)
+        {
+            DateUpdate = DateTime.UtcNow();
         }
 
         return Result<bool>.Success(true);
@@ -190,10 +204,17 @@ public class Employee
             return Result<bool>.Failure("Некорректное значение идентификатора компании");
         }
 
+        var isChange = false;
+
         if (companyId != CompanyId)
         {
             CompanyId = companyId;
-            DateUpdate = DateTime.UtcNow;
+            isChange = true;
+        }
+
+        if (isChange)
+        {
+            DateUpdate = DateTime.UtcNow();
         }
 
         return Result<bool>.Success(true);

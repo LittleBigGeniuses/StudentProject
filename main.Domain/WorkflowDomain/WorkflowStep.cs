@@ -309,11 +309,18 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
+            var isChange = false;
+
             if (employee.Id != EmployeeId)
             {
                 EmployeeId = employee.Id;
                 RoleId = null;
-                DateUpdate = DateTime.UtcNow;
+                isChange = true;
+            }
+
+            if (isChange)
+            {
+                DateUpdate = DateTime.UtcNow();
             }
 
             return Result<bool>.Success(true);
