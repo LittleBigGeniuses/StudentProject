@@ -321,13 +321,12 @@ namespace Main.Domain.WorkflowDomain
             if (employee.Id != EmployeeId)
             {
                 EmployeeId = employee.Id;
-                RoleId = null;
                 isChange = true;
             }
 
             if (isChange)
             {
-                DateUpdate = DateTime.UtcNow();
+                DateUpdate = DateTime.UtcNow;
             }
 
             return Result<bool>.Success(true);
@@ -369,12 +368,28 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
             }
 
-            if (DelegatedEmployeeId != delegatedEmployee.Id && DelegateStartTime != delegateStartTime && DelegateEndTime != delegateEndTime)
+            var isChanged = false ;
+
+            if (DelegatedEmployeeId != delegatedEmployee.Id)
             {
                 DelegatedEmployeeId = delegatedEmployee.Id;
-                DelegateStartTime = delegateStartTime;
-                DelegateEndTime = delegateEndTime;
+                isChanged = true;
+            }
 
+            if (DelegateStartTime != delegateStartTime)
+            {
+                DelegateStartTime = delegateStartTime;
+                isChanged = true;
+            }
+
+            if (DelegateEndTime != delegateEndTime)
+            {
+                DelegateEndTime = delegateEndTime;
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
                 DateUpdate = DateTime.UtcNow;
             }
 

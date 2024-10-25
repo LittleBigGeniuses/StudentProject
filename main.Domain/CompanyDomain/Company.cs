@@ -121,7 +121,7 @@ namespace Main.Domain.CompanyDomain
         /// <returns></returns>
         public Result<bool> UpdateInfo(string? name, string? description)
         {
-            var isChange = false;
+            var isChanged = false;
 
             if (name is not null && !string.IsNullOrEmpty(name))
             {
@@ -133,9 +133,8 @@ namespace Main.Domain.CompanyDomain
                 if (name.Trim() != Name)
                 {
                     Name = name.Trim();
-                    isChange = true;
-                }
-               
+                    isChanged = true;
+                }  
             }
 
             if (description is not null && !string.IsNullOrEmpty(description))
@@ -143,11 +142,11 @@ namespace Main.Domain.CompanyDomain
                 if (description.Trim() != Description)
                 {
                     Description = description.Trim();
-                    isChange = true;
+                    isChanged = true;
                 }             
             }
 
-            if (isChange)
+            if (isChanged)
             {
                 DateUpdate = DateTime.UtcNow;
             }

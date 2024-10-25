@@ -162,7 +162,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Результат обновления информации</returns>
         public Result<bool> UpdateInfo(string? name, string? description)
         {
-            var isChange = false;
+            var isChanged = false;
 
             if (name is not null)
             {
@@ -179,7 +179,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 if (name.Trim() != Name)
                 {
                     Name = name.Trim();
-                    isChange = true;
+                    isChanged = true;
                 }
                 
             }
@@ -189,11 +189,11 @@ namespace Main.Domain.WorkflowTemplateDomain
                 if (description.Trim() != Description)
                 {
                     Description = description.Trim();
-                    isChange = true;
+                    isChanged = true;
                 }
             }
 
-            if (isChange)
+            if (isChanged)
             {
                 DateUpdate = DateTime.UtcNow;
             }
@@ -269,10 +269,22 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
             }
 
+
             _steps[numberFirst - 1].UpdateNumber(numberSecond);
             _steps[numberSecond - 1].UpdateNumber(numberFirst);
 
-            DateUpdate = DateTime.UtcNow;
+            var isChanged = false;
+
+            if (_steps[numberFirst - 1].DateUpdate>DateUpdate
+                && _steps[numberSecond - 1].DateUpdate>DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }

@@ -111,17 +111,17 @@ namespace Main.Domain.CandidateDomain
                 return Result<bool>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
             }
 
-            var isChange = false;
+            var isChanged = false;
 
             if (name.Trim() != Name)
             {
                 Name = name.Trim();
-                isChange = true;
+                isChanged = true;
             }
 
-            if (isChange) 
+            if (isChanged) 
             {
-                DateUpdate = DateTime.UtcNow();
+                DateUpdate = DateTime.UtcNow;
             }
 
             return Result<bool>.Success(true);

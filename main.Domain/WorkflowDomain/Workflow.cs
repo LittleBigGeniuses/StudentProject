@@ -402,7 +402,6 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"Рабочий процесс завершен");
             }
 
-            var isChange = false;
 
             var step = Steps
                 .OrderBy(x => x.Number)
@@ -425,12 +424,15 @@ namespace Main.Domain.WorkflowDomain
             //Отслеживаем изменяемость после обновления шага
             //Если шаг обновился - обновилось его время обновление и оно больше, чем текущее время обновления всего workflow
             //При использование этого метода переменную isChache стоить перенести после проверки успешности обновления шага
+
+            var isChanged = false;
+
             if (step.DateUpdate > DateUpdate)
             {
-                isChange = true;
+                isChanged = true;
             }
 
-            if (isChange)
+            if (isChanged)
             {
                 DateUpdate = DateTime.UtcNow;
             }
@@ -476,7 +478,17 @@ namespace Main.Domain.WorkflowDomain
                 return result;
             }
 
-            DateUpdate = DateTime.UtcNow;
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
@@ -537,6 +549,18 @@ namespace Main.Domain.WorkflowDomain
             if (result.IsFailure)
             {
                 return result;
+            }
+
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
             }
 
             return Result<bool>.Success(true);
