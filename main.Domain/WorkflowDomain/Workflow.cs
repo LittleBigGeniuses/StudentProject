@@ -431,12 +431,15 @@ namespace Main.Domain.WorkflowDomain
 
             var step = Steps
                 .OrderBy(x => x.Number)
-                .FirstO(s => s.Status == Status.Expectation);
+                .First(s => s.Status == Status.Expectation);
 
-            if (step.EmployeeId)
-            {
-                1;
-            }
+            //1-й вариант отслеживания изменяемости, не совсем корректный, т.к. у нас может не произойти изменяемость по валидации
+            //в методе SetEmployee шага
+            //if (step.EmployeeId != employee.Id)
+            //{
+            //    isChange = true;
+            //}
+
             var result = step.SetEmployee(employee);
 
             if (result.IsFailure)
@@ -444,7 +447,17 @@ namespace Main.Domain.WorkflowDomain
                 return result;
             }
 
-            DateUpdate = DateTime.UtcNow;
+            //Отслеживаем изменяемость после обновления шага
+            //Если шаг обновился - обновилось его время обновление и оно больше, чем текущее время обновления всего workflow
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChange = true;
+            }
+
+            if (isChange)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
 
             return Result<bool>.Success(true);
         }
