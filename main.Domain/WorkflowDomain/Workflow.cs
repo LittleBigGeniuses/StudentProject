@@ -201,11 +201,6 @@ namespace Main.Domain.WorkflowDomain
         public string Description { get; private set; }
 
         /// <summary>
-        /// Отчет сотрудника
-        /// </summary>
-        public string? Feedback { get; private set; } = null;
-
-        /// <summary>
         /// Идентификатор шаблона, на основе которого был создан рабочий процесс
         /// </summary>
         public Guid TemplateId { get; }

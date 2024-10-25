@@ -16,8 +16,9 @@ namespace Main.Domain.WorkflowDomain
     {
         private WorkflowStep(
             Guid candidateId, 
-            int number, string 
-            description, 
+            int number, 
+            string feedback,
+            string description,
             Guid? employeeId, 
             Guid? roleId, 
             DateTime dateCreate, 
@@ -71,6 +72,7 @@ namespace Main.Domain.WorkflowDomain
 
             CandidateId = candidateId;
             Number = number;
+            Feedback = feedback;
             Description = description;
             EmployeeId = employeeId;
             RoleId = roleId;
@@ -109,7 +111,8 @@ namespace Main.Domain.WorkflowDomain
 
             var step = new WorkflowStep(candidateId, 
                                         stepTemplate.Number, 
-                                        stepTemplate.Description, 
+                                        null,
+                                        stepTemplate.Description,
                                         stepTemplate.EmployeeId, 
                                         stepTemplate.RoleId, 
                                         DateTime.UtcNow, 

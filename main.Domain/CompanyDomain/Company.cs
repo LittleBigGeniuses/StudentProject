@@ -23,12 +23,12 @@ namespace Main.Domain.CompanyDomain
                 throw new ArgumentNullException($"{id} - некорректный идентификатор Компании");
             }
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("Наименование компании не может быть пустым");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 throw new ArgumentNullException("Описание компании не может быть пустым");
             }
@@ -63,12 +63,12 @@ namespace Main.Domain.CompanyDomain
         /// <returns></returns>
         public static Result<Company> Create(string name, string description)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 return Result<Company>.Failure("Наименование компании не может быть пустым");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 return Result<Company>.Failure("Описание компании не может быть пустым");
             }

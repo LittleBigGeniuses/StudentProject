@@ -21,7 +21,7 @@ public class Employee
             throw new ArgumentNullException($"{id} - некорректный идентификатор процесса");
         }
 
-        if (String.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentNullException("ФИО сотрудника не может быть пустым");
         }
