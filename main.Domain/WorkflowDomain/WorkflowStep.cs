@@ -16,8 +16,9 @@ namespace Main.Domain.WorkflowDomain
     {
         private WorkflowStep(
             Guid candidateId, 
-            int number, string 
-            description, 
+            int number, 
+            string feedback,
+            string description,
             Guid? employeeId, 
             Guid? roleId, 
             DateTime dateCreate, 
@@ -39,7 +40,7 @@ namespace Main.Domain.WorkflowDomain
                 throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 throw new ArgumentNullException("Описание шага процесса не может быть пустым");
             }
@@ -71,6 +72,7 @@ namespace Main.Domain.WorkflowDomain
 
             CandidateId = candidateId;
             Number = number;
+            Feedback = feedback;
             Description = description;
             EmployeeId = employeeId;
             RoleId = roleId;
@@ -78,8 +80,8 @@ namespace Main.Domain.WorkflowDomain
             DateUpdate = dateUpdate;
             Status = status;
             DelegatedEmployeeId = delegatedEmployeeId;
-            DelegateStartTime = DelegateStartTime;
-            DelegateEndTime = DelegateEndTime;
+            DelegateStartTime = delegateStartTime;
+            DelegateEndTime = delegateEndTime;
             RestartAuthorEmployeeId = restartAuthorEmployeeId;
             RestartDate = restartDate;
         }
@@ -109,13 +111,18 @@ namespace Main.Domain.WorkflowDomain
 
             var step = new WorkflowStep(candidateId, 
                                         stepTemplate.Number, 
-                                        stepTemplate.Description, 
+                                        null,
+                                        stepTemplate.Description,
                                         stepTemplate.EmployeeId, 
                                         stepTemplate.RoleId, 
                                         DateTime.UtcNow, 
                                         DateTime.UtcNow, 
                                         Status.Expectation, 
-                                        null, null, null, null, null);
+                                        null, 
+                                        null, 
+                                        null, 
+                                        null, 
+                                        null);
 
             return Result<WorkflowStep>.Success(step);
         }
@@ -138,7 +145,7 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Отзыв сотрудника по шагу
         /// </summary>
-        public string? Feedback { get; private set; } = null;
+        public string? Feedback { get; private set; } 
 
         /// <summary>
         /// Описание шага

@@ -107,7 +107,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<WorkflowStepTemplate>.Failure($"{number} - некорректное значение для номера шага");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 throw new ArgumentNullException("Описание процесса не может быть пустым");
             }

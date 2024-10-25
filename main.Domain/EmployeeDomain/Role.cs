@@ -24,7 +24,7 @@ namespace Main.Domain.EmployeeDomain
                 throw new ArgumentNullException($"{id} - некорректный идентификатор должности");
             }
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("Наименование должности не может быть пустым");
             }
