@@ -24,9 +24,6 @@ namespace Main.Domain.WorkflowDomain
             Guid templateId, Guid companyId, 
             DateTime dateCreate, 
             DateTime dateUpdate,
-            Guid? delegatedEmployeeId,
-            DateTime? delegateStartTime,
-            DateTime? delegateEndTime,
             Guid? restartAuthorEmployeeId,
             DateTime? restartDate)
         {
@@ -35,12 +32,12 @@ namespace Main.Domain.WorkflowDomain
                 throw new ArgumentNullException($"{id} - некорректный идентификатор Процесса");
             }
 
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("Название процесса не может быть пустым");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 throw new ArgumentNullException("Описание процесса не может быть пустым");
             }
@@ -105,9 +102,6 @@ namespace Main.Domain.WorkflowDomain
             CompanyId = companyId;
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
-            DelegatedEmployeeId = delegatedEmployeeId;
-            DelegateStartTime = DelegateStartTime;
-            DelegateEndTime = DelegateEndTime;
             RestartAuthorEmployeeId = restartAuthorEmployeeId;
             RestartDate = restartDate;
         }
@@ -175,7 +169,8 @@ namespace Main.Domain.WorkflowDomain
                 template.CompanyId, 
                 DateTime.UtcNow, 
                 DateTime.UtcNow,
-                null, null, null, null, null);
+                null, 
+                null);
 
             return Result<Workflow>.Success(workflow);
         }
@@ -229,21 +224,6 @@ namespace Main.Domain.WorkflowDomain
         /// Идентификатор компании, которой принадллежит рабочий процесс
         /// </summary>
         public Guid CompanyId { get; }
-
-        /// <summary>
-        /// Идентификатор сотрудника длегированного на процесс
-        /// </summary>
-        public Guid? DelegatedEmployeeId { get; private set; }
-
-        /// <summary>
-        /// Время начала промежутка делегирования
-        /// </summary>
-        public DateTime? DelegateStartTime { get; private set; }
-
-        /// <summary>
-        /// Время конца промежутка делегирования
-        /// </summary>
-        public DateTime? DelegateEndTime { get; private set; }
 
         /// <summary>
         /// Идентоификатор сотрудника, перезапустившего процесс
@@ -536,15 +516,6 @@ namespace Main.Domain.WorkflowDomain
             }
 
             var result = step.SetDelegatedEmployee(employee, delegatedEmployee, delegateStartTime, delegateEndTime);
-
-            if (DelegatedEmployeeId != delegatedEmployee.Id && DelegateStartTime != delegateStartTime && DelegateEndTime != delegateEndTime)
-            {
-                DateUpdate = DateTime.UtcNow;
-
-                DelegatedEmployeeId = delegatedEmployee.Id;
-                DelegateStartTime = delegateStartTime;
-                DelegateEndTime = delegateEndTime;
-            }
 
             if (result.IsFailure)
             {
