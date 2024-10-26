@@ -24,7 +24,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 throw new ArgumentNullException("Описание шага процесса не может быть пустым");
             }
@@ -110,7 +110,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (string.IsNullOrEmpty(description))
             {
-                throw new ArgumentNullException("Описание процесса не может быть пустым");
+                return Result<WorkflowStepTemplate>.Failure("Описание процесса не может быть пустым");
             }
 
             if (employeeId is null && roleId is null)

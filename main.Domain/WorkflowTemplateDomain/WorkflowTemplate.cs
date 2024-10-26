@@ -31,7 +31,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 throw new ArgumentNullException("Наименование шаблона не может быть пустым");
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 throw new ArgumentNullException("Описание процесса не может быть пустым");
             }
