@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 
 namespace Main.Domain.WorkflowDomain
 {
-
     /// <summary>
     /// Шаг рабочего процесса
     /// </summary>
