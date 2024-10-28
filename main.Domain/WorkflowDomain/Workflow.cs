@@ -439,5 +439,58 @@ namespace Main.Domain.WorkflowDomain
 
             return Result<bool>.Success(true);
         }
+
+        /// <summary>
+        /// Назначение сотрудника на указанный шаг
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <param name="numberStep">Номер шага</param>
+        /// <returns></returns>
+        public Result<bool> SetEmployeeInStep(Employee employee, int numberStep)
+        {
+            if (employee is null)
+            {
+                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+            }
+
+            if (Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Рабочий процесс завершен");
+            }
+
+            var step = Steps
+                .FirstOrDefault(s => s.Number == numberStep);
+
+            if (step is null)
+            {
+                return Result<bool>.Failure($"Шаг с номером {numberStep} не найден");
+            }
+
+            if (step.Status != Status.Expectation)
+            {
+                return Result<bool>.Failure($"Шаг {numberStep} завершен");
+            }
+
+            var result = step.SetEmployee(employee);
+
+            if (result.IsFailure)
+            {
+                return result;
+            }
+
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
+
+            return Result<bool>.Success(true);
+        }
     }
 }
