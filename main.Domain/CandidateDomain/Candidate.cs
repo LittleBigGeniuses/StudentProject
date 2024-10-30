@@ -10,7 +10,7 @@ namespace Main.Domain.CandidateDomain
     {
         public const int MinLengthName = 5;
 
-        private Candidate(
+        protected Candidate(
             Guid id, 
             string name, 
             DateTime dateCreate, 
@@ -28,12 +28,12 @@ namespace Main.Domain.CandidateDomain
 
             if (dateCreate == DateTime.MinValue)
             {
-                throw new ArgumentException("Дата создания не может быть дефолтной.");
+                throw new ArgumentException("Дата создания не может быть дефолтной");
             }
 
             if (dateUpdate == DateTime.MinValue)
             {
-                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+                throw new ArgumentException("Дата обновления не может быть дефолтной");
             }
 
             if (name.Trim().Length < MinLengthName)

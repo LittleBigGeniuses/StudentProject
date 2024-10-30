@@ -65,7 +65,7 @@ namespace main.DomainTest.Tests.RoleTests
                 DateTime.MinValue,
                 DateTime.UtcNow,
                 typeof(ArgumentException),
-                "Дата создания не может быть дефолтной."
+                "Дата создания не может быть дефолтной"
             };
 
             yield return new object[]
@@ -76,7 +76,7 @@ namespace main.DomainTest.Tests.RoleTests
                 DateTime.UtcNow,
                 DateTime.MinValue,
                 typeof(ArgumentException),
-                "Дата обновления не может быть дефолтной."
+                "Дата обновления не может быть дефолтной"
             };
 
             yield return new object[]
