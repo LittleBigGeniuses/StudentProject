@@ -235,11 +235,8 @@ namespace Main.Domain.WorkflowDomain
             }
 
             if (EmployeeId != Guid.Empty)
-            {             
-                if (employee.Id != EmployeeId)
-                {
-                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
-                }
+            {
+                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");               
             }
 
             if (Status != Status.Expectation)
@@ -301,6 +298,6 @@ namespace Main.Domain.WorkflowDomain
             }
 
             return Result<bool>.Success(true);
-        }      
+        }
     }
 }
