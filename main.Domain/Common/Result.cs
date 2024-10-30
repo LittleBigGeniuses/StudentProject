@@ -1,6 +1,5 @@
 ﻿namespace Main.Domain.Common
 {
-
     /// <summary>
     /// Паттерна Result
     /// </summary>

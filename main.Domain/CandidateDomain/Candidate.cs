@@ -8,8 +8,10 @@ namespace Main.Domain.CandidateDomain
     /// </summary>
     public class Candidate
     {
+        /// <summary>
+        /// Минимальная длина наименования кандидата
+        /// </summary>
         public const int MinLengthName = 5;
-
         private Candidate(
             Guid id, 
             string name, 
@@ -99,8 +101,7 @@ namespace Main.Domain.CandidateDomain
         /// <param name="name">ФИО</param>
         /// <returns>Результат обновления (bool)</returns>
         public Result<bool> UpdateName(string name)
-        {
-            
+        {          
             if (string.IsNullOrEmpty(name))
             {
                 return Result<bool>.Failure("ФИО сотрудника не может быть пустым");
@@ -126,6 +127,5 @@ namespace Main.Domain.CandidateDomain
 
             return Result<bool>.Success(true);
         }
-
     }
 }

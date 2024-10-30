@@ -11,8 +11,6 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// Константное значение минимальной длины наименования шаблона
         /// </summary>
         public const int MinLengthName = 5;
-
-
         private WorkflowTemplate(
             Guid id,
             string name, 
@@ -68,7 +66,6 @@ namespace Main.Domain.WorkflowTemplateDomain
             CompanyId = companyId;
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
-
         }
 
         /// <summary>
@@ -152,7 +149,6 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// Защищенный список шагов
         /// </summary>
         private List<WorkflowStepTemplate> _steps;
-
 
         /// <summary>
         /// Метод обновления информации

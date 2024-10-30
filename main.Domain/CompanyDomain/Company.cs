@@ -112,7 +112,6 @@ namespace Main.Domain.CompanyDomain
         /// </summary>
         public string Description { get; private set; }
 
-
         /// <summary>
         /// Обновление данных компании
         /// </summary>

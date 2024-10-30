@@ -1,5 +1,4 @@
 ﻿using Main.Domain.Common;
-using Main.Domain.EmployeeDomain;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("main.DomainTest")]

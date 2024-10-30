@@ -16,7 +16,7 @@ namespace Main.Domain.WorkflowDomain
         private WorkflowStep(
             Guid candidateId, 
             int number, 
-            string feedback,
+            string? feedback,
             string description,
             Guid? employeeId, 
             Guid? roleId, 
