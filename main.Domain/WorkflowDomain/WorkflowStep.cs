@@ -17,6 +17,7 @@ namespace Main.Domain.WorkflowDomain
             Guid candidateId, 
             int number, 
             string? feedback,
+            string? lastFeedback,
             string description,
             Guid? employeeId, 
             Guid? roleId, 
@@ -69,6 +70,7 @@ namespace Main.Domain.WorkflowDomain
             CandidateId = candidateId;
             Number = number;
             Feedback = feedback;
+            LastFeedback = lastFeedback;
             Description = description;
             EmployeeId = employeeId;
             RoleId = roleId;
@@ -105,6 +107,7 @@ namespace Main.Domain.WorkflowDomain
             var step = new WorkflowStep(candidateId, 
                                         stepTemplate.Number, 
                                         null,
+                                        null,
                                         stepTemplate.Description,
                                         stepTemplate.EmployeeId, 
                                         stepTemplate.RoleId, 
@@ -135,7 +138,12 @@ namespace Main.Domain.WorkflowDomain
         /// <summary>
         /// Отзыв сотрудника по шагу
         /// </summary>
-        public string? Feedback { get; private set; } 
+        public string? Feedback { get; private set; }
+
+        /// <summary>
+        /// Отзыв сотрудника по шагу (если он был перезапущенн)
+        /// </summary>
+        public string? LastFeedback { get; private set; }
 
         /// <summary>
         /// Описание шага
@@ -227,11 +235,8 @@ namespace Main.Domain.WorkflowDomain
             }
 
             if (EmployeeId != Guid.Empty)
-            {             
-                if (employee.Id != EmployeeId)
-                {
-                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
-                }
+            {
+                    return Result<bool>.Failure("Этот сотрудник не имеет полномочий");               
             }
 
             if (Status != Status.Expectation)
@@ -258,6 +263,8 @@ namespace Main.Domain.WorkflowDomain
             }
 
             Status = Status.Expectation;
+            LastFeedback = Feedback;
+            Feedback = null;
             DateUpdate = DateTime.UtcNow;
             RestartAuthorEmployeeId = employee.Id;
             RestartDate = DateTime.UtcNow;
@@ -292,8 +299,5 @@ namespace Main.Domain.WorkflowDomain
 
             return Result<bool>.Success(true);
         }
-
-
-        
     }
 }
