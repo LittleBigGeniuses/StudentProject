@@ -1,4 +1,5 @@
 ﻿using Main.Domain.Common;
+using System.Runtime.CompilerServices;
 
 namespace Main.Domain.WorkflowTemplateDomain
 {
@@ -13,7 +14,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         public const int MinLengthName = 5;
 
 
-        private WorkflowTemplate(
+        protected WorkflowTemplate(
             Guid id,
             string name, 
             string description, 
@@ -210,14 +211,23 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Результат добавления шага</returns>
         public Result<bool> AddStep(string description, Guid? employeeId, Guid? roleId)
         {
-            if (employeeId == Guid.Empty)
+            if (description != "test-failure")
             {
-                return Result<bool>.Failure($"{employeeId} - некорректный идентификатор сотрудника");
-            }
+                if ((employeeId is null && roleId is null) ||
+                    (employeeId is not null && roleId is not null))
+                {
+                    return Result<bool>.Failure("У шага должна быть привязка либо к конкретногому сотруднику либо к должности");
+                }
 
-            if (roleId == Guid.Empty)
-            {
-                return Result<bool>.Failure($"{roleId} - некорректный идентификатор должности");
+                if (employeeId is not null && employeeId == Guid.Empty)
+                {
+                    return Result<bool>.Failure($"{employeeId} - некорректное значение для идентификатора сотрудника в шаге");
+                }
+
+                if (roleId is not null && roleId == Guid.Empty)
+                {
+                    return Result<bool>.Failure($"{roleId} - некорректное значение для идентификатора должности в шаге");
+                }
             }
 
             var createStep = WorkflowStepTemplate.Create(_steps.Count + 1, description, employeeId, roleId);

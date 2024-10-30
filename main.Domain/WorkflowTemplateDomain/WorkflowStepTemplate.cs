@@ -13,7 +13,7 @@ namespace Main.Domain.WorkflowTemplateDomain
     {
         private WorkflowStepTemplate(
             int number, 
-            string description, 
+            string? description, 
             Guid? employeeId, 
             Guid? roleId, 
             DateTime dateCreate, 
@@ -24,14 +24,10 @@ namespace Main.Domain.WorkflowTemplateDomain
                 throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
             }
 
-            if (string.IsNullOrEmpty(description))
+            if ((employeeId is null && roleId is null) ||
+                (employeeId is not null && roleId is not null))
             {
-                throw new ArgumentNullException("Описание шага процесса не может быть пустым");
-            }
-
-            if (employeeId is null && roleId is null)
-            {
-                throw new ArgumentNullException ("У шага должна быть привязка к конкретногому сотруднику или должности");
+                throw new ArgumentNullException (("У шага должна быть привязка либо к конкретногому сотруднику либо к должности"));
             }
 
             if (employeeId is not null && employeeId == Guid.Empty)
@@ -75,7 +71,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <summary>
         /// Описание
         /// </summary>
-        public string Description { get; private set; }
+        public string? Description { get; private set; }
 
         /// <summary>
         /// Порядковый номер
@@ -101,21 +97,17 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <param name="employeeId">Идентификатор сотрудника</param>
         /// <param name="roleId">Идентификатор роли</param>
         /// <returns></returns>
-        internal static Result<WorkflowStepTemplate> Create(int number, string description, Guid? employeeId, Guid? roleId)
+        internal static Result<WorkflowStepTemplate> Create(int number, string? description, Guid? employeeId, Guid? roleId)
         {
             if (number <= 0)
             {
                 return Result<WorkflowStepTemplate>.Failure($"{number} - некорректное значение для номера шага");
             }
 
-            if (string.IsNullOrEmpty(description))
+            if ((employeeId is null && roleId is null) ||
+                (employeeId is not null && roleId is not null))
             {
-                return Result<WorkflowStepTemplate>.Failure("Описание процесса не может быть пустым");
-            }
-
-            if (employeeId is null && roleId is null)
-            {
-                return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
+                return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка либо к конкретногому сотруднику либо к должности");
             }
 
             if (employeeId is not null && employeeId == Guid.Empty)
