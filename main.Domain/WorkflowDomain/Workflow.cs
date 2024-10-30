@@ -25,6 +25,7 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate,
             Guid? restartAuthorEmployeeId,
+            string? restartReason,
             DateTime? restartDate)
         {
             if (id == Guid.Empty)
@@ -103,6 +104,7 @@ namespace Main.Domain.WorkflowDomain
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
             RestartAuthorEmployeeId = restartAuthorEmployeeId;
+            RestartReason = restartReason;
             RestartDate = restartDate;
         }
 
@@ -169,6 +171,7 @@ namespace Main.Domain.WorkflowDomain
                 template.CompanyId, 
                 DateTime.UtcNow, 
                 DateTime.UtcNow,
+                null,
                 null, 
                 null);
 
@@ -221,9 +224,14 @@ namespace Main.Domain.WorkflowDomain
         public Guid CompanyId { get; }
 
         /// <summary>
-        /// Идентоификатор сотрудника, перезапустившего процесс
+        /// Идентификатор сотрудника, перезапустившего процесс
         /// </summary>
         public Guid? RestartAuthorEmployeeId { get; private set; }
+
+        /// <summary>
+        /// Причина перезапуска процесса
+        /// </summary>
+        public string? RestartReason { get; private set; }
 
         /// <summary>
         /// Дата перезапуска процесса
@@ -312,7 +320,6 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure("Рабочий процесс завершен");
             }
 
-
             var step = Steps
                  .OrderBy(x => x.Number)
                  .First(s => s.Status == Status.Expectation);
@@ -366,7 +373,8 @@ namespace Main.Domain.WorkflowDomain
         /// Возвращение актуальности рабочему процессу
         /// </summary>
         /// <param name="employee">Сущность сотрудника</param>
-        public Result<bool> Restart(Employee employee)
+        /// <param name="restartReason">Причина перезапуска</param>
+        public Result<bool> Restart(Employee employee, string restartReason)
         {
             if (employee.Id == Guid.Empty)
             {
@@ -379,65 +387,11 @@ namespace Main.Domain.WorkflowDomain
             }
 
             RestartAuthorEmployeeId = employee.Id;
+            RestartReason = restartReason;
             RestartDate = DateTime.UtcNow;
             DateUpdate = DateTime.UtcNow;
 
             return Result<bool>.Success(false);
-        }
-
-        /// <summary>
-        /// Назначение нового сотрудника на шаг
-        /// </summary>
-        /// <param name="employee"></param>
-        /// <returns></returns>
-        public Result<bool> SetEmployee(Employee employee)
-        {
-            if (employee is null)
-            {
-                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
-            }
-
-            if (Status != Status.Expectation)
-            {
-                return Result<bool>.Failure($"Рабочий процесс завершен");
-            }
-
-
-            var step = Steps
-                .OrderBy(x => x.Number)
-                .First(s => s.Status == Status.Expectation);
-
-            //1-й вариант отслеживания изменяемости, не совсем корректный, т.к. у нас может не произойти изменяемость по валидации
-            //в методе SetEmployee шага
-            //if (step.EmployeeId != employee.Id)
-            //{
-            //    isChange = true;
-            //}
-
-            var result = step.SetEmployee(employee);
-
-            if (result.IsFailure)
-            {
-                return result;
-            }
-
-            //Отслеживаем изменяемость после обновления шага
-            //Если шаг обновился - обновилось его время обновление и оно больше, чем текущее время обновления всего workflow
-            //При использование этого метода переменную isChache стоить перенести после проверки успешности обновления шага
-
-            var isChanged = false;
-
-            if (step.DateUpdate > DateUpdate)
-            {
-                isChanged = true;
-            }
-
-            if (isChanged)
-            {
-                DateUpdate = DateTime.UtcNow;
-            }
-
-            return Result<bool>.Success(true);
         }
 
         /// <summary>
@@ -490,65 +444,14 @@ namespace Main.Domain.WorkflowDomain
                 DateUpdate = DateTime.UtcNow;
             }
 
-            return Result<bool>.Success(true);
-        }
-
-        /// <summary>
-        /// Метод для назначения делегированного сотрудника на промежуток времени
-        /// </summary>
-        /// <param name="employee">Ведущий сотрудник</param>
-        /// <param name="delegatedEmployee">Назначенный сотрудник</param>
-        /// <param name="delegateStartTime">Начало промежутка</param>
-        /// <param name="delegateEndTime">Конец промежутка</param>
-        /// <param name="numberStep">Номер шага</param>
-        /// <returns></returns>
-        public Result<bool> SetDelegatedEmployeeInStep(Employee employee, Employee delegatedEmployee, DateTime delegateStartTime, DateTime delegateEndTime, int numberStep)
-        {
-
-            if (employee is null)
+            if (step.DateUpdate > DateUpdate)
             {
-                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
+                isChanged = true;
             }
 
-
-            if (delegatedEmployee is null)
+            if (isChanged)
             {
-                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
-            }
-
-            var step = Steps
-                .FirstOrDefault(s => s.Number == numberStep);
-
-            if (step is null)
-            {
-                return Result<bool>.Failure($"Шаг с номером {numberStep} не найден");
-            }
-
-            if (step.Status != Status.Expectation)
-            {
-                return Result<bool>.Failure($"Шаг {numberStep} завершен");
-            }
-
-            if (step.EmployeeId != employee.Id)
-            {
-                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
-            }
-
-            if (delegateStartTime >= delegateEndTime)
-            {
-                return Result<bool>.Failure("Полученные даты не соответствуют временному промежутку");
-            }
-
-            if (delegateStartTime < DateTime.UtcNow || delegateEndTime < DateTime.UtcNow)
-            {
-                return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
-            }
-
-            var result = step.SetDelegatedEmployee(employee, delegatedEmployee, delegateStartTime, delegateEndTime);
-
-            if (result.IsFailure)
-            {
-                return result;
+                DateUpdate = DateTime.UtcNow;
             }
 
             var isChanged = false;

@@ -11,7 +11,6 @@ namespace Main.Domain.EmployeeDomain
         /// Минимально допутимая длина наименования роли
         /// </summary>
         public const int MinLengthName = 3;
-
         protected Role(
             Guid id, 
             string name, 
