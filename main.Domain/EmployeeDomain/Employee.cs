@@ -7,6 +7,9 @@ namespace Main.Domain.EmployeeDomain;
 /// </summary>
 public class Employee
 {
+    /// <summary>
+    /// Минимая длина наименования сотрудника
+    /// </summary>
     public const int MinLengthName = 5;
     private Employee(
         Guid id, 
@@ -128,7 +131,6 @@ public class Employee
     /// </summary>
     public Guid RoleId { get; private set; }
 
-
     /// <summary>
     /// Обновление ФИО сотрудника
     /// </summary>
@@ -170,7 +172,6 @@ public class Employee
     /// <returns>Успешность выполнения операции</returns>
     public Result<bool> UpdateRole(Guid roleId)
     {
-
         if (roleId == Guid.Empty)
         {
             return Result<bool>.Failure("Некорректное значение идентификатора должности");
