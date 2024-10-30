@@ -66,13 +66,13 @@ namespace Main.Domain.CandidateDomain
                 return Result<Candidate>.Failure($"Длина ФИО соискателя не может быть меньше {MinLengthName}");
             }
 
-            var condidaate = new Candidate(
+            var candidate = new Candidate(
                 Guid.NewGuid(), 
                 name, 
-                DateTime.UtcNow, 
+                DateTime.UtcNow,
                 DateTime.UtcNow);
 
-            return Result<Candidate>.Success(condidaate);
+            return Result<Candidate>.Success(candidate);
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace main.DomainTest.TestTools.Autofixture
             fixture.Customize(new WorkflowCustomization());
             fixture.Customize(new CompanyCustomization());
             fixture.Customize(new RoleCustomization());
+            fixture.Customize(new CandidateCustomization());
         }
     }
 }

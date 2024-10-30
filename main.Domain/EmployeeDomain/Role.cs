@@ -79,7 +79,12 @@ namespace Main.Domain.EmployeeDomain
                 return Result<Role>.Failure($"Длина наименования должности не может быть меньше {MinLengthName}");
             }
 
-            var role = new Role(Guid.NewGuid(), name, companyId, DateTime.UtcNow, DateTime.UtcNow);
+            var role = new Role(
+                Guid.NewGuid(),
+                name,
+                companyId,
+                DateTime.UtcNow,
+                DateTime.UtcNow);
 
             return Result<Role>.Success(role);
         }
