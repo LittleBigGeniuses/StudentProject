@@ -23,9 +23,6 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate,
             Status status,
-            Guid? delegatedEmployeeId,
-            DateTime? delegateStartTime,
-            DateTime? delegateEndTime,
             Guid? restartAuthorEmployeeId,
             DateTime? restartDate)
         {
@@ -78,9 +75,6 @@ namespace Main.Domain.WorkflowDomain
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
             Status = status;
-            DelegatedEmployeeId = delegatedEmployeeId;
-            DelegateStartTime = delegateStartTime;
-            DelegateEndTime = delegateEndTime;
             RestartAuthorEmployeeId = restartAuthorEmployeeId;
             RestartDate = restartDate;
         }
@@ -116,10 +110,7 @@ namespace Main.Domain.WorkflowDomain
                                         stepTemplate.RoleId, 
                                         DateTime.UtcNow, 
                                         DateTime.UtcNow, 
-                                        Status.Expectation, 
-                                        null, 
-                                        null, 
-                                        null, 
+                                        Status.Expectation,  
                                         null, 
                                         null);
 
@@ -172,21 +163,6 @@ namespace Main.Domain.WorkflowDomain
         public Status Status { get; private set; }
 
         /// <summary>
-        /// Идентификатор сотрудника длегированного на процесс
-        /// </summary>
-        public Guid? DelegatedEmployeeId { get; private set; }
-
-        /// <summary>
-        /// Время начала промежутка делегирования
-        /// </summary>
-        public DateTime? DelegateStartTime { get; private set; }
-
-        /// <summary>
-        /// Время конца промежутка делегирования
-        /// </summary>
-        public DateTime? DelegateEndTime { get; private set; }
-
-        /// <summary>
         /// Идентоификатор сотрудника, перезапустившего шаг
         /// </summary>
         public Guid? RestartAuthorEmployeeId { get; private set; }
@@ -215,14 +191,7 @@ namespace Main.Domain.WorkflowDomain
 
             if (EmployeeId != Guid.Empty)
             {
-                if (employee.Id == DelegatedEmployeeId)
-                {
-                    if (DelegateStartTime > DateTime.UtcNow || DelegateEndTime < DateTime.UtcNow)
-                    {
-                        return Result<bool>.Failure("В текущий момент делегированный сотрудник не имеет полномочий");
-                    }
-                }
-                else if (employee.Id != EmployeeId)
+                if (employee.Id != EmployeeId)
                 {
                     return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
                 }
@@ -258,15 +227,8 @@ namespace Main.Domain.WorkflowDomain
             }
 
             if (EmployeeId != Guid.Empty)
-            {
-                if (employee.Id == DelegatedEmployeeId)
-                {
-                    if (DelegateStartTime > DateTime.UtcNow || DelegateEndTime < DateTime.UtcNow)
-                    {
-                        return Result<bool>.Failure("В текущий момент делегированный сотрудник не имеет полномочий");
-                    }
-                }
-                else if (employee.Id != EmployeeId)
+            {             
+                if (employee.Id != EmployeeId)
                 {
                     return Result<bool>.Failure("Этот сотрудник не имеет полномочий");
                 }
@@ -332,67 +294,6 @@ namespace Main.Domain.WorkflowDomain
         }
 
 
-        /// <summary>
-        /// Метод для делегирования назначенным сотрудником с указанием временных ограничений
-        /// </summary>
-        /// <param name="employee">Делегирующий сотрудник</param>
-        /// <param name="delegatedEmployee">Делегированный сотрудник</param>
-        /// <param name="delegateStartTime">Начало промежутка</param>
-        /// <param name="delegateEndTime">Конец промежутка</param>
-        /// <returns></returns>
-        public Result<bool> SetDelegatedEmployee(Employee employee, Employee delegatedEmployee, DateTime delegateStartTime, DateTime delegateEndTime)
-        {
-            if (employee is null)
-            {
-                return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
-            }
-
-            if (EmployeeId != employee.Id)
-            {
-                return Result<bool>.Failure($"{employee} не имеет права делегировать на этот процесс");
-            }
-
-            if (delegatedEmployee is null)
-            {
-                return Result<bool>.Failure($"{nameof(delegatedEmployee)} не может быть пустым");
-            }
-
-            if (delegateStartTime >= delegateEndTime)
-            {
-                return Result<bool>.Failure("Полученные даты не соответствуют временному промежутку");
-            }
-
-            if (delegateStartTime < DateTime.UtcNow || delegateEndTime < DateTime.UtcNow)
-            {
-                return Result<bool>.Failure("Временной промежуток не может начинаться в прошлом");
-            }
-
-            var isChanged = false ;
-
-            if (DelegatedEmployeeId != delegatedEmployee.Id)
-            {
-                DelegatedEmployeeId = delegatedEmployee.Id;
-                isChanged = true;
-            }
-
-            if (DelegateStartTime != delegateStartTime)
-            {
-                DelegateStartTime = delegateStartTime;
-                isChanged = true;
-            }
-
-            if (DelegateEndTime != delegateEndTime)
-            {
-                DelegateEndTime = delegateEndTime;
-                isChanged = true;
-            }
-
-            if (isChanged)
-            {
-                DateUpdate = DateTime.UtcNow;
-            }
-
-            return Result<bool>.Success(true);
-        }
+        
     }
 }
