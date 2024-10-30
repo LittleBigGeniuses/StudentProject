@@ -14,7 +14,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         public const int MinLengthName = 5;
 
 
-        protected WorkflowTemplate(
+        private WorkflowTemplate(
             Guid id,
             string name, 
             string description, 
