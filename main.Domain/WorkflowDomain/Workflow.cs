@@ -1,4 +1,4 @@
-﻿using Main.Domain.Common;
+using Main.Domain.Common;
 using Main.Domain.EmployeeDomain;
 using Main.Domain.WorkflowDomain.Enum;
 using Main.Domain.WorkflowTemplateDomain;
@@ -245,10 +245,12 @@ namespace Main.Domain.WorkflowDomain
                                  : Steps.All(s => s.Status == Status.Approved) ? Status.Approved
                                  : Status.Expectation;
 
+
         /// <summary>
         /// Безопасный досуп к коллекции шагов
         /// </summary>
         public IReadOnlyCollection<WorkflowStep> Steps;
+
 
         /// <summary>
         /// Обновление основной информации о рабочем процесса
