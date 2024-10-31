@@ -35,12 +35,12 @@ namespace Main.Domain.EmployeeDomain
 
             if (dateCreate == DateTime.MinValue)
             {
-                throw new ArgumentException("Дата создания не может быть дефолтной.");
+                throw new ArgumentException("Дата создания не может быть дефолтной");
             }
 
             if (dateUpdate == DateTime.MinValue)
             {
-                throw new ArgumentException("Дата обновления не может быть дефолтной.");
+                throw new ArgumentException("Дата обновления не может быть дефолтной");
             }
 
             if (name.Trim().Length < MinLengthName)

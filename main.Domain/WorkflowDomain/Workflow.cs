@@ -442,6 +442,28 @@ namespace Main.Domain.WorkflowDomain
                 DateUpdate = DateTime.UtcNow;
             }
 
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
+
+            var isChanged = false;
+
+            if (step.DateUpdate > DateUpdate)
+            {
+                isChanged = true;
+            }
+
+            if (isChanged)
+            {
+                DateUpdate = DateTime.UtcNow;
+            }
+
             return Result<bool>.Success(true);
         }
     }
