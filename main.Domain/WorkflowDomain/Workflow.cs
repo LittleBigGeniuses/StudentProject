@@ -155,11 +155,6 @@ namespace Main.Domain.WorkflowDomain
                 .ToList()
                 .AsReadOnly();
 
-            if (steps.Any(s => s is null))
-            {
-                return Result<Workflow>.Failure("Все шаги в списке должны быть определены");
-            }
-
             var workflow = new Workflow(
                 Guid.NewGuid(), 
                 template.Name, 
