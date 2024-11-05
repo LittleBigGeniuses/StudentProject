@@ -85,5 +85,14 @@ namespace main.DomainTest.Tests.WorkflowTests
             Assert.Equal("Рабочий процесс завершен", result.Error);
         }
 
+        [Fact]
+        public void Approve_ShouldFailed_WhenFailedApproveStep()
+        {
+            var result = _workflow.Approve(_employee, "test-failed-approve");
+
+            Assert.True(result.IsFailure);
+            Assert.Equal("Отработал тестовый провал одобрения шага", result.Error);
+        }
+
     }
 }
