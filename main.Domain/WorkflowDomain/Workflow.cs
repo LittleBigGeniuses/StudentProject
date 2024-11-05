@@ -381,9 +381,14 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure("Некорректный идентификатор сотрудника");
             }
 
+            if (string.IsNullOrEmpty(restartReason))
+            {
+                return Result<bool>.Failure("Причина перезапуска должна быть указана");
+            }
+
             foreach (var step in Steps)
             {
-                step.Restart(employee);
+                step.Restart();
             }
 
             RestartAuthorEmployeeId = employee.Id;
