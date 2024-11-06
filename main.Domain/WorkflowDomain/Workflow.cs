@@ -425,6 +425,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"Шаг {numberStep} завершен");
             }
 
+            var stepCurrentUpdateTime = step.DateUpdate;
             var result = step.SetEmployee(employee);
 
             if (result.IsFailure)
@@ -434,7 +435,7 @@ namespace Main.Domain.WorkflowDomain
 
             var isChanged = false;
 
-            if (step.DateUpdate > DateUpdate)
+            if (step.DateUpdate > stepCurrentUpdateTime)
             {
                 isChanged = true;
             }
