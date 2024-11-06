@@ -15,7 +15,7 @@ namespace Main.Domain.WorkflowDomain
         /// Минимальное значение длины наименования
         /// </summary>
         public const int MinLengthName = 5;
-        private Workflow(
+        protected Workflow(
             Guid id, 
             string name, 
             string description, 
