@@ -15,7 +15,7 @@ namespace Main.Domain.WorkflowDomain
         /// Минимальное значение длины наименования
         /// </summary>
         public const int MinLengthName = 5;
-        private Workflow(
+        protected Workflow(
             Guid id, 
             string name, 
             string description, 
@@ -371,9 +371,9 @@ namespace Main.Domain.WorkflowDomain
         /// <param name="restartReason">Причина перезапуска</param>
         public Result<bool> Restart(Employee employee, string restartReason)
         {
-            if (employee.Id == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure("Сущность сотрудника не может быть пустой");
             }
 
             if (string.IsNullOrEmpty(restartReason))
@@ -425,6 +425,7 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"Шаг {numberStep} завершен");
             }
 
+            var stepCurrentUpdateTime = step.DateUpdate;
             var result = step.SetEmployee(employee);
 
             if (result.IsFailure)
@@ -434,7 +435,7 @@ namespace Main.Domain.WorkflowDomain
 
             var isChanged = false;
 
-            if (step.DateUpdate > DateUpdate)
+            if (step.DateUpdate > stepCurrentUpdateTime)
             {
                 isChanged = true;
             }

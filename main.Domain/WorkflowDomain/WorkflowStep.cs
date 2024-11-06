@@ -304,6 +304,13 @@ namespace Main.Domain.WorkflowDomain
                 return Result<bool>.Failure($"{nameof(employee)} не может быть пустым");
             }
 
+            #region проверки для тестов
+            if (employee.Name == "test-name-for-failed-result")
+            {
+                return Result<bool>.Failure("Отработал тестовый провал назначения сотрудника");
+            }
+            #endregion
+
             var isChange = false;
 
             if (employee.Id != EmployeeId)
