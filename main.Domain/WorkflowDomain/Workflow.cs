@@ -371,9 +371,9 @@ namespace Main.Domain.WorkflowDomain
         /// <param name="restartReason">Причина перезапуска</param>
         public Result<bool> Restart(Employee employee, string restartReason)
         {
-            if (employee.Id == Guid.Empty)
+            if (employee is null)
             {
-                return Result<bool>.Failure("Некорректный идентификатор сотрудника");
+                return Result<bool>.Failure("Сущность сотрудника не может быть пустой");
             }
 
             if (string.IsNullOrEmpty(restartReason))
