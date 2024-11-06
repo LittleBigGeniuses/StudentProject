@@ -13,7 +13,7 @@ namespace Main.Domain.WorkflowDomain
     /// </summary>
     public class WorkflowStep
     {
-        private WorkflowStep(
+        protected WorkflowStep(
             Guid candidateId, 
             int number, 
             string? feedback,
@@ -25,7 +25,6 @@ namespace Main.Domain.WorkflowDomain
             DateTime dateCreate, 
             DateTime dateUpdate,
             Status status,
-            Guid? restartAuthorEmployeeId,
             DateTime? restartDate)
         {
             if (candidateId == Guid.Empty)
@@ -116,7 +115,6 @@ namespace Main.Domain.WorkflowDomain
                                         DateTime.UtcNow, 
                                         DateTime.UtcNow, 
                                         Status.Expectation,  
-                                        null, 
                                         null);
 
             return Result<WorkflowStep>.Success(step);
