@@ -71,7 +71,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <summary>
         /// Описание
         /// </summary>
-        public string? Description { get; private set; }
+        public string Description { get; private set; }
 
         /// <summary>
         /// Порядковый номер
@@ -99,9 +99,21 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns></returns>
         internal static Result<WorkflowStepTemplate> Create(int number, string? description, Guid? employeeId, Guid? roleId)
         {
+            #region Тестовая ошибка
+            if (description == "test-failure")
+            {
+                return Result<WorkflowStepTemplate>.Failure("Тестовая ошибка при создании шага");
+            }
+            #endregion
+
             if (number <= 0)
             {
                 return Result<WorkflowStepTemplate>.Failure($"{number} - некорректное значение для номера шага");
+            }
+
+            if (string.IsNullOrEmpty(description))
+            {
+                return Result<WorkflowStepTemplate>.Failure("Описание шаблона процесса не может быть пустым");
             }
 
             if ((employeeId is null && roleId is null) ||

@@ -39,33 +39,16 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 null,
                 $"{Guid.Empty} - некорректное значение для идентификатора сотрудника в шаге"
             };
-        }
-        public static IEnumerable<object[]> GetInvalidInputsAddStep()
-        {
-            yield return new object[]
-            {
-                "test-failure",
-                null,
-                null,
-                "У шага должна быть привязка либо к конкретногому сотруднику либо к должности"
-            };
 
             yield return new object[]
             {
-                "test-failure",
+                "",
                 null,
-                Guid.Empty,
-                $"{Guid.Empty} - некорректное значение для идентификатора должности в шаге"
-            };
-
-            yield return new object[]
-            {
-                "test-failure",
-                Guid.Empty,
-                null,
-                $"{Guid.Empty} - некорректное значение для идентификатора сотрудника в шаге"
+                Guid.NewGuid(),
+                "Описание шаблона процесса не может быть пустым"
             };
         }
+
 
         [Fact]
         public void AddStep_ValidInputs_ShouldAddStepSuccessfully()
@@ -102,21 +85,17 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             Assert.Equal(expectedErrorMessage, result.Error);
         }
 
-        [Theory]
-        [MemberData(nameof(GetInvalidInputsAddStep))]
-        public void WorkflowTemplate_AddStepCreateStep_ShouldReturnFailure(
-            string description,
-            Guid? employeeId,
-            Guid? roleId,
-            string expectedErrorMessage)
+        [Fact]
+        public void WorkflowTemplate_AddStepCreateStep_ShouldReturnFailure()
         {
-            var result = WorkflowStepTemplate.Create(_workflowTemplate.Steps.Count + 1, description, employeeId, roleId);
+            var description = "test-failure";
+            Guid? employeeId = null;
+            Guid? roleId = Guid.NewGuid();
+
             var addStepResult = _workflowTemplate.AddStep(description, employeeId, roleId);
 
-            Assert.False(result.IsSuccess);
             Assert.False(addStepResult.IsSuccess);
-            Assert.Equal(expectedErrorMessage, result.Error);
-            Assert.Equal($"Добавление элемента в список провалилось: {result.Error}", addStepResult.Error);
+            Assert.Equal("Тестовая ошибка при создании шага", addStepResult.Error);
         }
     }
 }

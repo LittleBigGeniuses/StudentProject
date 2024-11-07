@@ -234,7 +234,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (createStep.IsFailure)
             {
-                return Result<bool>.Failure($"Добавление элемента в список провалилось: {createStep.Error}");
+                return Result<bool>.Failure($"{createStep.Error}");
             }
 
             var step = createStep.Value;
