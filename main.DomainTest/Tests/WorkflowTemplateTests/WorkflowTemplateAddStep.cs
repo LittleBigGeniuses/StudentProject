@@ -47,6 +47,14 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 Guid.NewGuid(),
                 "Описание шаблона процесса не может быть пустым"
             };
+
+            yield return new object[]
+            {
+                "test-failure",
+                null,
+                Guid.NewGuid(),
+                "Тестовая ошибка при создании шага"
+            };
         }
 
 
@@ -83,19 +91,6 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
 
             Assert.False(result.IsSuccess);
             Assert.Equal(expectedErrorMessage, result.Error);
-        }
-
-        [Fact]
-        public void WorkflowTemplate_AddStepCreateStep_ShouldReturnFailure()
-        {
-            var description = "test-failure";
-            Guid? employeeId = null;
-            Guid? roleId = Guid.NewGuid();
-
-            var addStepResult = _workflowTemplate.AddStep(description, employeeId, roleId);
-
-            Assert.False(addStepResult.IsSuccess);
-            Assert.Equal("Тестовая ошибка при создании шага", addStepResult.Error);
         }
     }
 }

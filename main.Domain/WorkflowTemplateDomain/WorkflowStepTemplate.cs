@@ -97,7 +97,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <param name="employeeId">Идентификатор сотрудника</param>
         /// <param name="roleId">Идентификатор роли</param>
         /// <returns></returns>
-        internal static Result<WorkflowStepTemplate> Create(int number, string? description, Guid? employeeId, Guid? roleId)
+        internal static Result<WorkflowStepTemplate> Create(int number, string description, Guid? employeeId, Guid? roleId)
         {
             #region Тестовая ошибка
             if (description == "test-failure")
