@@ -14,36 +14,64 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
 
             _workflowTemplate = _fixture.Create<WorkflowTemplate>();
         }
-
         public static IEnumerable<object[]> GetInvalidInputs()
         {
             yield return new object[]
             {
-                "valid description",
-                Guid.NewGuid(),
-                Guid.Empty,
-                $"{Guid.Empty} - некорректный идентификатор должности"
+                "valid-description",
+                null,
+                null,
+                "У шага должна быть привязка либо к конкретногому сотруднику либо к должности"
             };
 
             yield return new object[]
             {
-                "valid description",
+                "valid-description",
+                null,
                 Guid.Empty,
+                $"{Guid.Empty} - некорректное значение для идентификатора должности в шаге"
+            };
+
+            yield return new object[]
+            {
+                "valid-description",
+                Guid.Empty,
+                null,
+                $"{Guid.Empty} - некорректное значение для идентификатора сотрудника в шаге"
+            };
+
+            yield return new object[]
+            {
+                "",
+                null,
                 Guid.NewGuid(),
-                $"{Guid.Empty} - некорректный идентификатор сотрудника"
+                "Описание шаблона процесса не может быть пустым"
+            };
+
+            yield return new object[]
+            {
+                "test-failure",
+                null,
+                Guid.NewGuid(),
+                "Тестовая ошибка при создании шага"
             };
         }
+
 
         [Fact]
         public void AddStep_ValidInputs_ShouldAddStepSuccessfully()
         {
             var description = _fixture.Create<string>();
-            var employeeId = Guid.NewGuid();
-            var roleId = Guid.NewGuid();
+            Guid? employeeId = null;
+            Guid? roleId = Guid.NewGuid();
+            var primalCount = _workflowTemplate.Steps.Count;
 
+            var resultCreateStep = WorkflowStepTemplate.Create(primalCount + 1, description, employeeId, roleId);
             var result = _workflowTemplate.AddStep(description, employeeId, roleId);
 
             Assert.True(result.IsSuccess);
+            Assert.True(resultCreateStep.IsSuccess);
+            Assert.Equal(_workflowTemplate.Steps.Last().Number, primalCount + 1);
             Assert.Equal(description, _workflowTemplate.Steps.Last().Description);
             Assert.Equal(employeeId, _workflowTemplate.Steps.Last().EmployeeId);
             Assert.Equal(roleId, _workflowTemplate.Steps.Last().RoleId);
@@ -55,8 +83,8 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         [MemberData(nameof(GetInvalidInputs))]
         public void WorkflowTemplate_AddStep_ShouldReturnFailure(
             string description,
-            Guid employeeId,
-            Guid roleId,
+            Guid? employeeId,
+            Guid? roleId,
             string expectedErrorMessage)
         {
             var result = _workflowTemplate.AddStep(description, employeeId, roleId);
