@@ -96,12 +96,12 @@ namespace Main.Domain.WorkflowDomain
 
             if (stepTemplate is null)
             {
-                return Result<WorkflowStep>.Failure($"{nameof(stepTemplate)} не может быть пустым");
+                return Result<WorkflowStep>.Failure("Шаблон шага не может быть неопределен");
             }
 
             if (stepTemplate.EmployeeId is null && stepTemplate.RoleId is null)
             {
-                return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретногому сотруднику или должности");
+                return Result<WorkflowStep>.Failure("У шага должна быть привязка к конкретному сотруднику или должности");
             }
 
             var step = new WorkflowStep(candidateId, 

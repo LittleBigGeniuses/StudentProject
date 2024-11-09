@@ -11,7 +11,7 @@ namespace Main.Domain.WorkflowTemplateDomain
     /// </summary>
     public class WorkflowStepTemplate
     {
-        private WorkflowStepTemplate(
+        protected WorkflowStepTemplate(
             int number, 
             string description, 
             Guid? employeeId, 
