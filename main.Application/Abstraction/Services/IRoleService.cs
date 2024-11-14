@@ -1,5 +1,4 @@
-﻿using main.Application.Models.Company;
-using main.Application.Models.Role;
+﻿using main.Application.Models.Role;
 using Main.Domain.Common;
 
 namespace main.Application.Abstraction.Services
