@@ -38,17 +38,7 @@ namespace Main.Domain.WorkflowTemplateDomain
             if (stepsTemplate is null)
             {
                 throw new ArgumentNullException("Список шаблонных шагов должен быть определен");
-            }
-            
-            if (stepsTemplate.Count <= 0)
-            {
-                throw new ArgumentException("Список шагов не может быть пустым");
-            }
-
-            if (stepsTemplate.Any(s => s is null))
-            {
-                throw new ArgumentException("Все шаги в списке должны быть определены");
-            }
+            }            
 
             if (companyId == Guid.Empty)
             {

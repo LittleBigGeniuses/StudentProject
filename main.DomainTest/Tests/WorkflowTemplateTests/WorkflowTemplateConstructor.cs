@@ -28,25 +28,21 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         }
 
         private static readonly IFixture _fixture;
-        private static readonly WorkflowTemplate _workflowTemplate;
         static WorkflowTemplateConstructor()
         {
             _fixture = new Fixture();
             _fixture.FixtureCustomization();
-
-            _workflowTemplate = _fixture.Create<WorkflowTemplate>();
         }
 
         public static IEnumerable<object[]> GetInvalidData()
         {
-            var stepsTemplate = _workflowTemplate.Steps;
 
             yield return new object[]
             {
                 Guid.Empty,
                 "Valid Name",
                 "Valid Description",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.NewGuid(),
                 DateTime.UtcNow,
                 DateTime.UtcNow,
@@ -59,7 +55,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 Guid.NewGuid(),
                 "",
                 "Valid Description",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.NewGuid(),
                 DateTime.UtcNow,
                 DateTime.UtcNow,
@@ -72,7 +68,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 Guid.NewGuid(),
                 "Valid Name",
                 "",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.NewGuid(),
                 DateTime.UtcNow,
                 DateTime.UtcNow,
@@ -93,38 +89,15 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 "Список шагов шаблона должен быть определен"
             };
 
-            yield return new object[]
-            {
-                Guid.NewGuid(),
-                "Valid Name",
-                "Valid Description",
-                new List<WorkflowStepTemplate>(), // Пустой список шагов
-                Guid.NewGuid(),
-                DateTime.UtcNow,
-                DateTime.UtcNow,
-                typeof(ArgumentException),
-                "Список шагов шаблона не может быть пустым"
-            };
+           
+
 
             yield return new object[]
             {
                 Guid.NewGuid(),
                 "Valid Name",
                 "Valid Description",
-                new List<WorkflowStepTemplate> { null }, // Список шагов содержит null
-                Guid.NewGuid(),               
-                DateTime.UtcNow,
-                DateTime.UtcNow,
-                typeof(ArgumentException),
-                "Все шаги в списке должны быть определены"
-            };
-
-            yield return new object[]
-            {
-                Guid.NewGuid(),
-                "Valid Name",
-                "Valid Description",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.Empty, // Некорректный идентификатор компании           
                 DateTime.UtcNow,
                 DateTime.UtcNow,
@@ -137,7 +110,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 Guid.NewGuid(),
                 "Valid Name",
                 "Valid Description",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.NewGuid(),               
                 DateTime.MinValue, // Дата создания - дефолтное значение
                 DateTime.UtcNow,
@@ -150,7 +123,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 Guid.NewGuid(),
                 "Valid Name",
                 "Valid Description",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.NewGuid(),
                 DateTime.UtcNow,
                 DateTime.MinValue, // Дата обновления - дефолтное значение
@@ -163,7 +136,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
                 Guid.NewGuid(),
                 "sh", // Слишком короткое название
                 "Valid Description",
-                stepsTemplate,
+                new List<WorkflowStepTemplate>(),
                 Guid.NewGuid(),              
                 DateTime.UtcNow,
                 DateTime.UtcNow,
@@ -178,7 +151,7 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
             Guid id = _fixture.Create<Guid>();
             string name = _fixture.Create<string>();
             string description = _fixture.Create<string>();
-            var steps = _fixture.Create<List<WorkflowStepTemplate>>();
+            var steps = new List<WorkflowStepTemplate>();
             Guid companyId = _fixture.Create<Guid>();
             DateTime dateCreate = DateTime.UtcNow;
             DateTime dateUpdate = DateTime.UtcNow;
