@@ -1,7 +1,7 @@
 ﻿using main.DomainTest.TestTools.Autofixture;
 using Main.Domain.WorkflowTemplateDomain;
 
-namespace main.DomainTest.Tests.WorkflowTemplateUpdateIndo
+namespace main.DomainTest.Tests.WorkflowTemplateTests
 {
     public class WorkflowTemplateUpdate
     {

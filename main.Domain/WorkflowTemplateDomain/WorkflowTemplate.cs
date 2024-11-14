@@ -12,11 +12,11 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// Константное значение минимальной длины наименования шаблона
         /// </summary>
         public const int MinLengthName = 5;
-        private WorkflowTemplate(
+        protected WorkflowTemplate(
             Guid id,
             string name, 
             string description, 
-            List<WorkflowStepTemplate> stepTemplates, 
+            List<WorkflowStepTemplate> stepsTemplate, 
             Guid companyId, DateTime dateCreate, 
             DateTime dateUpdate)
         {
@@ -35,9 +35,19 @@ namespace Main.Domain.WorkflowTemplateDomain
                 throw new ArgumentNullException("Описание процесса не может быть пустым");
             }
 
-            if (stepTemplates is null)
+            if (stepsTemplate is null)
             {
                 throw new ArgumentNullException("Список шаблонных шагов должен быть определен");
+            }
+            
+            if (stepsTemplate.Count <= 0)
+            {
+                throw new ArgumentException("Список шагов не может быть пустым");
+            }
+
+            if (stepsTemplate.Any(s => s is null))
+            {
+                throw new ArgumentException("Все шаги в списке должны быть определены");
             }
 
             if (companyId == Guid.Empty)
@@ -63,7 +73,7 @@ namespace Main.Domain.WorkflowTemplateDomain
             Id = id;
             Name = name;
             Description = description;
-            _steps = stepTemplates;
+            _steps = stepsTemplate;
             CompanyId = companyId;
             DateCreate = dateCreate;
             DateUpdate = dateUpdate;
