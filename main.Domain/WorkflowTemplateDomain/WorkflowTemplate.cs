@@ -248,7 +248,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Успешность удаления</returns>
         public Result<bool> RemoveStep(int number)
         {
-            if (number > _steps.Count && number <= 0)
+            if (number > _steps.Count || number <= 0)
             {
                 return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
             }
