@@ -13,7 +13,7 @@ namespace Main.Domain.WorkflowTemplateDomain
     {
         protected WorkflowStepTemplate(
             int number, 
-            string? description, 
+            string description, 
             Guid? employeeId, 
             Guid? roleId, 
             DateTime dateCreate, 
@@ -24,8 +24,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 throw new ArgumentOutOfRangeException("Некорректный номер шага процесса");
             }
 
-            if ((employeeId is null && roleId is null) ||
-                (employeeId is not null && roleId is not null))
+            if (employeeId is null && roleId is null)
             {
                 throw new ArgumentNullException (("У шага должна быть привязка либо к конкретногому сотруднику либо к должности"));
             }
@@ -116,8 +115,7 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<WorkflowStepTemplate>.Failure("Описание шаблона процесса не может быть пустым");
             }
 
-            if ((employeeId is null && roleId is null) ||
-                (employeeId is not null && roleId is not null))
+            if (employeeId is null && roleId is null)
             {
                 return Result<WorkflowStepTemplate>.Failure("У шага должна быть привязка либо к конкретногому сотруднику либо к должности");
             }

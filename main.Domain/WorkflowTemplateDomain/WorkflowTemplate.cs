@@ -209,8 +209,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         {
             if (description != "test-failure")
             {
-                if ((employeeId is null && roleId is null) ||
-                    (employeeId is not null && roleId is not null))
+                if (employeeId is null && roleId is null)
                 {
                     return Result<bool>.Failure("У шага должна быть привязка либо к конкретногому сотруднику либо к должности");
                 }
