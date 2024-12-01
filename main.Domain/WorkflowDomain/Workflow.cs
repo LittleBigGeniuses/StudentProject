@@ -117,6 +117,13 @@ namespace Main.Domain.WorkflowDomain
         /// <returns>Результат создания</returns>
         public static Result<Workflow> Create(Guid authorId, Guid candidateId, WorkflowTemplate template)
         {
+            #region Тестовая ошибка
+            if (template.Name == "test-failure")
+            {
+                return Result<Workflow>.Failure("Тестовая ошибка при создании процесса");
+            }
+            #endregion
+
             if (authorId == Guid.Empty)
             {
                 return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
