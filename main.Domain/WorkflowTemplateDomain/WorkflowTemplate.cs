@@ -269,14 +269,17 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Успешность обмена</returns>
         public Result<bool> SwapSteps(int numberFirst, int numberSecond)
         {
-            if (_steps.Count < numberFirst || _steps.Count < numberSecond)
+            if (_steps.Count < numberFirst || _steps.Count < numberSecond
+                || _steps.Count < numberSecond || _steps.Count < numberFirst)
             {
-                return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
+                return Result<bool>.Failure("Шаблон не содержит шаг с таким номером");
             }
 
 
             _steps[numberFirst - 1].UpdateNumber(numberSecond);
             _steps[numberSecond - 1].UpdateNumber(numberFirst);
+
+            UpdateStepNumbers(1);
 
             var isChanged = false;
 
