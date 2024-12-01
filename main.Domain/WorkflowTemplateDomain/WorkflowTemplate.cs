@@ -1,4 +1,5 @@
 ﻿using Main.Domain.Common;
+using Main.Domain.WorkflowDomain;
 using System.Runtime.CompilerServices;
 
 namespace Main.Domain.WorkflowTemplateDomain
@@ -37,7 +38,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (stepsTemplate is null)
             {
-                throw new ArgumentNullException("Список шаблонных шагов должен быть определен");
+                throw new ArgumentNullException("Список шагов шаблона должен быть определен");
             }            
 
             if (companyId == Guid.Empty)
@@ -109,6 +110,39 @@ namespace Main.Domain.WorkflowTemplateDomain
                 DateTime.UtcNow);
 
             return Result<WorkflowTemplate>.Success(workflowTemplate);
+        }
+
+        /// <summary>
+        /// Метод для создания процесса по шаблону к которому применен метод
+        /// </summary>
+        /// <param name="authorId"></param>
+        /// <param name="candidateId"></param>
+        /// <returns></returns>
+        public Result<Workflow> CreateWorkflow(Guid authorId, Guid candidateId)
+        {
+            if (authorId == Guid.Empty)
+            {
+                return Result<Workflow>.Failure($"{authorId} - некорректный идентификатор сотрудника");
+            }
+
+            if (candidateId == Guid.Empty)
+            {
+                return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
+            }
+
+            if (Name.Trim().Length < MinLengthName)
+            {
+                return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
+            }
+
+            var workflow = Workflow.Create(authorId, candidateId, this);
+
+            if (workflow.IsFailure)
+            {
+                return Result<Workflow>.Failure($"{workflow.Error}");
+            }
+
+            return Result<Workflow>.Success(workflow.Value);
         }
 
         /// <summary>
