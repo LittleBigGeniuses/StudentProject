@@ -37,7 +37,7 @@ namespace Main.Domain.WorkflowTemplateDomain
 
             if (stepsTemplate is null)
             {
-                throw new ArgumentNullException("Список шаблонных шагов должен быть определен");
+                throw new ArgumentNullException("Список шагов шаблона должен быть определен");
             }            
 
             if (companyId == Guid.Empty)
