@@ -28,8 +28,8 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         [Fact]
         public void SwapSteps_WorkflowTemplate_With_Valid_Data()
         {
-            var numberFirst = 1;
-            var numberSecond = 3;
+            var numberFirst = _workflowTemplate.Steps.First().Number;
+            var numberSecond = _workflowTemplate.Steps.Last().Number;
             var curNumber = 1;
 
             var result = _workflowTemplate.SwapSteps(numberFirst, numberSecond);
@@ -49,13 +49,13 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         [Fact]
         public void SwapSteps_ShouldReturnFailure_WhenInvalidInput()
         {
-            var numberFirst = -1;
-            var numberSecond = 10;
+            var numberFirst = _workflowTemplate.Steps.First().Number - 1;
+            var numberSecond = _workflowTemplate.Steps.Last().Number + 1;
 
             var result = _workflowTemplate.SwapSteps(numberFirst, numberSecond);
 
             Assert.True(result.IsFailure);
-            Assert.Equal(result.Error, "Шаблон не содержит шаг с таким номером");
+            Assert.Equal("Шаблон не содержит шаг с таким номером", result.Error);
         }
     }
 }

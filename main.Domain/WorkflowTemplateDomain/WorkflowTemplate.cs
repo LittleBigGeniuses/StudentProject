@@ -270,7 +270,7 @@ namespace Main.Domain.WorkflowTemplateDomain
         public Result<bool> SwapSteps(int numberFirst, int numberSecond)
         {
             if (_steps.Count < numberFirst || _steps.Count < numberSecond
-                || _steps.Count < numberSecond || _steps.Count < numberFirst)
+                || numberFirst < 1 || numberSecond < 1)
             {
                 return Result<bool>.Failure("Шаблон не содержит шаг с таким номером");
             }
@@ -279,7 +279,7 @@ namespace Main.Domain.WorkflowTemplateDomain
             _steps[numberFirst - 1].UpdateNumber(numberSecond);
             _steps[numberSecond - 1].UpdateNumber(numberFirst);
 
-            UpdateStepNumbers(1);
+            UpdateStepNumbers(1);//номера то мы изменили а вот порядковое положение нет потому применяем метод сортировки
 
             var isChanged = false;
 
