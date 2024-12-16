@@ -68,12 +68,12 @@ namespace main.DomainTest.Tests.WorkflowTemplateTests
         [Theory]
         [MemberData(nameof(GetInvalidInputs))]
         public void WorkflowTemplate_CreateWorkflow_ShouldReturnFailure(
-            bool isTest,
+            bool needInvalidInputFromTemplate,
             Guid authorId,
             Guid candidateId,
             string expectedErrorMessage)
         {
-            if (isTest)
+            if (needInvalidInputFromTemplate)
             {
                 _workflowTemplate.UpdateInfo("test-failure", "test-failure");
             }
