@@ -130,11 +130,6 @@ namespace Main.Domain.WorkflowTemplateDomain
                 return Result<Workflow>.Failure($"{candidateId} - некорректный идентификатор кандидата");
             }
 
-            if (Name.Trim().Length < MinLengthName)
-            {
-                return Result<Workflow>.Failure($"Длина наименование не может быть меньше {MinLengthName}");
-            }
-
             var workflow = Workflow.Create(authorId, candidateId, this);
 
             if (workflow.IsFailure)
