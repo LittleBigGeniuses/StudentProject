@@ -182,7 +182,7 @@ namespace Main.Domain.WorkflowTemplateDomain
             if (number != Number)
             {
                 Number = number;
-                isChanged = true;
+                isChanged = true;  
             }
 
             if (isChanged)

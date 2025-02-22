@@ -298,14 +298,17 @@ namespace Main.Domain.WorkflowTemplateDomain
         /// <returns>Успешность обмена</returns>
         public Result<bool> SwapSteps(int numberFirst, int numberSecond)
         {
-            if (_steps.Count < numberFirst || _steps.Count < numberSecond)
+            if (_steps.Count < numberFirst || _steps.Count < numberSecond
+                || numberFirst < 1 || numberSecond < 1)
             {
-                return Result<bool>.Failure($"Шаблон не содержит шаг с таким номером");
+                return Result<bool>.Failure("Шаблон не содержит шаг с таким номером");
             }
 
 
             _steps[numberFirst - 1].UpdateNumber(numberSecond);
             _steps[numberSecond - 1].UpdateNumber(numberFirst);
+
+            UpdateStepNumbers(1);//номера то мы изменили а вот порядковое положение нет потому применяем метод сортировки
 
             var isChanged = false;
 
